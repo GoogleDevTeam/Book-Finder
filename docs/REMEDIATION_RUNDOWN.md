@@ -27,7 +27,7 @@ The following is recorded as confirmed in the existing plan and decision log:
 - The owner wants a $0 service path with no card requirement, paid overage, or automatic upgrade. If a free quota is reached, the safe default is to stop/degrade rather than charge.
 - The plan is the scope authority. No feature, provider, or app behavior outside the explicitly approved plan may be implemented.
 
-Open details include the response to accidental mixed-format input, app interface language, access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices. Printed and typed/on-screen English lists, one format per page, are selected; handwritten lists, mixed-format pages, Arabic, and other-language recognition were not selected.
+Open details include edition ranking/substitution, response to accidental mixed-format input, app interface language, access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices. Printed and typed/on-screen English lists, one format per page, are selected; handwritten lists, mixed-format pages, Arabic, and other-language recognition were not selected. The minimum outcome is a likely match with edition differences and a physical-book/ebook preference.
 
 ## GitHub state checked
 
@@ -40,7 +40,7 @@ Open details include the response to accidental mixed-format input, app interfac
 
 ### F-01 — The decision backlog and approval gate disagree
 
-At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 84 open and three confirmed (Q-06, Q-07, and Q-79), with no partial items. Q-06 and Q-07 are resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 35 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
+At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 83 open and four confirmed (Q-01, Q-06, Q-07, and Q-79), with no partial items. Q-01, Q-06, and Q-07 are resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 34 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
 
 **Proposed repair:** Declare the catalog the canonical question inventory, make OPEN_QUESTIONS an ID-mapped decision index, and have the gate count the 37 effective blockers—not just the seven short-list P0 prompts. Keep Q-79 confirmed and out of the open queue. Reconcile counts whenever either file changes.
 
@@ -89,7 +89,7 @@ The plan correctly says an APK cannot be made impossible to copy, inspect, or de
 
 The catalog remains the detailed source for each question. This grouped index is a navigation aid; it does not answer any question.
 
-- Product/input definition: Q-01, Q-08. Q-06 (one format per page) and Q-07 (English list content) are confirmed.
+- Product/input definition: Q-08. Q-01 (minimum outcome), Q-06 (one format per page), and Q-07 (English list content) are confirmed.
 - Identification behavior: Q-16, Q-17.
 - Provider list and permitted method: Q-23, Q-24, Q-25.
 - Saudi market and claim evidence: Q-31, Q-32, Q-33, Q-37.
@@ -99,7 +99,7 @@ The catalog remains the detailed source for each question. This grouped index is
 - Owner-confirmed security priority: Q-69, Q-70, Q-71, Q-72, Q-74.
 - No-cost operation and provider feasibility: Q-80, Q-81, Q-82, Q-83.
 
-That is 37 effective blockers. Q-79 is already confirmed: payment card required for a free tier is not acceptable. The remaining open P1/P2 items are also in DISCOVERY_CATALOG.md; they include app interface language, user separation, usage situation, supported layouts/fields, correction UX, source ranking/freshness, prices/taxes, ebook entitlement/DRM, retention/deletion, logs, incidents, monitoring, collaboration policy, accessibility, offline behavior, user-visible states, and numeric targets. Do not close them by inference; defer only when the approved v1 scope explicitly permits it.
+That is 34 effective blockers. Q-79 is already confirmed: payment card required for a free tier is not acceptable. The remaining open P1/P2 items are also in DISCOVERY_CATALOG.md; they include app interface language, user separation, usage situation, supported layouts/fields, correction UX, source ranking/freshness, prices/taxes, ebook entitlement/DRM, retention/deletion, logs, incidents, monitoring, collaboration policy, accessibility, offline behavior, user-visible states, and numeric targets. Do not close them by inference; defer only when the approved v1 scope explicitly permits it.
 
 ## Candidate documentation improvements (not product approvals)
 
