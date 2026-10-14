@@ -26,7 +26,7 @@ This catalog deliberately distinguishes confirmed requirements from open decisio
 
 **Backlog control:** OPEN_QUESTIONS.md is the canonical ID-mapped status, priority, and handling index for Q-01–Q-87. This catalog keeps detailed question context and rationale; mirror its statuses and priorities from the canonical index. Do not maintain a second, differently filtered approval backlog.
 
-Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be decided before the affected feature is built; **P2** can be deferred only if the approved scope excludes it. Status is **Open** unless explicitly marked otherwise.
+Priority guide: **P0** blocks approval of a complete plan; unresolved effective P0 items must be resolved before plan approval. **P1** must be decided before the affected feature is built; the project-wide gate in OPEN_QUESTIONS.md and CHANGE_CONTROL.md also requires unresolved P1 items to be resolved or explicitly deferred before plan approval. **P2** may be deferred only when the affected behavior is explicitly excluded from the approved v1 scope. A deferral removes that behavior from approved scope until a decision is recorded; an open item does not authorize implementation. Status is **Open** unless explicitly marked otherwise.
 
 ### Product purpose and users
 
