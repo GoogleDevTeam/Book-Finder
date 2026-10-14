@@ -2,7 +2,7 @@
 
 **Repository:** Book-Finder  
 **Started:** 2026-10-14  
-**Purpose:** Concise, auditable record of app-related requirements, decisions, proposals, open questions, risks, plan changes, and work outcomes.
+**Purpose:** Concise, auditable record of app-related requirements, decisions, proposals, open questions, plan changes, and work outcomes.
 
 ## Logging rule
 
@@ -14,7 +14,7 @@ Every app-related discussion or action must be summarized here. Before any app c
 |---|---|---|---|
 | 2026-10-14 | Product scope | Android APK concept: photograph a list containing multiple books and fields; identify/search by ISBN/title, show confidence, and flag editions. | Confirmed; APP_PLAN.md; initial plan commit c3123dd05f46530208e6f0cf30177fdd39be0d18 |
 | 2026-10-14 | Market/provider scope | Search physical books and ebooks for Saudi Arabia; distinguish confirmed/uncertain shipping and ebook regional availability. Amazon.sa and Noon are examples, not confirmed integrations. | Confirmed constraints; provider feasibility open; c3123dd05f46530208e6f0cf30177fdd39be0d18 |
-| 2026-10-14 | Distribution | Intended audience is about five invited people; GitHub-based updates should be checked in app, and Android installation requires user approval. | Confirmed goals; authentication/update design open; c3123dd05f46530208e6f0cf30177fdd39be0d18 |
+| 2026-10-14 | Distribution | Intended audience is about five invited people; GitHub-based updates should be checked in app, and Android installation requires user approval. | Confirmed goals; authentication/update design open; c3123dd05f46530208e6f0cf30177fdd39 |
 | 2026-10-14 | Governance | The plan is the scope authority. No implementation before explicit approval; new work must be planned first. | Confirmed; planning gate 64e1c9eabb17429964a26659b26fd1cfbcbd8008 |
 | 2026-10-14 | Discovery | Added comprehensive question and risk inventory, with open items explicitly marked rather than assumed. | Completed; abc934df1ed7d49a4a2518174b792352af729f71 |
 | 2026-10-14 | Priority | Security, safety, and performance are the owner’s top priorities; the APK cannot be guaranteed impossible to copy or reverse-engineer. | Confirmed priority; controls remain open; d04e70316fb2fdbca261e486b5aeb69df8a6fa8a |
@@ -44,3 +44,6 @@ Append new project events here in chronological order. Update the relevant plan,
 | 2026-10-14 | Recommended next work | Convert the risk register and acceptance criteria into a pre-build test matrix and UI state specification; keep new feature ideas as proposals until explicitly approved. | Proposed; planning only |
 
 | 2026-10-14 | Planning audit | Reviewed current planning docs, full GitHub issue/PR history, and selected official provider/platform docs. Found backlog mismatch (86 open catalog questions; 37 effective P0 blockers versus 17 prompts in OPEN_QUESTIONS.md), missing requirement IDs, two overlapping unscored risk lists, stale conflicting no-card wording, and no executable test matrix. Public-source checks flagged Amazon Creators API eligibility, unverified Noon consumer search, APK install/signing steps, and unverified no-card hosting feasibility. | Completed; detailed findings and sources in docs/PLAN_AUDIT.md; commit e9efa2234142682c06d1a4695c09d844c70518bb; no app code/scope changes |
+
+| 2026-10-14 | GitHub triage | Owner asked to inspect Book-Finder and address issues before implementation. Verified there were no pre-existing GitHub issues or pull requests, and the repository contains planning documents only; runtime bug fixing is not possible yet. | Completed; repo main; no app changes
+| 2026-10-14 | Planning backlog | Created five GitHub planning issues for the audit blockers: #1 executable test matrix, #2 requirement IDs/traceability, #3 risk-register reconciliation, #4 stale no-card wording, and #5 discovery-backlog reconciliation. | Open; issues #1–#5; implementation remains gated on complete-plan approval
