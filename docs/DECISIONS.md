@@ -1,6 +1,6 @@
 # Decision log
 
-**Last updated:** 2026-10-14
+**Last updated:** 2026-10-15
 
 Only items in **Confirmed** are settled by the user. **Proposed** items are recommendations, not authorization. **Open** items require a user decision.
 
@@ -8,9 +8,12 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 
 - Target is an Android APK app.
 - The image contains a list of multiple books; it is not a cover-photo identification workflow.
-- Book search can use ISBN, name/title, or both.
-- Show identification confidence.
-- Flag different editions and versions.
+- For v1, the owner selected printed lists and typed/on-screen lists; each page must use one format. Handwritten lists and mixed-format pages were not selected.
+- English was selected as the list-content language. Arabic, mixed Arabic/English, and other-language recognition were not selected.
+- Book search can use ISBN, name/title, or both. For a scanned list entry, require a valid, readable ISBN—provided or corrected by the user—before searching that entry.
+- Show text-reading/OCR confidence separately from book-match confidence.
+- Flag different editions and versions. When multiple editions match, preselect the closest and flag differences.
+- The minimum useful outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference.
 - Search physical books and ebooks.
 - Saudi Arabia is the required destination/market. If shipping is uncertain, state that it is uncertain.
 - Flag ebook regional restrictions or uncertain availability.
@@ -22,7 +25,6 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 ## Proposed, not yet approved
 
 - Process list images on-device by default and discard the source image after extraction.
-- Separate OCR confidence from catalog-match confidence.
 - Use a server-side component to access private GitHub release/config data; never embed a GitHub token in the APK.
 - Allow only invited accounts/devices, with a way to revoke access.
 - Cache provider configuration safely and show when data was last checked.
@@ -30,14 +32,13 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 
 ## Open
 
-- Supported image types: printed, handwritten, screen capture, or a combination.
-- Languages expected in lists and desired app languages, including Arabic/English support.
-- Whether “number of books” means total entries, quantity per title, or both.
+- The app interface language(s), including whether it should support Arabic alongside English. List content is currently English-only by selection.
+- Whether to track list-entry count, copy quantity per title/edition, or both. The owner is not sure yet. Edition/version identifies the book and is separate from copies.
 - Initial providers to support and the permitted search/API method for each. Example providers are not yet integrations.
 - Whether “Saudi-only” means Saudi-based sellers only, or any seller that can deliver to Saudi Arabia; the confirmed requirement is that Saudi delivery must not be falsely asserted.
 - What evidence is sufficient to mark delivery or ebook access as confirmed.
 - How to present an uncertain shipping result and what user action should follow.
-- How users choose between editions, translations, and formats.
+- What “closest” means for edition/translation ranking and what to do if no candidate is suitable; preselection of the closest with a visible difference flag is confirmed. Physical-book versus ebook preference is requested, but its exact effect on ranking/filtering is not defined.
 - Whether images, recognized entries, history, or favorites are saved; where and for how long.
 - How the five people are invited/authenticated and how access is revoked.
 - How the first APK is distributed privately; in-app update flow applies after installation.
@@ -97,7 +98,7 @@ These are candidates only. No latency target, cache duration, OCR engine, sessio
 
 The owner wants everything to be free. Safe planning default: target $0 for the owner and users; no paid services, subscriptions, automatic overages, or upgrades without explicit approval. If a free quota is exceeded, the service should fail/degrade safely rather than charge.
 
-Clarification remains open: whether a free tier that requires a payment card is acceptable, and whether cold starts, pauses, or manual republishing are acceptable given performance is also a top priority. Hosting candidates and dated evidence are in COST_AND_HOSTING.md; none is selected.
+**Superseded for payment-card eligibility by the confirmed no-card rule below.** A card-gated free tier is not acceptable (Q-79). The separate question of whether cold starts, pauses, or manual republishing are acceptable remains open, given performance is also a top priority. Hosting candidates and dated evidence are in COST_AND_HOSTING.md; none is selected.
 
 
 ## Confirmed cost constraint — no payment card
@@ -108,3 +109,8 @@ The owner confirmed that a service must not require a payment card to access its
 ## Confirmed workflow requirement — project activity log
 
 The owner asked for project-related work and decisions to be recorded on GitHub. A concise project log will capture every app-related requirement, answer, decision, proposal, open question, risk, plan change, implementation/test/release action, and outcome. It is not a verbatim transcript and must never contain secrets or credentials. Before app changes, the plan is updated first; after work, the commit and verification are logged.
+
+
+## Owner-confirmed private-fork setting — 2026-10-15
+
+The owner chose to leave private forking unchanged for now. The private repository remains under the personal GitHub account GoogleDevTeam with allow_forking=true. The connected GitHub API rejected disabling the setting (HTTP 422; the endpoint only accepts organization-owned private repositories); a UI-only control was not verified. No repository transfer or access change is approved. This setting is not a confidentiality guarantee; authorized collaborators may still clone the code.
