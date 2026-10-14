@@ -91,3 +91,10 @@ These are recommendations for discussion, not an approved access model. Sign-in 
 - Define performance targets only after choosing representative Android devices, list sizes, and network conditions.
 
 These are candidates only. No latency target, cache duration, OCR engine, session lifetime, or provider concurrency limit is approved yet.
+
+
+## Owner-confirmed cost preference — 2026-10-14
+
+The owner wants everything to be free. Safe planning default: target $0 for the owner and users; no paid services, subscriptions, automatic overages, or upgrades without explicit approval. If a free quota is exceeded, the service should fail/degrade safely rather than charge.
+
+Clarification remains open: whether a free tier that requires a payment card is acceptable, and whether cold starts, pauses, or manual republishing are acceptable given performance is also a top priority. Hosting candidates and dated evidence are in COST_AND_HOSTING.md; none is selected.

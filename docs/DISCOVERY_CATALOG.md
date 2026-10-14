@@ -207,3 +207,20 @@ The owner has confirmed these are the product’s highest priorities. This chang
 | Q-78 | P1 / Open | What is the incident response for a leaked APK, stolen device, exposed key, or compromised user account? | Revoke, rotate, notify, and recover before the issue occurs. |
 
 Reclassify Q-40, Q-41, Q-42, Q-45, Q-47, Q-50, Q-51, Q-52, Q-54, Q-55, and Q-58 as security/performance plan blockers. Their earlier priority labels are superseded by this owner-confirmed priority.
+
+
+## 7. Owner-confirmed cost constraint and hosting discovery
+
+The owner wants everything to be free. Safe default: target $0 ongoing cost for both owner and users; no paid services, automatic overages, or upgrades without explicit approval. Free-tier quotas/pauses and terms changes are risks, not hidden assumptions. Refer to docs/COST_AND_HOSTING.md for the dated research snapshot.
+
+| ID | Priority / status | Question or decision | Why it matters |
+|---|---|---|---|
+| Q-79 | P0 / Open | Does “everything free” mean $0 to both owner and users, with no payment card on file? | Some free tiers require billing details even when usage is below quota. |
+| Q-80 | P0 / Open | If a free quota is exhausted, should the app stop/degrade with no charge? | Prevents accidental spend; current safe default is no paid overage. |
+| Q-81 | P0 / Open | Are sleep/idle pauses, cold starts, or manual republishing acceptable? | Free tiers can conflict with security/performance availability goals. |
+| Q-82 | P0 / Open | Which candidate backend can securely support invite-only auth, private GitHub release access, and revocation at $0? | A free hosting quota alone does not provide a secure end-to-end design. |
+| Q-83 | P0 / Open | Do Amazon.sa, Noon, and later providers offer a permitted no-cost search/data method? | Do not assume a free API exists or use prohibited scraping. |
+| Q-84 | P1 / Open | If no free permitted method exists for a source, should that source be omitted? | Safe default: omit it rather than create a paid or noncompliant dependency. |
+| Q-85 | P1 / Open | Are email/invitation delivery, storage, monitoring, and build minutes required, and can each stay within free quotas? | These indirect services can create costs even when the API host is free. |
+| Q-86 | P1 / Open | How often will users use the app, and is a service that pauses after inactivity acceptable? | Usage frequency changes whether a free tier is reliable enough. |
+| Q-87 | P1 / Open | How should the app behave when any free service reaches its quota or changes its plan? | Defines safe failure and prevents automatic charges. |
