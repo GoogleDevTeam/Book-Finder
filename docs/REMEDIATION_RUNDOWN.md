@@ -40,9 +40,9 @@ Open details include the criteria for a “closest” edition and fallback if no
 
 ### F-01 — The decision backlog and approval gate disagree
 
-At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 80 open, two partial (Q-17 and Q-19), and five confirmed (Q-01, Q-06, Q-07, Q-16, and Q-79). Q-01, Q-06, Q-07, and Q-16 are resolved; Q-17 and Q-19 are partially resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 33 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
+At the original 2026-10-14 audit, the catalog had 86 open items and Q-79 confirmed. After the recorded owner decisions and the 2026-10-15 backlog reconciliation, the catalog contains 73 Open, five Partial (Q-17, Q-19, Q-27, Q-33, Q-57), and nine Confirmed (Q-01, Q-06, Q-07, Q-16, Q-67, Q-68, Q-79, Q-80, Q-87). OPEN_QUESTIONS.md now has one row for every Q-01–Q-87 and is the canonical status/priority index; the catalog mirrors it. Thirty effective P0 blockers remain: 25 active catalog-P0 items plus five audit-elevated P1 items (Q-45, Q-47, Q-54, Q-55, Q-58).
 
-**Proposed repair:** Declare the catalog the canonical question inventory, make OPEN_QUESTIONS an ID-mapped decision index, and have the gate count the 37 effective blockers—not just the seven short-list P0 prompts. Keep Q-79 confirmed and out of the open queue. Reconcile counts whenever either file changes.
+**Completed repair (2026-10-15):** OPEN_QUESTIONS.md is the canonical ID-mapped status/priority index; DISCOVERY_CATALOG.md carries detailed context and mirrors the index; CHANGE_CONTROL.md gates approval on its active effective-P0 list. Research-only tasks and owner decisions are distinguished. Q-79 remains confirmed; counts and blocker IDs must be updated together whenever a status changes.
 
 ### F-02 — Requirement traceability is not executable yet
 
@@ -87,7 +87,7 @@ The plan correctly says an APK cannot be made impossible to copy, inspect, or de
 
 ## Complete effective P0 blocker map
 
-The catalog remains the detailed source for each question. This grouped index is a navigation aid; it does not answer any question.
+OPEN_QUESTIONS.md is the canonical status/priority register. The grouped map below is a navigation aid; the catalog retains detailed context.
 
 - Product/input definition: Q-08. Q-01 (minimum outcome), Q-06 (one format per page), and Q-07 (English list content) are confirmed.
 - Identification behavior: Q-17 is partial (separate confidence types confirmed; acceptable-match criteria open). Q-16 (require a corrected ISBN for scanned entries before search) is confirmed.
@@ -95,11 +95,11 @@ The catalog remains the detailed source for each question. This grouped index is
 - Saudi market and claim evidence: Q-31, Q-32, Q-33, Q-37.
 - Data, access, and backend threat boundary: Q-40, Q-41, Q-42, Q-45, Q-47.
 - First distribution, private release access, signing, supported Android and install behavior: Q-50, Q-51, Q-52, Q-54, Q-55, Q-58.
-- Accuracy and plan authorization: Q-64, Q-65, Q-67, Q-68.
+- Accuracy and owner-provided evidence: Q-64, Q-65. Plan authorization (Q-67 and Q-68) is confirmed.
 - Owner-confirmed security priority: Q-69, Q-70, Q-71, Q-72, Q-74.
-- No-cost operation and provider feasibility: Q-80, Q-81, Q-82, Q-83.
+- No-cost operation and provider feasibility: Q-81, Q-82, Q-83. Quota-stop/no-overage behavior (Q-80 and Q-87) is confirmed.
 
-That is 33 effective blockers. Q-79 is already confirmed: payment card required for a free tier is not acceptable. The remaining open P1/P2 items are also in DISCOVERY_CATALOG.md; they include app interface language, user separation, usage situation, supported layouts/fields, correction UX, source ranking/freshness, closest-edition criteria/fallback, prices/taxes, ebook entitlement/DRM, retention/deletion, logs, incidents, monitoring, collaboration policy, accessibility, offline behavior, user-visible states, and numeric targets. Do not close them by inference; defer only when the approved v1 scope explicitly permits it.
+That is 30 effective blockers. Q-79 is confirmed: a payment card is not acceptable for a free tier. Current status is 73 Open, five Partial, and nine Confirmed; see OPEN_QUESTIONS.md for the authoritative per-ID list. The remaining open P1/P2 items are also in DISCOVERY_CATALOG.md; they include app interface language, user separation, usage situation, supported layouts/fields, correction UX, source ranking/freshness, closest-edition criteria/fallback, prices/taxes, ebook entitlement/DRM, retention/deletion, logs, incidents, monitoring, collaboration policy, accessibility, offline behavior, user-visible states, and numeric targets. Do not close them by inference; defer only when the approved v1 scope explicitly permits it.
 
 ## Candidate documentation improvements (not product approvals)
 
