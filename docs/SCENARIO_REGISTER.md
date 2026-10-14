@@ -100,6 +100,7 @@ The safe outcomes below are planning recommendations, not all confirmed behavior
 - **SC-067** Ebook format, DRM, reader/device, or account country prevents use after purchase. Do not equate listing/purchase availability with successful reading access. (Q-39)
 - **SC-068** Ebook availability or physical shipping cannot be checked because the source is down. Report check failure, not unavailable/no book. (Q-27, Q-32, Q-37)
 - **SC-069** Affiliate/sponsored placement could influence ranking or links. Keep commercial relationships out unless approved and visibly disclosed. (Q-29)
+- **SC-101** The user prefers physical books or ebooks, but a matched title has no result, uncertain regional access, or only the other format. Keep title-match confidence separate from offer availability; do not silently substitute a different edition or imply that a preferred format is available. Ranking/filter behavior and fallback remain open. (Q-01, Q-19, Q-27, Q-38, Q-39)
 
 ## H. Privacy, retention, data separation, and logs
 
