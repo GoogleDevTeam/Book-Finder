@@ -40,7 +40,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-06 | P0 / Partial | Printed and typed/on-screen lists were selected for v1; handwriting was not selected. Should a single list/page be allowed to mix formats? | OCR performance varies substantially by input type. |
+| Q-06 | Confirmed | Printed and typed/on-screen lists were selected for v1, one format per page; handwritten and mixed-format pages were not selected. | OCR performance varies substantially by input type. |
 | Q-07 | Confirmed | English was selected as the list-content language; Arabic, mixed Arabic/English, and other-language recognition were not selected. | Determines OCR capability and false-match risks. |
 | Q-08 | P0 / Open | What does “number of books” mean: number of entries, a quantity for each title, or both? | Prevents quantity from being confused with book count or duplicate titles. |
 | Q-09 | P1 / Open | What layouts are common: one title per line, columns, tables, checklists, notes in margins? | Affects row/column segmentation and review UI. |
