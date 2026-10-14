@@ -86,3 +86,31 @@ Quantitative OCR accuracy and response-time targets are intentionally unset unti
 - No unauthorized access or unexpected image retention.
 
 Baselines and numeric targets are open decisions; do not invent them.
+
+## 9. Highest priority: security, safety, and performance
+
+**Owner-confirmed priority:** Security, safety, and performance are the top priorities for this product. The security goal is to ensure only people the owner authorizes can obtain protected access to the app and its services, and to make reverse-engineering as difficult as practical. Exact controls remain open until the threat model and distribution plan are agreed.
+
+### Security requirements to settle and verify
+
+- No public app distribution or unauthenticated access to protected app functions, data, provider configuration, or updates. The authorization and invitation model is not yet selected.
+- Protect credentials, signing keys, private provider configuration, user data, and search history. Do not embed secrets in the APK or repository.
+- Design for access revocation if a user or device is no longer authorized.
+- Treat an APK as a client that an end user can copy and inspect. No Android APK can be guaranteed impossible to copy, decompile, or reverse-engineer. Obfuscation and tamper resistance can raise effort but are defense-in-depth, not a security boundary. Minimize sensitive logic/data in the APK and keep secrets or protected operations server-side where appropriate.
+- Threat model, account/device controls, offline behavior, and server-side requirements are open decisions.
+
+### Safety requirements
+
+- Fail closed for protected data and update access when authorization or package verification fails.
+- Keep uncertain OCR, edition matches, Saudi delivery, and ebook-region availability visibly uncertain.
+- Do not make purchases or install updates without user approval.
+- Request only permissions required by the approved flows and define safe behavior for provider/network failures.
+
+### Performance requirements
+
+- Security checks and the launch-time version check must not make routine app startup hang indefinitely.
+- Measure scanning, review, search, and update-check behavior on agreed Android devices and representative lists. Numerical targets are open; do not invent them.
+- Bound network waits, response sizes, retries, and local resource use; show clear degraded/offline states instead of leaving the UI unresponsive.
+- On-device processing, caching, and concurrency are design options, not yet approved architecture decisions.
+
+These requirements take priority during planning, but no implementation begins until the full plan and threat model are explicitly approved.

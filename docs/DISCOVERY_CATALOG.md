@@ -188,3 +188,22 @@ Do not claim a dependency is solved until evidence is recorded in the plan.
 No implementation starts until the owner explicitly approves the complete plan. At minimum, all P0 questions must be answered, every in-scope requirement must have acceptance criteria, selected provider feasibility must be checked, the privacy/security/data-flow design must be reviewed, and every material risk must have a mitigation, detection method, fallback, and residual-risk status. Any high-impact unresolved risk requires explicit owner acceptance or a scope change that removes the risk.
 
 This gate reduces foreseeable errors; it cannot guarantee that no new defect will arise after implementation begins.
+
+## 6. Newly confirmed top priority: security, safety, and performance
+
+The owner has confirmed these are the product’s highest priorities. This changes how planning questions are ordered; it does not by itself choose a technical architecture or approve a feature. An APK cannot be guaranteed impossible to copy or reverse-engineer once it reaches a user. Plan for strict access control, minimal exposed secrets/data, signed releases, and documented residual risk rather than promising absolute secrecy.
+
+| ID | Priority / status | Question or decision | Why it matters |
+|---|---|---|---|
+| Q-69 | P0 / Open | Which threat scenarios must the design address: casual forwarding, a lost device, a user sharing credentials, reverse-engineering, or a compromised account? | “Only people I allow” needs an explicit attacker and access model. |
+| Q-70 | P0 / Open | Must every protected feature require an online authorization check, or must some features work offline? | Strict server-side gating improves revocation but reduces offline availability. |
+| Q-71 | P0 / Open | Should each allowed person have a named account, an enrolled device, or both? How many devices may each use? | Defines access boundaries and how to prevent shared APKs from being useful to guests. |
+| Q-72 | P0 / Open | What information must remain confidential: source code, credentials, provider config, search activity, or app concept? | Different information needs different controls; an app’s visible behavior cannot be hidden from its authorized users. |
+| Q-73 | P1 / Open | Is obfuscation/tamper resistance acceptable as a deterrent, with the understanding it is not a guarantee? | Sets realistic reverse-engineering expectations and implementation cost. |
+| Q-74 | P0 / Open | Is a private authenticated backend acceptable for access checks, revocation, and private update delivery? Who will maintain it? | Strong access control and private GitHub access cannot depend on a secret embedded in the APK. |
+| Q-75 | P1 / Open | What are acceptable performance targets for startup, OCR/review, provider search, and update checks, and on which devices? | Performance cannot be verified without a baseline and measurable targets. |
+| Q-76 | P1 / Open | What should remain usable when the internet/backend is unavailable, and which protected operations must fail closed? | Balances security, safety, and availability. |
+| Q-77 | P1 / Open | Are device-integrity checks/attestation required? What privacy, compatibility, cost, and bypass limits are acceptable? | Attestation may add friction and is not an absolute anti-tamper guarantee. |
+| Q-78 | P1 / Open | What is the incident response for a leaked APK, stolen device, exposed key, or compromised user account? | Revoke, rotate, notify, and recover before the issue occurs. |
+
+Reclassify Q-40, Q-41, Q-42, Q-45, Q-47, Q-50, Q-51, Q-52, Q-54, Q-55, and Q-58 as security/performance plan blockers. Their earlier priority labels are superseded by this owner-confirmed priority.

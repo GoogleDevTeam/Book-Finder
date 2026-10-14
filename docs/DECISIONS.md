@@ -45,3 +45,19 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - Android version/device support, update-check frequency, and whether update notifications beyond app launches are needed.
 - Whether search details may be sent directly to external providers or must be brokered through a server.
 - Numeric success targets for extraction and matching, after sample lists are available.
+
+## Owner-confirmed priority — 2026-10-14
+
+Security, safety, and performance are the top priorities. Only people the owner explicitly allows should receive protected access to the app. The owner also wants strong resistance to reverse-engineering and exposure of the app’s internals.
+
+## Technical boundary to plan around
+
+A private APK can be distributed and access-controlled, but an APK that reaches a user cannot be guaranteed impossible to copy, inspect, or decompile. Obfuscation/tamper resistance can increase effort; they cannot guarantee secrecy. Practical protections include keeping secrets and protected operations out of the client, requiring authorization for protected services, limiting data in the package, signing releases, and being able to revoke users/devices. These are design recommendations, not selected architecture.
+
+## Security, safety, and performance decisions still open
+
+- Authentication/invitation method, per-user/device limits, device revocation, and whether any features work offline.
+- Threat scenarios and acceptable residual risk; what specifically must remain confidential (credentials, source code, provider configuration, search data, or proprietary logic).
+- Whether a backend is acceptable and who maintains it; no GitHub/provider secret may be embedded in the APK.
+- Performance targets and test devices for startup, OCR, book matching, provider search, and update checks.
+- Whether integrity/attestation controls are required, considering their privacy, compatibility, cost, and bypass limitations.
