@@ -12,7 +12,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - English was selected as the list-content language. Arabic, mixed Arabic/English, and other-language recognition were not selected.
 - Book search can use ISBN, name/title, or both.
 - Show identification confidence.
-- Flag different editions and versions.
+- Flag different editions and versions. When multiple editions match, preselect the closest and flag differences.
 - The minimum useful outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference.
 - Search physical books and ebooks.
 - Saudi Arabia is the required destination/market. If shipping is uncertain, state that it is uncertain.
@@ -39,7 +39,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - Whether “Saudi-only” means Saudi-based sellers only, or any seller that can deliver to Saudi Arabia; the confirmed requirement is that Saudi delivery must not be falsely asserted.
 - What evidence is sufficient to mark delivery or ebook access as confirmed.
 - How to present an uncertain shipping result and what user action should follow.
-- How the app ranks/selects among edition or translation alternatives; a physical-book versus ebook preference is requested, but its exact effect on ranking/filtering is not defined.
+- What “closest” means for edition/translation ranking and what to do if no candidate is suitable; preselection of the closest with a visible difference flag is confirmed. Physical-book versus ebook preference is requested, but its exact effect on ranking/filtering is not defined.
 - Whether images, recognized entries, history, or favorites are saved; where and for how long.
 - How the five people are invited/authenticated and how access is revoked.
 - How the first APK is distributed privately; in-app update flow applies after installation.
