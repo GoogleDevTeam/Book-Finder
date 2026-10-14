@@ -27,7 +27,7 @@ The following is recorded as confirmed in the existing plan and decision log:
 - The owner wants a $0 service path with no card requirement, paid overage, or automatic upgrade. If a free quota is reached, the safe default is to stop/degrade rather than charge.
 - The plan is the scope authority. No feature, provider, or app behavior outside the explicitly approved plan may be implemented.
 
-Open details include edition ranking/substitution, response to accidental mixed-format input, app interface language, access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices. Printed and typed/on-screen English lists, one format per page, are selected; handwritten lists, mixed-format pages, Arabic, and other-language recognition were not selected. The minimum outcome is a likely match with edition differences and a physical-book/ebook preference.
+Open details include the criteria for a “closest” edition and fallback if none is suitable, response to accidental mixed-format input, app interface language, access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices. Printed and typed/on-screen English lists, one format per page, are selected; handwritten lists, mixed-format pages, Arabic, and other-language recognition were not selected. The minimum outcome is a likely match with edition differences and a physical-book/ebook preference.
 
 ## GitHub state checked
 
@@ -40,7 +40,7 @@ Open details include edition ranking/substitution, response to accidental mixed-
 
 ### F-01 — The decision backlog and approval gate disagree
 
-At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 83 open and four confirmed (Q-01, Q-06, Q-07, and Q-79), with no partial items. Q-01, Q-06, and Q-07 are resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 34 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
+At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 82 open, one partial (Q-19), and four confirmed (Q-01, Q-06, Q-07, and Q-79). Q-01, Q-06, and Q-07 are resolved; Q-19 is partially resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 34 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
 
 **Proposed repair:** Declare the catalog the canonical question inventory, make OPEN_QUESTIONS an ID-mapped decision index, and have the gate count the 37 effective blockers—not just the seven short-list P0 prompts. Keep Q-79 confirmed and out of the open queue. Reconcile counts whenever either file changes.
 
@@ -99,7 +99,7 @@ The catalog remains the detailed source for each question. This grouped index is
 - Owner-confirmed security priority: Q-69, Q-70, Q-71, Q-72, Q-74.
 - No-cost operation and provider feasibility: Q-80, Q-81, Q-82, Q-83.
 
-That is 34 effective blockers. Q-79 is already confirmed: payment card required for a free tier is not acceptable. The remaining open P1/P2 items are also in DISCOVERY_CATALOG.md; they include app interface language, user separation, usage situation, supported layouts/fields, correction UX, source ranking/freshness, prices/taxes, ebook entitlement/DRM, retention/deletion, logs, incidents, monitoring, collaboration policy, accessibility, offline behavior, user-visible states, and numeric targets. Do not close them by inference; defer only when the approved v1 scope explicitly permits it.
+That is 34 effective blockers. Q-79 is already confirmed: payment card required for a free tier is not acceptable. The remaining open P1/P2 items are also in DISCOVERY_CATALOG.md; they include app interface language, user separation, usage situation, supported layouts/fields, correction UX, source ranking/freshness, closest-edition criteria/fallback, prices/taxes, ebook entitlement/DRM, retention/deletion, logs, incidents, monitoring, collaboration policy, accessibility, offline behavior, user-visible states, and numeric targets. Do not close them by inference; defer only when the approved v1 scope explicitly permits it.
 
 ## Candidate documentation improvements (not product approvals)
 
@@ -127,7 +127,7 @@ Add exact fixture files, devices, and thresholds only after owner input. The out
 | OCR failure | Blur, rotation, handwriting, mixed language, missing fields | Mark uncertain/unsupported; allow correction or manual entry; do not search guessed data silently | Which samples and languages are in scope |
 | Segmentation | Columns, duplicates, quantity, wrapped titles | Preserve row boundaries and quantity independently; review before search | Representative layouts and meaning of “number of books” |
 | ISBN | Valid, invalid, unreadable, one-digit error | Validate format/check digit; flag mismatch; allow title/author fallback | ISBN fixture set and acceptable error rate TBD |
-| Matching | Same-title editions, translations, volume, format | Show differences and alternatives; do not silently substitute | Owner's exact edition choice policy |
+| Matching | Same-title editions, translations, volume, format | Preselect the closest match and flag differences; do not call it exact without evidence | Define “closest,” acceptance/review, and fallback when no candidate is suitable |
 | Provider | Supported, unsupported, timed out, rate-limited, partial response | Per-source status; failed check is not “no result”; no unsupported source claimed as searched | Approved provider list/methods and service limits |
 | Saudi print | Confirmed, unknown, unavailable, address-dependent delivery | Separate states; unknown never shown as confirmed; show evidence and freshness where available | Owner-approved evidence standard and address scope |
 | Ebook | Region unknown, restricted, purchase, subscription, loan | State access type and region uncertainty separately from print shipping | Candidate providers and in-scope access types |
