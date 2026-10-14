@@ -11,7 +11,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - For v1, the owner selected printed lists and typed/on-screen lists; each page must use one format. Handwritten lists and mixed-format pages were not selected.
 - English was selected as the list-content language. Arabic, mixed Arabic/English, and other-language recognition were not selected.
 - Book search can use ISBN, name/title, or both. For a scanned list entry, require a valid, readable ISBN—provided or corrected by the user—before searching that entry.
-- Show identification confidence.
+- Show text-reading/OCR confidence separately from book-match confidence.
 - Flag different editions and versions. When multiple editions match, preselect the closest and flag differences.
 - The minimum useful outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference.
 - Search physical books and ebooks.
@@ -25,7 +25,6 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 ## Proposed, not yet approved
 
 - Process list images on-device by default and discard the source image after extraction.
-- Separate OCR confidence from catalog-match confidence.
 - Use a server-side component to access private GitHub release/config data; never embed a GitHub token in the APK.
 - Allow only invited accounts/devices, with a way to revoke access.
 - Cache provider configuration safely and show when data was last checked.
