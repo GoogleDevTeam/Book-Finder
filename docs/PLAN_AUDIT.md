@@ -57,3 +57,12 @@ These are recommendations, not scope approval. No app features or implementation
 This was a read-only document and official-source review. No app code exists in this repository to build, test, scan, or inspect as an APK. Provider eligibility was researched from public documentation but not tested with an account, credentials, live searches, or sample books. All external pricing, terms, and APIs must be rechecked before selection and release.
 
 Keep PROJECT_LOG.md as a concise project audit trail: record decisions, proposals, open items, actions, evidence, and commits. Do not record verbatim chat, book titles/ISBNs, personal data, tokens, keys, or credentials. This audit report is the detailed findings record.
+
+
+## Follow-up: private fork setting (2026-10-15)
+
+The connected GitHub account reports this repository as private, owned by the personal user account GoogleDevTeam (owner type User), with admin permission and allow_forking=true. After the owner selected disabling forks, a PATCH setting allow_forking=false returned HTTP 422: “Allow forks setting can only be changed on org-owned private repositories.” A subsequent GET still reports allow_forking=true. No repository setting, visibility, collaborator, or ownership change occurred. The owner then chose to leave the setting unchanged for now.
+
+GitHub’s general [Forks reference](https://docs.github.com/en/pull-requests/reference/forks) says admins of private repositories can disallow forks; the [repository forking-policy guide](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/managing-the-forking-policy-for-your-repository) describes a control for organization-owned private repositories. The available API result matches the organization-only scope for this user-owned repo. A UI-only control was not verified. Do not claim this repo can disable forks through the available API, and do not transfer it to an organization without separate approval. Private status is not a confidentiality guarantee: authorized collaborators can still clone locally.
+
+Fork-policy entries are DISCOVERY_CATALOG.md Q-57 and R-23, and RISK_REGISTER.md R14. DISCOVERY_CATALOG.md R-14 is a separate provider-configuration risk and is not the fork-policy item.
