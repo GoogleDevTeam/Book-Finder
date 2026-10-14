@@ -12,7 +12,7 @@ Help a small, private group turn a photographed list of multiple books into revi
 ## 2. Confirmed scope
 
 - Android app distributed as an APK.
-- Input is an image of a list of books, not a photo of book covers. For v1, printed lists and typed/on-screen lists are confirmed input formats. English is the selected list-content language. Handwritten lists, Arabic/other-language recognition, and mixed-format pages were not selected for v1; each page should use one format. A list can contain multiple books and fields such as number/quantity, title, author, ISBN, and other book details.
+- Input is an image of a list of books, not a photo of book covers. For v1, printed lists and typed/on-screen lists are confirmed input formats. English is the selected list-content language. Handwritten lists, Arabic/other-language recognition, and mixed-format pages were not selected for v1; each page should use one format. A list can contain multiple books and visible details such as title, author, ISBN, or edition. Whether to capture a copy quantity per title/edition remains open.
 - Users can search using ISBN, book name/title, or both.
 - The app shows how confident it is in book identification.
 - Different editions and versions are flagged for the user.
