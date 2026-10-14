@@ -24,13 +24,15 @@ This catalog deliberately distinguishes confirmed requirements from open decisio
 
 ## 2. Discovery questions
 
-Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be decided before the affected feature is built; **P2** can be deferred only if the approved scope excludes it. Status is **Open** unless explicitly marked otherwise.
+**Backlog control:** OPEN_QUESTIONS.md is the canonical ID-mapped status, priority, and handling index for Q-01–Q-87. This catalog keeps detailed question context and rationale; mirror its statuses and priorities from the canonical index. Do not maintain a second, differently filtered approval backlog.
+
+Priority guide: **P0** blocks approval of a complete plan; unresolved effective P0 items must be resolved before plan approval. **P1** must be decided before the affected feature is built; the project-wide gate in OPEN_QUESTIONS.md and CHANGE_CONTROL.md also requires unresolved P1 items to be resolved or explicitly deferred before plan approval. **P2** may be deferred only when the affected behavior is explicitly excluded from the approved v1 scope. A deferral removes that behavior from approved scope until a decision is recorded; an open item does not authorize implementation. Status is **Open** unless explicitly marked otherwise.
 
 ### Product purpose and users
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-01 | P0 / Open | What exact job should the app complete for the user, and what should a successful session end with: a corrected list, a set of likely matches, or purchase options? | Prevents scope from drifting into unrelated book-management features. |
+| Q-01 | Confirmed | Minimum useful v1 outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference. Exact-edition/default selection behavior remains open under Q-19. | Prevents scope from drifting into unrelated book-management features. |
 | Q-02 | P1 / Open | Who are the approximately five users, and do they need separate private data or one shared group list? | Determines identity, data separation, sharing, and access controls. |
 | Q-03 | P1 / Open | How often and in what situation will the app be used (one-off list, recurring shopping, library/school list)? | Affects list persistence, speed, offline expectations, and what must be saved. |
 | Q-04 | P1 / Open | Which languages should the app interface support? Is Arabic/RTL required, English, or both? | Affects layout, accessibility, OCR display, and testing. |
@@ -40,9 +42,9 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-06 | P0 / Open | Are source lists printed, handwritten, typed on a screen, photographed from a document, or mixed? | OCR performance varies substantially by input type. |
-| Q-07 | P0 / Open | Which languages/scripts appear in the lists, including mixed Arabic/English or transliterated names? | Determines OCR capability and false-match risks. |
-| Q-08 | P0 / Open | What does “number of books” mean: number of entries, a quantity for each title, or both? | Prevents quantity from being confused with book count or duplicate titles. |
+| Q-06 | Confirmed | Printed and typed/on-screen lists were selected for v1, one format per page; handwritten and mixed-format pages were not selected. | OCR performance varies substantially by input type. |
+| Q-07 | Confirmed | English was selected as the list-content language; Arabic, mixed Arabic/English, and other-language recognition were not selected. | Determines OCR capability and false-match risks. |
+| Q-08 | P0 / Open | The owner is unsure whether “number of books” means list entries, copies per title/edition, or both. How should a line such as “Dune, 2nd edition ×3” be represented? | Prevents quantity from being confused with book count or duplicate titles. |
 | Q-09 | P1 / Open | What layouts are common: one title per line, columns, tables, checklists, notes in margins? | Affects row/column segmentation and review UI. |
 | Q-10 | P1 / Open | Can one list span multiple pages or images? Should the user combine pages? | Defines batch handling and duplicate detection. |
 | Q-11 | P1 / Open | Which fields should be extracted, and which are optional (title, author, ISBN, edition, publisher, year, quantity, language, format, notes)? | Defines data model and review screen. |
@@ -55,10 +57,10 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-16 | P0 / Open | What should happen when ISBN is missing, invalid, or unreadable: title/author search, manual entry, or both? | Lists may lack ISBNs; ISBN validation alone cannot identify every book. |
-| Q-17 | P0 / Open | What counts as an acceptable book match, and should OCR confidence and catalog-match confidence be shown separately? | Reading text correctly is different from matching the intended book. |
+| Q-16 | Confirmed | For a scanned list entry with a missing, invalid, or unreadable ISBN, require the user to enter or correct a valid ISBN before that entry is searched. | Lists may lack ISBNs; ISBN validation alone cannot identify every book. |
+| Q-17 | P0 / Partial | The owner chose separate text-reading/OCR and book-match confidence. Define what counts as an acceptable book match. | Reading text correctly is different from matching the intended book. |
 | Q-18 | P1 / Open | Which edition differences must be called out: publisher, year, language, translation, format, revised edition, volume, or ISBN? | Defines meaningful edition warnings. |
-| Q-19 | P1 / Open | Should the app rank editions, or present alternatives without choosing? What should happen when the requested edition is unavailable? | Avoids substituting a different book without consent. |
+| Q-19 | P1 / Partial | The owner chose to preselect the closest edition and flag differences. Define what “closest” means and what to do when no candidate is suitable or the requested edition is unavailable. | Avoids substituting a different book without consent. |
 | Q-20 | P1 / Open | How should duplicates, series/volume numbers, pseudonyms, alternate titles, and transliterations be handled? | Reduces duplicate results and incorrect merges. |
 | Q-21 | P1 / Open | Which book metadata must be displayed, and what source should be considered authoritative when sources disagree? | Catalogs can disagree on title, author, ISBN, and edition. |
 | Q-22 | P1 / Open | What confidence explanation is useful: a label, detected fields, match evidence, or all of these? | Makes confidence understandable rather than a misleading score. |
@@ -71,7 +73,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 | Q-24 | P0 / Open | What exactly will be stored in the GitHub provider list: names/links, search templates, API configuration, or something else? | A list of URLs alone may not make a provider searchable or verifiable. |
 | Q-25 | P0 / Open | For each provider, is there an official API or other permitted search method? Are credentials required? | Avoids blocked, brittle, or disallowed scraping and exposes credential needs. |
 | Q-26 | P1 / Open | Who may add/edit providers, how are changes reviewed, and how does the app know a source is supported? | Prevents arbitrary or broken source entries from becoming active. |
-| Q-27 | P1 / Open | What should happen when a provider times out, rate-limits, changes its site, or returns incomplete data? | A failed search must not look like “no book exists.” |
+| Q-27 | P1 / Partial | The plan requires a provider failure to be shown as unchecked, not as no results. Which retry/backoff and partial-response behavior, if any, should be specified? | A failed search must not look like “no book exists.” |
 | Q-28 | P1 / Open | How should results be sorted or compared, and should the app show one result or results from every enabled provider? | Affects completeness, ranking, and user trust. |
 | Q-29 | P2 / Open | Are affiliate links or sponsored results allowed? If so, how are they disclosed? | Prevents hidden ranking conflicts. |
 | Q-30 | P1 / Open | How often may the app check for source/config changes, and what stale-cache behavior is acceptable? | Controls freshness, latency, and external request volume. |
@@ -82,7 +84,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 |---|---|---|---|
 | Q-31 | P0 / Open | Does “Saudi-only” mean the seller must be based in Saudi Arabia, or may any seller appear if it ships to Saudi Arabia? | Determines source eligibility. The confirmed minimum is that Saudi delivery must not be falsely asserted. |
 | Q-32 | P0 / Open | What evidence is sufficient for “confirmed shipping to Saudi Arabia”: provider shipping policy, product page, destination-specific quote, or checkout confirmation? | Without a standard, status labels will be inconsistent. |
-| Q-33 | P0 / Open | Should uncertain-shipping results be shown with a warning, or hidden until verified? | User requested explicit uncertainty, but the display/action policy is open. |
+| Q-33 | P0 / Partial | Unconfirmed shipping must be labeled uncertain. Should an uncertain result still be shown with a warning, or hidden until verified? | User requested explicit uncertainty, but the display/action policy is open. |
 | Q-34 | P1 / Open | Does shipping need to work to all Saudi addresses, or can it vary by city, postal code, or delivery method? | Some sellers restrict remote areas or require address details. |
 | Q-35 | P1 / Open | Should price include shipping, taxes, customs, and currency conversion, or show only the provider’s listed price? | Avoids misleading comparisons. |
 | Q-36 | P1 / Open | How fresh must price, stock, and shipping data be? Should the app display the time checked? | Availability and shipping terms can change. |
@@ -116,7 +118,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 | Q-54 | P1 / Open | How should the app handle a failed/corrupt update, a downgrade, or a release that must be revoked? | A safe recovery path is needed before distribution. |
 | Q-55 | P1 / Open | What Android versions/devices and installation permissions must be supported? | APK installation and installer behavior vary by Android version/device policy. |
 | Q-56 | P1 / Open | Is an in-app notice on next launch enough, or are push notifications required when users are not opening the app? | A launch check cannot alert a user who never launches the app. |
-| Q-57 | P1 / Open | What is the GitHub collaboration policy? The current personal-account repo is private, but GitHub would not let its private-fork setting be disabled. | Collaborators should be added only if needed; private forking is a known account-level limitation. |
+| Q-57 | P1 / Partial | The owner chose to leave the existing private-fork setting unchanged for now. This repo is private and owned by the personal GitHub account GoogleDevTeam, with allow_forking=true; the connected API rejected disabling it with HTTP 422, stating the setting can only be changed on organization-owned private repositories. A UI-only control was not verified. Whether to transfer the repository for stricter fork controls remains open. | Limit access to intended collaborators; private visibility does not prevent authorized users from cloning. Any organization transfer needs separate owner approval. |
 
 ### App behavior, accessibility, and operations
 
@@ -136,41 +138,45 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 | Q-64 | P0 / Open | Can representative real lists be supplied for evaluation, with sensitive information removed? | Accuracy targets require examples rather than assumptions. |
 | Q-65 | P0 / Open | What error rate is acceptable for OCR fields and final book matches? | “Confidence” needs a measurable meaning and safe threshold. |
 | Q-66 | P1 / Open | What test evidence is required for Saudi shipping, ebook-region claims, provider outages, and updates? | Defines proof before labels or releases are trusted. |
-| Q-67 | P0 / Open | Who gives final approval of the complete plan and later scope changes? | Keeps decisions with the owner and prevents assistant assumptions. |
-| Q-68 | P0 / Open | What exact phrase or action will mean “plan approved; begin implementation”? | Prevents an idea or discussion from being mistaken for build authorization. |
+| Q-67 | P0 / Confirmed | The project owner gives final approval of the complete plan and later scope changes. | Keeps decisions with the owner and prevents assistant assumptions. |
+| Q-68 | P0 / Confirmed | The implementation gate opens only when the owner explicitly approves the complete plan and says to begin; no exact phrase is required. | Prevents an idea or discussion from being mistaken for build authorization. |
 
-## 3. Foreseeable issue and prevention register
+## 3. Legacy risk ID crosswalk
 
-Likelihood and severity remain unscored until sample lists, selected providers, and the access architecture are known. Each item needs prevention, detection, a safe fallback, and documented residual risk before the implementation gate.
+RISK_REGISTER.md is the only maintained risk inventory. The R-01–R-26 identifiers below are preserved as legacy aliases so earlier references remain searchable; they are not separate assessments and must not be renumbered or assigned new meanings. Use the canonical R1–R37 entries for owner, impact, likelihood rationale, prevention, detection, fallback, and residual risk.
 
-| ID | Failure mode / impact | Prevention | Detection and safe fallback |
-|---|---|---|---|
-| R-01 | OCR reads a title, author, or ISBN incorrectly, producing a wrong search. | Evaluate on representative languages and list styles; validate ISBNs; show field confidence and allow correction. | Compare extracted text with user confirmation; if uncertain, pause search and offer manual entry. |
-| R-02 | Multiple rows/columns merge, split, or lose quantities. | Define supported layouts and data fields; keep quantity separate from entry count; show all rows for review. | Flag incomplete/low-confidence rows; preserve originals and allow row correction; never silently merge duplicates. |
-| R-03 | Handwriting or mixed Arabic/English is unsupported by the chosen OCR. | Decide languages/input types before selection; test on real examples. | If unsupported, disclose limitation and use manual entry rather than claiming a reliable scan. |
-| R-04 | Invalid ISBN or a one-digit error points to another book. | Check ISBN structure/check digit; cross-check title/author/edition metadata. | Flag mismatch and allow correction; fall back to title/author search. |
-| R-05 | Same title matches another translation, volume, or edition. | Define edition fields and matching rules; show ISBN, language, publisher, year, format. | Surface alternatives and ask user to choose; do not auto-substitute. |
-| R-06 | Confidence number looks precise but is not calibrated. | Decide how confidence is generated and what it means; separate OCR confidence from catalog-match confidence if approved. | Test against labeled examples; use plain uncertainty labels until a score is validated. |
-| R-07 | Provider name in GitHub is mistaken for a functional integration. | Require each provider to have an approved method, support status, owner, and tests. | Show “not configured/unsupported” distinctly from “searched with no result.” |
-| R-08 | A provider’s API/site changes, blocks access, or disallows the search method. | Verify terms and technical access before selecting provider; keep integrations isolated and maintainable. | Detect errors/rate limits; mark source unavailable; do not imply search completeness. |
-| R-09 | Search results omit books because only a subset of sources is supported. | Display supported sources and which ones were checked; avoid “searched everywhere” claims. | Report per-source failure/incompleteness; let user retry only if approved. |
-| R-10 | Saudi shipping is assumed from a general seller page but fails for the product/address. | Define evidence standards; test destination-specific status; label source and check time. | Use Confirmed / Unconfirmed / Does not ship states; never turn unknown into confirmed. |
-| R-11 | Delivery cost, customs, taxes, or remote-area restrictions make a result misleading. | Decide which landed-cost fields are in scope; distinguish seller-listed price from total cost. | State what is excluded and ask user to confirm checkout total. |
-| R-12 | Price or stock is stale when user opens the seller page. | Define freshness rules and cache duration; show last checked time if data is retrieved. | Recheck before presenting current availability when feasible; otherwise label as potentially changed. |
-| R-13 | Ebook is geo-blocked, subscription-only, incompatible, or no longer licensed. | Separate ebook status from print shipping; define whether purchase/subscription/library access count. | Flag unknown or restricted regional status; link to source; do not promise access. |
-| R-14 | Provider configuration is altered to call an untrusted endpoint or execute code. | Treat GitHub provider data as schema-validated data, never executable code; allowlist supported source types/domains. | Reject invalid or unexpected config; keep last known-good config and show config error. |
-| R-15 | GitHub token, provider key, or signing key is extracted from APK/source. | Never place secrets in client bundle or repository; keep server credentials in managed secrets; restrict scopes. | Scan releases/repo; revoke and rotate exposed credentials; stop affected service access. |
-| R-16 | One invited user sees another person’s list or search history. | Decide isolation model; enforce authorization server-side; minimize stored records. | Test cross-account access; fail closed; revoke access and investigate without retaining unnecessary content. |
-| R-17 | Photo, book title, or ISBN is retained or sent externally unexpectedly. | Define data flow and retention; process locally where approved; disclose provider query sharing. | Audit network/log paths; provide delete/clear controls if storage is approved; avoid sensitive logs. |
-| R-18 | Phone is lost, invite is shared, or a user should be removed. | Select authentication/device enrollment and revocation rules before build. | Revoke user/device access and sessions; stop access to private updates/config. |
-| R-19 | APK is corrupted, substituted, downgraded, or signed with a different key. | Protect signing identity, verify provenance/integrity, use a secure release process, document recovery. | Refuse the package and keep installed app; provide a planned recovery/rollback procedure. |
-| R-20 | Android installer requires user action or blocks the update. | Test actual sideload flow on target devices; explain permission and approval steps. | Keep old version usable; show status and a retry path; never claim a silent update. |
-| R-21 | Update service is unavailable or users do not open the app. | Define launch-check cadence, cache policy, and whether push is needed. | Show last check; retry with backoff; accept that launch-only checks cannot notify inactive users. |
-| R-22 | GitHub rate limits, network loss, or backend outage disrupts search/update. | Use bounded requests, timeouts, caching, and retries where approved. | Show source/service unavailable; do not misreport it as no match or current release. |
-| R-23 | Personal private repo allows collaborators to fork privately. | Limit collaborator access; do not add people without need. | Review access periodically; move to an organization only if stronger fork controls become necessary. |
-| R-24 | Scope drifts through “small improvements” or assumptions during implementation. | Require every change to reference an approved requirement ID before work; update plan first. | Stop unplanned work, propose change, and await explicit owner approval. |
-| R-25 | External service terms, API pricing, catalog rights, or availability change. | Verify permitted use, costs, and data rights for every selected source before approving the plan. | Reassess source and update plan before replacing it; do not silently switch providers. |
-| R-26 | Costs/maintenance exceed expectations for a five-person app. | Identify service owners, recurring costs, secrets rotation, and maintenance burden in design. | Set budget/operational limits before choosing paid dependencies; define graceful degradation. |
+| Legacy ID | Original concern | Canonical risk ID(s) |
+|---|---|---|
+| R-01 | OCR reads a title, author, or ISBN incorrectly. | R1, R3, R4 |
+| R-02 | Rows/columns merge, split, or lose quantities. | R2 |
+| R-03 | Unsupported handwriting, mixed formats, or language is treated as supported. | R1, R2, R36 |
+| R-04 | Invalid or mistyped ISBN identifies another book. | R3 |
+| R-05 | Different translation, volume, edition, or format is matched. | R4, R22 |
+| R-06 | Confidence appears more precise than the evidence supports. | R1, R4 |
+| R-07 | A provider listed in GitHub is mistaken for an active integration. | R5 |
+| R-08 | Provider access changes, is blocked, or is not permitted. | R5, R6, R30, R34 |
+| R-09 | A partial source set omits books while search appears comprehensive. | R5, R6, R30 |
+| R-10 | Saudi shipping is inferred incorrectly from general seller information. | R7, R22, R27 |
+| R-11 | Price, customs, tax, or delivery limits make an offer misleading. | R7, R22 |
+| R-12 | Price or stock is stale when the seller is opened. | R27 |
+| R-13 | Ebook is region-restricted, incompatible, or unavailable. | R8 |
+| R-14 | Provider configuration points at untrusted endpoints or code. | R5 |
+| R-15 | GitHub/provider/signing secret is extracted from source or APK. | R9, R18, R23, R24 |
+| R-16 | One invited user sees another person’s data or access fails open. | R13, R19, R20, R25 |
+| R-17 | Photo, title, or ISBN is retained or sent externally unexpectedly. | R12, R13 |
+| R-18 | Phone is lost, an invite is shared, or a user is not revoked. | R13, R17, R19, R25, R26 |
+| R-19 | APK is corrupted, substituted, downgraded, or signed with another key. | R10, R23 |
+| R-20 | Android installer requires approval or blocks installation. | R11 |
+| R-21 | Launch-only update checks miss inactive users or unavailable metadata. | R16, R37 |
+| R-22 | GitHub, network, or backend outage disrupts search or updates. | R6, R16, R27, R29 |
+| R-23 | Authorized collaborators create private forks or local copies. | R14 |
+| R-24 | Scope drifts through unapproved small changes. | R15 |
+| R-25 | Provider/service terms, prices, rights, or availability change. | R30, R32, R34 |
+| R-26 | Five-person app costs or maintenance exceed expectations. | R29, R31, R32, R33, R35 |
+
+Two uncovered concerns discovered during reconciliation now have distinct canonical IDs: R36 covers unsupported input being treated as reliable, and R37 covers launch-only update checks missing inactive users. R21 and R28 in the canonical register additionally cover performance/resource constraints without a direct legacy alias.
+
+Likelihood is not numerically scored: there is no app runtime, representative sample set, selected provider set, or target-device evidence. See RISK_REGISTER.md and TEST_MATRIX.md; all referenced test cases remain planned, not run.
 
 ## 4. Dependencies and evidence to gather
 
@@ -216,11 +222,11 @@ The owner wants everything to be free. Safe default: target $0 ongoing cost for 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
 | Q-79 | Confirmed | Can any app service require a payment card for its free tier? No. | The owner confirmed that a payment card must not be required; exclude any card-gated service even if it claims $0 usage. |
-| Q-80 | P0 / Open | If a free quota is exhausted, should the app stop/degrade with no charge? | Prevents accidental spend; current safe default is no paid overage. |
+| Q-80 | P0 / Confirmed | At a free quota limit, stop or degrade the affected service without charging; any paid change needs explicit owner approval. | Prevents accidental spend; current safe default is no paid overage. |
 | Q-81 | P0 / Open | Are sleep/idle pauses, cold starts, or manual republishing acceptable? | Free tiers can conflict with security/performance availability goals. |
 | Q-82 | P0 / Open | Which candidate backend can securely support invite-only auth, private GitHub release access, and revocation at $0? | A free hosting quota alone does not provide a secure end-to-end design. |
 | Q-83 | P0 / Open | Do Amazon.sa, Noon, and later providers offer a permitted no-cost search/data method? | Do not assume a free API exists or use prohibited scraping. |
 | Q-84 | P1 / Open | If no free permitted method exists for a source, should that source be omitted? | Safe default: omit it rather than create a paid or noncompliant dependency. |
 | Q-85 | P1 / Open | Are email/invitation delivery, storage, monitoring, and build minutes required, and can each stay within free quotas? | These indirect services can create costs even when the API host is free. |
 | Q-86 | P1 / Open | How often will users use the app, and is a service that pauses after inactivity acceptable? | Usage frequency changes whether a free tier is reliable enough. |
-| Q-87 | P1 / Open | How should the app behave when any free service reaches its quota or changes its plan? | Defines safe failure and prevents automatic charges. |
+| Q-87 | P1 / Confirmed | At a quota limit or plan change, stop or degrade safely; no automatic paid upgrade or overage. A different policy needs explicit owner approval. | Defines safe failure and prevents automatic charges. |
