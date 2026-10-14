@@ -2,7 +2,7 @@
 
 **Snapshot date:** 2026-10-14  
 **Status:** Historical audit plus remediation status; planning documentation only. Not approval to build.  
-**Status refresh (2026-10-15):** F-01–F-05 planning-document repairs and the issue #7 status correction are now recorded on main. Draft PR #8 is superseded by the direct main-branch commits. F-06 provider research and F-07 owner/security decisions remain open. No application code exists, and no app tests have run.  
+**Status refresh (2026-10-15):** The documentation repairs for issues #1–#7 are on main, and those issues are closed as completed. Draft PR #8 was closed without merge after confirming that its substantive repair documents were already on main and GitHub marked it unmergeable due to conflicts. The project-log history/status was reconciled in commit f2402507455046d34486c28b578f0a81400e6a72; issue #9 tracks that documentation discrepancy. F-06 provider feasibility and F-07 owner/security decisions remain open. No application code exists, no app build or tests have run, and the implementation gate remains closed.  
 **Repository:** GoogleDevTeam/Book-Finder  
 **Basis:** Main-branch documents and GitHub state read for this review.
 
@@ -36,6 +36,7 @@ Open details include the criteria for a “closest” edition and fallback if no
 - At the original 2026-10-14 review, no open or closed issues were returned by the repository issue listing and no pull requests were returned. Later planning issues and branch status are recorded in the project log.
 - Main had one branch at the time of review. The latest commit recorded the planning audit; no application implementation was present.
 - The repo's own rules require all app-related discussion outcomes to be logged, every change to map to an approved requirement, and explicit approval of the complete plan before implementation.
+- Reconciliation as of 2026-10-15: issues #1–#7 were closed after their planning-document acceptance evidence was checked; draft PR #8 was closed without merge because its branch was conflicted and substantive plan repairs were already present on main. Issue #9 records the project-log/status discrepancy corrected during this pass. Main still has no application source; no app build or runtime test has been run.
 
 ## Findings and the safe repair for each
 
