@@ -10,7 +10,7 @@ These are discovery questions, not permission to implement a guessed answer.
 3. Does Saudi-only allow a non-Saudi seller if Saudi delivery is explicitly confirmed, or must the seller itself be based in Saudi Arabia?
 4. What evidence is enough for “confirmed” Saudi delivery and confirmed ebook-region access?
 5. Should results with unconfirmed shipping be displayed as candidates with a warning, or hidden until delivery is verified?
-6. Should the app require an exact edition/translation, or let the user choose among flagged alternatives?
+6. What should count as the “closest” edition, and what should happen if no candidate is suitable? The owner chose to preselect the closest and flag differences; criteria and fallback remain open.
 
 ## Priority 1 — privacy, access, and operations
 
