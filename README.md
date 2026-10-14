@@ -17,7 +17,7 @@ Only requirements marked **Confirmed** in the plan may be treated as agreed. Ope
 - [Decision log](docs/DECISIONS.md) — confirmed decisions, proposed choices, and unresolved decisions.
 - [Risk register](docs/RISK_REGISTER.md) — foreseeable issues, prevention, and fallbacks.
 - [Open questions](docs/OPEN_QUESTIONS.md) — discovery items that must be settled before implementation.
-- [Scope change control](docs/CHANGE_CONTROL.md) — how a proposed addition is reviewed and approved.
+- [Scope change control](docs/CHANGE_CONTROL.md) — how a proposed addition is reviewed and approved, and the implementation gate.
 
 ## Working rules
 

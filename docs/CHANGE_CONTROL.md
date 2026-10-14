@@ -32,6 +32,20 @@ Before changing scope or implementing anything absent from the approved plan:
 - Status: Proposed / Approved / Rejected:
 - Owner approval and date:
 
+## Planning completion gate
+
+No implementation begins until the owner has reviewed and explicitly approved the plan and says to begin. Before that approval, the planning documents must:
+
+- Resolve every Priority 0 question in OPEN_QUESTIONS.md and record the answers in DECISIONS.md.
+- Define the end-to-end user flows, supported inputs, outputs, access model, data flow, retention, provider boundaries, and update/distribution approach.
+- Give every in-scope requirement an observable acceptance criterion.
+- For each material risk, record prevention, how it will be detected, a safe fallback, and any residual risk. No known high-impact risk may be silently treated as solved; it must be mitigated or explicitly accepted by the owner.
+- Validate the feasibility and permitted access method of every selected provider. Examples are not integrations.
+- Include a test plan for OCR and corrections, book/edition matching, Saudi shipping and ebook uncertainty, privacy/access, outages, and signed APK updates with user approval.
+- List non-goals and keep any unapproved ideas out of implementation scope.
+
+Planning cannot guarantee that no future defect will occur. The goal is to prevent foreseeable failures, detect others early, define safe failure behavior, and make remaining uncertainty visible before implementation.
+
 ## Implementation gate
 
-No implementation starts until the owner explicitly approves the plan and says to begin. Brainstorming, recommendations, or technical suggestions do not count as approval. If a request conflicts with the plan, stop and ask whether the plan should change.
+No implementation starts until the owner explicitly approves the complete plan and says to begin. Brainstorming, recommendations, or technical suggestions do not count as approval. If a request conflicts with the plan, stop and ask whether the plan should change.
