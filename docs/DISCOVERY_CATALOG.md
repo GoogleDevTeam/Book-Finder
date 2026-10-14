@@ -58,7 +58,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 | Q-16 | P0 / Open | What should happen when ISBN is missing, invalid, or unreadable: title/author search, manual entry, or both? | Lists may lack ISBNs; ISBN validation alone cannot identify every book. |
 | Q-17 | P0 / Open | What counts as an acceptable book match, and should OCR confidence and catalog-match confidence be shown separately? | Reading text correctly is different from matching the intended book. |
 | Q-18 | P1 / Open | Which edition differences must be called out: publisher, year, language, translation, format, revised edition, volume, or ISBN? | Defines meaningful edition warnings. |
-| Q-19 | P1 / Open | Should the app rank editions, or present alternatives without choosing? What should happen when the requested edition is unavailable? | Avoids substituting a different book without consent. |
+| Q-19 | P1 / Partial | The owner chose to preselect the closest edition and flag differences. Define what “closest” means and what to do when no candidate is suitable or the requested edition is unavailable. | Avoids substituting a different book without consent. |
 | Q-20 | P1 / Open | How should duplicates, series/volume numbers, pseudonyms, alternate titles, and transliterations be handled? | Reduces duplicate results and incorrect merges. |
 | Q-21 | P1 / Open | Which book metadata must be displayed, and what source should be considered authoritative when sources disagree? | Catalogs can disagree on title, author, ISBN, and edition. |
 | Q-22 | P1 / Open | What confidence explanation is useful: a label, detected fields, match evidence, or all of these? | Makes confidence understandable rather than a misleading score. |
