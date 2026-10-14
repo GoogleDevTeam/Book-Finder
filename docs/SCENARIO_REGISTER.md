@@ -53,7 +53,7 @@ The safe outcomes below are planning recommendations, not all confirmed behavior
 - **SC-029** The page has columns, a table, checkboxes, handwritten annotations, or marginal notes. Decide which layouts are supported; do not merge adjacent rows. (Q-09)
 - **SC-030** A row is split into two, two rows are merged, or reading order changes. Present individual reviewable entries and preserve the visible source association where approved. (Q-08, Q-09)
 - **SC-031** Quantity is interpreted as row count, or duplicate titles are collapsed. Keep quantity separate from entry count; exact meaning is still an owner decision. (Q-08)
-- **SC-032** An ISBN is partially read, has a wrong digit, or fails its check digit. Mark invalid/uncertain, allow correction, and never treat a guessed number as confirmed. (Q-16)
+- **SC-032** A scanned entry has a missing, partly read, wrong, or check-digit-invalid ISBN. Mark it uncertain and require a user-entered/corrected valid ISBN before searching that entry; if none is supplied, leave that entry unsearched. Whether to let other entries proceed while this one is blocked remains open. (Q-16)
 - **SC-033** OCR returns a plausible but wrong title/author. Separate text-reading confidence from book-match confidence if approved; require correction when uncertainty is material. (Q-12, Q-17, Q-22)
 - **SC-034** No text is extracted or extraction returns duplicate/empty rows. Explain extraction failure distinctly from a successful search with no match; permit only approved manual entry/correction. (Q-12, Q-13)
 - **SC-035** The app is interrupted, backgrounded, killed, or the device runs low on memory during extraction. Define safe recovery, temporary-data cleanup, and whether the work can resume. (Q-15, Q-59)
