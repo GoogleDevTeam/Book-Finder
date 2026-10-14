@@ -2,6 +2,7 @@
 
 **Snapshot date:** 2026-10-14  
 **Status:** Planning note and proposed documentation work only. Not approval to build.  
+**Status refresh (2026-10-15):** F-01–F-05 planning-document repairs are recorded on the existing branch, not yet integrated into main; this rundown's statuses are corrected under issue #7. F-06 provider research and F-07 owner/security decisions remain open. No application code exists, and no app tests have run.  
 **Repository:** GoogleDevTeam/Book-Finder  
 **Basis:** Main-branch documents and GitHub state read for this review.
 
@@ -32,7 +33,7 @@ Open details include the criteria for a “closest” edition and fallback if no
 ## GitHub state checked
 
 - Repository: private, main branch, planning documents only.
-- No open or closed issues were returned by the repository issue listing; no pull requests were returned by the pull-request listing.
+- At the original 2026-10-14 review, no open or closed issues were returned by the repository issue listing and no pull requests were returned. Later planning issues and branch status are recorded in the project log.
 - Main had one branch at the time of review. The latest commit recorded the planning audit; no application implementation was present.
 - The repo's own rules require all app-related discussion outcomes to be logged, every change to map to an approved requirement, and explicit approval of the complete plan before implementation.
 
@@ -46,27 +47,27 @@ At the original 2026-10-14 audit, the catalog had 86 open items and Q-79 confirm
 
 ### F-02 — Requirement traceability is not executable yet
 
-CHANGE_CONTROL.md requires a plan requirement ID before every app change. APP_PLAN.md has scope bullets and acceptance criteria but no stable IDs or requirement-to-test mapping.
+At the 2026-10-14 audit, CHANGE_CONTROL.md required a plan requirement ID before every app change, but APP_PLAN.md did not yet provide stable IDs or requirement-to-test mapping.
 
-**Proposed repair:** Assign stable IDs only to requirements already marked confirmed. Add a traceability table: requirement ID → confirmed scope statement → observable acceptance criterion → planned test/evidence. Keep proposed and open items out of the confirmed requirement set. This is organization of approved scope, not scope expansion.
+**Completed repair (2026-10-15; working branch, not yet integrated into main):** APP_PLAN.md now assigns BF-REQ-001–BF-REQ-016 to confirmed scope, with observable acceptance criteria and mapped planned cases in TEST_MATRIX.md. Proposed and open decisions remain outside the confirmed requirement set.
 
 ### F-03 — The risk inventory is duplicated
 
-DISCOVERY_CATALOG.md has R-01 through R-26; RISK_REGISTER.md has R1 through R35. Their topics overlap, but there is no canonical register or crosswalk. Some risks lack a detection method, test evidence, owner, rationale for likelihood/severity, or explicit residual-risk disposition.
+At the 2026-10-14 audit, DISCOVERY_CATALOG.md and RISK_REGISTER.md had overlapping risk lists with no canonical register or crosswalk, and some entries lacked consistent treatment fields.
 
-**Proposed repair:** Choose one canonical risk register, preserve old identifiers as aliases during migration, and create a crosswalk before retiring or renumbering anything. For each material risk, record prevention, detection/test, fallback, residual risk, and evidence. Do not invent severity/likelihood scores before the threat model and test evidence exist; retain an explicit TBD with the reason.
+**Completed repair (2026-10-15; working branch, not yet integrated into main):** RISK_REGISTER.md is canonical for R1–R37; DISCOVERY_CATALOG.md preserves R-01–R-26 as legacy aliases in a complete crosswalk. Each canonical entry records an accountable owner, impact rationale, unrated likelihood with the evidence gap, prevention, planned detection/test, safe fallback, and residual risk. Planned tests have not run; high-impact residual risks remain open for review/acceptance.
 
 ### F-04 — The no-card decision is contradicted by older wording
 
-DECISIONS.md confirms the no-payment-card rule, but an earlier paragraph still says whether card-gated free tiers are acceptable is open.
+At the 2026-10-14 audit, an earlier cost paragraph appeared to conflict with the later owner-confirmed no-payment-card rule.
 
-**Proposed repair:** Mark the earlier sentence superseded or remove it; retain the later confirmed rule as the single active decision. The rule applies to hosting, auth/database, OCR, provider data/search, storage, email/invitations, builds, updates, and other app services.
+**Completed repair (2026-10-15; working branch, not yet integrated into main):** DECISIONS.md explicitly marks the older wording as superseded for card eligibility, while preserving the separate open question about pauses/cold starts. APP_PLAN.md and COST_AND_HOSTING.md consistently retain the $0/no-card constraint; no host or billing setting has been selected.
 
 ### F-05 — The test plan is a checklist, not yet a test matrix
 
-The change-control policy requires tests for OCR/correction, matching, Saudi delivery and ebook uncertainty, privacy/access, outages, and signed APK updates. Existing documents name failure modes, but do not yet define case inputs, expected outcomes, thresholds, target devices, test owner, or evidence capture. No app tests can run because there is no code.
+At the 2026-10-14 audit, the change-control policy required tests for OCR/correction, matching, Saudi delivery and ebook uncertainty, privacy/access, outages, and signed APK updates, but no case-by-case matrix existed. No app tests could run because there was no code.
 
-**Proposed repair:** Add a test matrix with explicit TBD fields where a user sample or decision is needed. Do not invent OCR accuracy, latency, or availability targets. Define observable safety outcomes now; set numeric thresholds only after representative lists, Android devices, and provider behavior are agreed.
+**Completed planning repair (2026-10-15; working branch, not yet integrated into main):** TEST_MATRIX.md now contains 38 planned cases covering those required flows and additional failure states. Each case records input, expected result, pass criterion, owner/environment, evidence, and unresolved prerequisites; unavailable thresholds/devices/owners remain explicitly TBD. The matrix is a plan only: it has not been executed, and the repository still has no app code.
 
 ### F-06 — Provider feasibility is not established
 
