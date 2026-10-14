@@ -15,7 +15,7 @@ Help a small, private group turn a photographed list of multiple books into revi
 - Input is an image of a list of books, not a photo of book covers. For v1, printed lists and typed/on-screen lists are confirmed input formats. English is the selected list-content language. Handwritten lists, Arabic/other-language recognition, and mixed-format pages were not selected for v1; each page should use one format. A list can contain multiple books and visible details such as title, author, ISBN, or edition. Whether to capture a copy quantity per title/edition remains open.
 - Users can search using ISBN, book name/title, or both.
 - The app shows how confident it is in book identification.
-- Different editions and versions are flagged for the user.
+- Different editions and versions are flagged for the user. When several likely editions match, preselect the closest and flag its differences; the criteria for “closest” remain open.
 - The minimum useful outcome is a likely book match with edition differences; the user can choose a physical-book or ebook preference.
 - Search for physical books and ebooks online.
 - Saudi Arabia is the required delivery/access market. If shipping is uncertain, label it as uncertain rather than confirmed.
@@ -31,7 +31,7 @@ Help a small, private group turn a photographed list of multiple books into revi
 2. App extracts separate book entries and their visible fields.
 3. User reviews and corrects uncertain entries before searching.
 4. App searches by available ISBN/title/author details and displays likely matches with confidence.
-5. App flags distinct editions/versions instead of treating them as identical.
+5. App preselects the closest likely edition and flags differences rather than treating distinct versions as identical; the criteria for “closest” remain open.
 6. App displays supported physical and ebook sources with explicit Saudi delivery or region status, source, and checked time where available; the user can choose a physical-book or ebook preference.
 7. If a newer signed app release is available, the app notifies the user and offers the Android installer; installation requires user approval.
 
@@ -71,7 +71,7 @@ The exact evidence required for a “confirmed” shipping or region label is an
 
 - Given a legible printed or typed/on-screen English list with one format per page and multiple book entries, the app presents separate entries for user review rather than one combined title.
 - Given an uncertain extracted field or match, the app marks uncertainty and allows correction before searching.
-- Given multiple editions or versions, the app visibly flags the differences.
+- Given multiple editions or versions, the app preselects the closest likely match and visibly flags differences; the rule for “closest” remains to be defined.
 - Given physical-book and ebook options for a likely match, the user can choose a physical-book or ebook preference.
 - Given uncertain Saudi shipping, the result says shipping is unconfirmed and does not imply that delivery is guaranteed.
 - Given uncertain ebook-region access, the result flags the uncertainty.
