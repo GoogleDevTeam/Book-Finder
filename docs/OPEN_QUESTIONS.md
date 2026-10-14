@@ -16,6 +16,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 - Research—can proceed without owner input: gather public or technical evidence; a recommendation is not a decision.
 - Research first, then owner decision: research options first, then return only the actual choice to the owner.
 - Recorded decision: the answer is already documented; do not ask it again.
+- Deferral: explicitly exclude the affected behavior from approved v1 scope; an open item is not an approved requirement.
 
 ## ID-mapped backlog
 
