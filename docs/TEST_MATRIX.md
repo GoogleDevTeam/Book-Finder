@@ -53,6 +53,8 @@
 | TC-036 | BF-REQ-001, BF-REQ-012, BF-REQ-014 | Run install, camera/photo permission, text scaling, screen reader, and layout checks on selected devices. | Only approved permissions are requested and critical supported flows remain usable on the agreed device/accessibility matrix. | Test owner TBD; owner selects devices/accessibility needs; Q-55/Q-58. | Device/OS matrix, permission prompts, screenshots, accessibility check results. |
 | TC-037 | BF-REQ-011, BF-REQ-014 | Repeat launch/update checks before and after the owner-approved check interval; simulate unavailable metadata. | Check behavior follows the selected cadence, stays non-blocking, and distinguishes unavailable from no update; cadence remains open. | Runner TBD; owner chooses cadence; device/network TBD. | Timestamped request trace and status capture; Q-53. |
 
+| TC-038 | BF-REQ-012 | Audit the current private personal-repository setting: allow_forking=true; the earlier API request to disable it returned HTTP 422, and the owner chose to leave it unchanged. | Confirm and report the current setting; do not change visibility, ownership, collaborators, or transfer the repository without a separate explicit approval. | Project owner/admin; GitHub repository metadata. | Redacted repository setting response and issue #6 decision; UI-only control remains unverified. |
+
 ## Release gate
 
 This matrix does not authorize implementation. Before approval, settle the required P0 questions in OPEN_QUESTIONS.md, select/explicitly defer remaining scope, assign test ownership/devices, and resolve the blocked criteria. After implementation is separately approved, execute applicable cases and retain evidence. No tests are currently run.
