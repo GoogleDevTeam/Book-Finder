@@ -53,7 +53,7 @@ Before changing scope or implementing anything absent from the approved plan:
 No implementation begins until the owner has reviewed and explicitly approved the complete plan and says to begin. Before that approval, the planning documents must:
 
 - Resolve every unresolved item marked effective P0 in OPEN_QUESTIONS.md and record owner decisions in DECISIONS.md. The live ID list there includes all catalog P0 items plus Q-45, Q-47, Q-54, Q-55, and Q-58; use that list rather than a stale count.
-- Resolve or explicitly defer remaining P1/P2 items before plan approval; do not silently treat an open item as a requirement.
+- Resolve or explicitly defer remaining P1/P2 items before plan approval. A deferral must identify the affected behavior as outside approved v1 scope; an open item is not an approved requirement.
 - Define end-to-end user flows, supported inputs/outputs, access model, data flow/retention, provider boundaries, and update/distribution approach.
 - Give every in-scope requirement a stable BF-REQ-NNN ID, an observable acceptance criterion, and at least one mapped case in TEST_MATRIX.md. For each case, specify input, expected result, pass criterion, test owner/device, and retained evidence; mark prerequisites TBD where the owner has not decided.
 - Keep the test matrix marked Not run until actual app tests execute; a planned case is not a pass result.
