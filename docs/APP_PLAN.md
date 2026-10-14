@@ -1,7 +1,7 @@
 # Book-Finder product plan
 
 **Version:** 0.1  
-**Last updated:** 2026-10-14  
+**Last updated:** 2026-10-15  
 **Status:** Draft — discovery; not approved for implementation  
 **Audience:** Product owner and the small invited user group
 
@@ -80,6 +80,31 @@ The exact evidence required for a “confirmed” shipping or region label is an
 - No feature outside the approved plan is implemented.
 
 Quantitative OCR accuracy and response-time targets are intentionally unset until representative list samples and provider behavior are understood.
+
+### Stable requirement IDs and traceability
+
+IDs below identify confirmed scope only. An ID does not resolve its linked open questions or authorize implementation. Keep an ID stable once assigned; do not reuse retired IDs. Observable checks that depend on unresolved owner choices remain blocked until those choices are recorded.
+
+| Requirement ID | Confirmed scope | Observable acceptance criterion | Planned verification |
+|---|---|---|---|
+| BF-REQ-001 | Android app distributed as an APK. | A release candidate is an Android-installable APK signed with the approved release identity; supported Android versions/devices must be selected before the compatibility result can pass. | TC-032, TC-033, TC-036; Q-52, Q-55, Q-58 |
+| BF-REQ-002 | V1 accepts printed or typed/on-screen English book lists, one format per page; handwriting and mixed-format pages are not selected. | For a supported page containing multiple entries, each book is presented as a separate reviewable entry; unsupported input is not represented as reliably processed. | TC-001–TC-003; Q-04, Q-06, Q-07 |
+| BF-REQ-003 | Users review/correct uncertain scanned fields; a scanned entry with missing, invalid, or unreadable ISBN is not searched until the user supplies/corrects a valid ISBN. | Search is blocked for that entry until a valid user-confirmed ISBN is present; corrected fields are visible before search. | TC-004–TC-007; Q-12, Q-16 |
+| BF-REQ-004 | Text-reading/OCR confidence is shown separately from book-match confidence. | The result view presents two distinct confidence indicators; no unvalidated numeric threshold is implied. | TC-008, TC-009; acceptable-match rule remains open at Q-17 |
+| BF-REQ-005 | Edition/version differences are flagged; when several likely editions match, the closest is preselected. | Edition differences are visible before the user treats a result as exact; the chosen candidate follows an owner-approved closeness rule. | TC-010, TC-011; Q-18, Q-19 |
+| BF-REQ-006 | Minimum useful outcome is a likely book match with edition differences; user can choose physical-book or ebook preference. | The user can express the selected format preference on a likely match; exact ranking/filtering effects remain open. | TC-012; Q-01, Q-19 |
+| BF-REQ-007 | Search physical books and ebooks online using only supported, permitted providers. | Each result identifies the source checked; unconfigured or unsupported sources are not reported as searched. | TC-013–TC-016, TC-021; Q-23–Q-27, Q-37 |
+| BF-REQ-008 | Saudi Arabia is the required physical-delivery market; uncertain shipping must be labeled uncertain. | Confirmed, uncertain, unavailable, and unchecked delivery states are not conflated; unknown is never described as confirmed. | TC-017–TC-019; evidence and seller rules remain open at Q-31–Q-34 |
+| BF-REQ-009 | Ebook Saudi-region availability or restrictions are flagged separately from physical shipping. | Ebook region status is separately identified and unknown access is not presented as confirmed. | TC-020; Q-37–Q-39 |
+| BF-REQ-010 | The provider list is maintained through GitHub; Amazon.sa and Noon are examples only, not approved integrations. | A listed provider is treated as searchable only after its permitted method and support status are verified; an example alone never activates a source. | TC-021; Q-23–Q-26 |
+| BF-REQ-011 | Users receive an in-app update notice for GitHub-based releases; Android installation requires user approval. | A verified signed update may be offered, but installation is not triggered without the user’s explicit Android approval. | TC-032–TC-034; private delivery, signer custody, and supported devices remain open |
+| BF-REQ-012 | Intended access is a small invited group (about five people); privacy and security are top priorities. | Protected app functions/data are not available to an unauthorized user; the exact invitation, identity, and data-separation design must be approved before testing can pass. | TC-023–TC-025; Q-02, Q-40–Q-47, Q-69–Q-78 |
+| BF-REQ-013 | Protect images, extracted lists, search history, provider/GitHub credentials, and signing material; no tokens, provider secrets, or signing keys in the APK or repository. | Release/repository inspection finds no embedded secrets; data is not retained or transmitted outside the owner-approved data flow. | TC-026–TC-028; retention and data flow remain open at Q-14, Q-15, Q-42, Q-43, Q-46 |
+| BF-REQ-014 | Security, safety, and performance outrank convenience; uncertain states and provider failures are explicit. | Uncertain results remain uncertain, provider failure is distinct from a successful empty search, and bounded work does not leave routine startup hanging indefinitely. | TC-015–TC-020, TC-029, TC-031; Q-27, Q-32, Q-33, Q-75, Q-76 |
+| BF-REQ-015 | Owner-confirmed $0 target and no-payment-card rule; no paid overage or automatic tier upgrade without explicit approval. | No card is requested and no unapproved charge/upgrade occurs; reaching a free limit stops or degrades the affected service. | TC-030; Q-79, Q-80, Q-81–Q-87 |
+| BF-REQ-016 | Work follows the plan; new scope requires explicit approval and a plan update first. No automatic purchases or silent APK installation. | Every implemented behavior maps to an approved requirement ID; an unapproved feature, purchase, or silent install is absent. | TC-034, TC-035; plan approval gate remains closed |
+
+The requirements above organize the existing plan; they do not select providers, architecture, storage, authentication, Android support, or accuracy targets. Those remain open in OPEN_QUESTIONS.md.
 
 ## 8. Success measures to define
 
