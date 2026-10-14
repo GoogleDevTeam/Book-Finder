@@ -5,7 +5,7 @@ These are discovery questions, not permission to implement a guessed answer.
 
 ## Priority 0 — needed to define core behavior
 
-1. Does “number of books” mean the number of list entries, a quantity for each title, or both?
+1. For a line such as “Dune, 2nd edition ×3,” should the app track only the title/edition entry, quantity 3, or both? The owner is unsure; edition and copy count are separate.
 2. Which provider(s) should be tested first? Amazon.sa and Noon are examples only. What provider access methods are acceptable?
 3. Does Saudi-only allow a non-Saudi seller if Saudi delivery is explicitly confirmed, or must the seller itself be based in Saudi Arabia?
 4. What evidence is enough for “confirmed” Saudi delivery and confirmed ebook-region access?
