@@ -6,7 +6,8 @@ The owner requested that all work follow the plan and nothing else be added. Thi
 
 - The explicitly approved version of docs/APP_PLAN.md defines what may be built.
 - Confirmed decisions in docs/DECISIONS.md refine that plan.
-- docs/DISCOVERY_CATALOG.md tracks the complete discovery inventory, assumptions, dependencies, and risks.
+- docs/OPEN_QUESTIONS.md is the canonical ID-mapped backlog and status/priority register for Q-01–Q-87. It distinguishes owner decisions, owner-supplied evidence, research tasks, and research that must precede an owner choice.
+- docs/DISCOVERY_CATALOG.md holds detailed question context, dependencies, and risks. Its question IDs, statuses, and priorities must mirror OPEN_QUESTIONS.md; it is not a second approval gate.
 - Open questions and proposed ideas are not requirements.
 - A feature or provider mentioned as an example is not an approved integration or feature.
 
@@ -50,7 +51,8 @@ Before changing scope or implementing anything absent from the approved plan:
 
 No implementation begins until the owner has reviewed and explicitly approved the complete plan and says to begin. Before that approval, the planning documents must:
 
-- Resolve every Priority 0 question in OPEN_QUESTIONS.md and record the answers in DECISIONS.md.
+- Resolve every unresolved item marked effective P0 in OPEN_QUESTIONS.md and record owner decisions in DECISIONS.md. The live ID list there includes all catalog P0 items plus Q-45, Q-47, Q-54, Q-55, and Q-58; use that list rather than a stale count.
+- Resolve or explicitly defer remaining P1/P2 items before plan approval; do not silently treat an open item as a requirement.
 - Define end-to-end user flows, supported inputs/outputs, access model, data flow/retention, provider boundaries, and update/distribution approach.
 - Give every in-scope requirement an observable acceptance criterion.
 - For each material risk, record prevention, detection, safe fallback, and residual risk. No known high-impact risk may be silently treated as solved; it must be mitigated or explicitly accepted by the owner.
