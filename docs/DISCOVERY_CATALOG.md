@@ -215,7 +215,7 @@ The owner wants everything to be free. Safe default: target $0 ongoing cost for 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-79 | P0 / Open | Does “everything free” mean $0 to both owner and users, with no payment card on file? | Some free tiers require billing details even when usage is below quota. |
+| Q-79 | Confirmed | Can any app service require a payment card for its free tier? No. | The owner confirmed that a payment card must not be required; exclude any card-gated service even if it claims $0 usage. |
 | Q-80 | P0 / Open | If a free quota is exhausted, should the app stop/degrade with no charge? | Prevents accidental spend; current safe default is no paid overage. |
 | Q-81 | P0 / Open | Are sleep/idle pauses, cold starts, or manual republishing acceptable? | Free tiers can conflict with security/performance availability goals. |
 | Q-82 | P0 / Open | Which candidate backend can securely support invite-only auth, private GitHub release access, and revocation at $0? | A free hosting quota alone does not provide a secure end-to-end design. |

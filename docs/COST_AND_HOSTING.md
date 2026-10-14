@@ -2,7 +2,7 @@
 
 **Checked:** 2026-10-14  
 **Status:** Research snapshot; candidates only, no host selected.  
-**Requirement:** The owner wants everything to be free. The working safety interpretation is $0 recurring cost for the owner and users, with no paid overages, subscriptions, or automatic upgrades unless the owner explicitly changes the plan.
+**Requirement:** The owner wants everything to be free. The working requirement is $0 recurring cost for the owner and users, no payment card/billing instrument required, and no paid overages, subscriptions, or automatic upgrades unless the owner explicitly changes the plan.
 
 Free plans and quotas can change. Recheck official terms before choosing a service and before release. If a free limit is reached, the app should degrade or stop the affected function with a clear message; it must not silently incur a charge.
 
@@ -39,7 +39,12 @@ No recommendation is final until a proof-of-feasibility answers: can invited-use
 
 ## Open budget decisions
 
-- Does “everything free” mean no cost to the owner and users, and no payment card on file? The current safe default is no spend without explicit approval.
+- Confirmed: $0 recurring cost for owner/users and no payment card or billing instrument required. Any candidate whose signup or free tier requires a card is excluded.
 - Are pauses/cold starts or manual republishing acceptable, given performance is also a top priority?
 - If a source or service cannot be used at $0, should that capability be omitted until a free permitted alternative exists? The safe default is yes.
 - Do the five users already have/free accounts required by a candidate service, or would account creation itself be a blocker?
+
+
+## No-card verification status
+
+The published free quotas above do not by themselves prove that signup and continued use require no payment card. This requirement must be checked for each candidate before it can be selected. Until that evidence is recorded, Cloudflare, Supabase, Replit, and any other service remain unapproved candidates.

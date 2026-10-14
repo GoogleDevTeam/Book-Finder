@@ -148,7 +148,7 @@ Security trade-off: keeping a session is not the same as repeatedly asking the u
 
 ## 10. Zero-cost constraint
 
-**Owner-confirmed preference:** Everything should be free. For planning, treat this as a target of $0 recurring cost for the owner and users, with no paid service, subscription, usage overage, or automatic tier upgrade unless the owner explicitly approves a plan change. This working interpretation must be confirmed where a free tier requires a payment method.
+**Owner-confirmed preference:** Everything should be free. For planning, treat this as a target of $0 recurring cost for the owner and users, with no paid service, subscription, usage overage, or automatic tier upgrade unless the owner explicitly approves a plan change. No payment card or billing instrument may be required for a free tier. Any service that requires one is excluded unless the owner explicitly changes this requirement.
 
 - Check hosting, database/auth, OCR/catalog/provider APIs, storage, email/invitations, app build/distribution, notifications, and monitoring for direct and indirect charges.
 - Prefer free, permitted interfaces. If a retailer or ebook source has no permitted no-cost search method, mark it unsupported rather than add a paid API or prohibited scraping.

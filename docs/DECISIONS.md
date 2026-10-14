@@ -98,3 +98,8 @@ These are candidates only. No latency target, cache duration, OCR engine, sessio
 The owner wants everything to be free. Safe planning default: target $0 for the owner and users; no paid services, subscriptions, automatic overages, or upgrades without explicit approval. If a free quota is exceeded, the service should fail/degrade safely rather than charge.
 
 Clarification remains open: whether a free tier that requires a payment card is acceptable, and whether cold starts, pauses, or manual republishing are acceptable given performance is also a top priority. Hosting candidates and dated evidence are in COST_AND_HOSTING.md; none is selected.
+
+
+## Confirmed cost constraint — no payment card
+
+The owner confirmed that a service must not require a payment card to access its free tier. A card-gated “free” service is not acceptable. Do not enter a payment method or enable billing to satisfy a service requirement. The no-card rule applies to hosting, auth/database, OCR, provider data/search, storage, email, builds, updates, and other app services.
