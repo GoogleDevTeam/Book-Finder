@@ -47,3 +47,5 @@ Append new project events here in chronological order. Update the relevant plan,
 
 | 2026-10-14 | GitHub triage | Owner asked to inspect Book-Finder and address issues before implementation. Verified there were no pre-existing GitHub issues or pull requests, and the repository contains planning documents only; runtime bug fixing is not possible yet. | Completed; repo main; no app changes
 | 2026-10-14 | Planning backlog | Created five GitHub planning issues for the audit blockers: #1 executable test matrix, #2 requirement IDs/traceability, #3 risk-register reconciliation, #4 stale no-card wording, and #5 discovery-backlog reconciliation. | Open; issues #1–#5; implementation remains gated on complete-plan approval
+
+| 2026-10-14 | Discovery | Presented the next owner decision: supported book-list image formats; no answer captured yet. | Open; OPEN_QUESTIONS.md item 1; implementation remains gated |
