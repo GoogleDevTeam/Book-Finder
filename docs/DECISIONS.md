@@ -109,3 +109,8 @@ The owner confirmed that a service must not require a payment card to access its
 ## Confirmed workflow requirement — project activity log
 
 The owner asked for project-related work and decisions to be recorded on GitHub. A concise project log will capture every app-related requirement, answer, decision, proposal, open question, risk, plan change, implementation/test/release action, and outcome. It is not a verbatim transcript and must never contain secrets or credentials. Before app changes, the plan is updated first; after work, the commit and verification are logged.
+
+
+## Owner-confirmed private-fork setting — 2026-10-15
+
+The owner chose to leave private forking unchanged for now. The private repository remains under the personal GitHub account GoogleDevTeam with allow_forking=true. The connected GitHub API rejected disabling the setting (HTTP 422; the endpoint only accepts organization-owned private repositories); a UI-only control was not verified. No repository transfer or access change is approved. This setting is not a confidentiality guarantee; authorized collaborators may still clone the code.
