@@ -25,7 +25,7 @@ These are discovery questions, not permission to implement a guessed answer.
 ## Priority 2 — measurement and later scope
 
 14. Provide representative lists so extraction success can be measured before setting a target.
-15. Set acceptable identification confidence and define what “accurate enough” means for users.
+15. Define what counts as an acceptable book match and what “accurate enough” means. Showing separate text-reading/OCR and book-match confidence is confirmed.
 16. Decide whether price/stock freshness needs a target and how stale results should be handled.
 
 Do not resolve these by assumption. Record each user answer in DECISIONS.md and update the plan before implementation.
