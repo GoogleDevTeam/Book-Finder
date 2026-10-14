@@ -33,7 +33,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 ## Open
 
 - The app interface language(s), including whether it should support Arabic alongside English. List content is currently English-only by selection.
-- Whether “number of books” means total entries, quantity per title, or both.
+- Whether to track list-entry count, copy quantity per title/edition, or both. The owner is not sure yet. Edition/version identifies the book and is separate from copies.
 - Initial providers to support and the permitted search/API method for each. Example providers are not yet integrations.
 - Whether “Saudi-only” means Saudi-based sellers only, or any seller that can deliver to Saudi Arabia; the confirmed requirement is that Saudi delivery must not be falsely asserted.
 - What evidence is sufficient to mark delivery or ebook access as confirmed.
