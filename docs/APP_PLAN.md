@@ -16,6 +16,7 @@ Help a small, private group turn a photographed list of multiple books into revi
 - Users can search using ISBN, book name/title, or both.
 - The app shows how confident it is in book identification.
 - Different editions and versions are flagged for the user.
+- The minimum useful outcome is a likely book match with edition differences; the user can choose a physical-book or ebook preference.
 - Search for physical books and ebooks online.
 - Saudi Arabia is the required delivery/access market. If shipping is uncertain, label it as uncertain rather than confirmed.
 - Ebook regional availability or restrictions must also be flagged.
@@ -31,7 +32,7 @@ Help a small, private group turn a photographed list of multiple books into revi
 3. User reviews and corrects uncertain entries before searching.
 4. App searches by available ISBN/title/author details and displays likely matches with confidence.
 5. App flags distinct editions/versions instead of treating them as identical.
-6. App displays supported physical and ebook sources with explicit Saudi delivery or region status, source, and checked time where available.
+6. App displays supported physical and ebook sources with explicit Saudi delivery or region status, source, and checked time where available; the user can choose a physical-book or ebook preference.
 7. If a newer signed app release is available, the app notifies the user and offers the Android installer; installation requires user approval.
 
 The details in this section beyond confirmed scope are proposed design direction and remain subject to open questions.
@@ -71,6 +72,7 @@ The exact evidence required for a “confirmed” shipping or region label is an
 - Given a legible printed or typed/on-screen English list with one format per page and multiple book entries, the app presents separate entries for user review rather than one combined title.
 - Given an uncertain extracted field or match, the app marks uncertainty and allows correction before searching.
 - Given multiple editions or versions, the app visibly flags the differences.
+- Given physical-book and ebook options for a likely match, the user can choose a physical-book or ebook preference.
 - Given uncertain Saudi shipping, the result says shipping is unconfirmed and does not imply that delivery is guaranteed.
 - Given uncertain ebook-region access, the result flags the uncertainty.
 - Given a new app release, the app can notify the user and invoke Android installation only after user approval.
