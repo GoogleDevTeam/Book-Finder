@@ -1,6 +1,6 @@
 # Decision log
 
-**Last updated:** 2026-10-14
+**Last updated:** 2026-10-15
 
 Only items in **Confirmed** are settled by the user. **Proposed** items are recommendations, not authorization. **Open** items require a user decision.
 
