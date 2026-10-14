@@ -27,7 +27,7 @@ The following is recorded as confirmed in the existing plan and decision log:
 - The owner wants a $0 service path with no card requirement, paid overage, or automatic upgrade. If a free quota is reached, the safe default is to stop/degrade rather than charge.
 - The plan is the scope authority. No feature, provider, or app behavior outside the explicitly approved plan may be implemented.
 
-Open details include mixed-format handling (printed and typed/on-screen inputs are selected; handwriting was not selected), app interface language, access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices. English was selected as the list-content language; Arabic/other-language recognition was not selected.
+Open details include the response to accidental mixed-format input, app interface language, access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices. Printed and typed/on-screen English lists, one format per page, are selected; handwritten lists, mixed-format pages, Arabic, and other-language recognition were not selected.
 
 ## GitHub state checked
 
@@ -40,7 +40,7 @@ Open details include mixed-format handling (printed and typed/on-screen inputs a
 
 ### F-01 — The decision backlog and approval gate disagree
 
-At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 84 open, one partial (Q-06), and two confirmed (Q-07 and Q-79). Q-06 remains a P0 blocker because mixed-format behavior is open. Q-07 is resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58, leaving 36 effective P0 blockers. OPEN_QUESTIONS.md currently has 17 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
+At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 84 open and three confirmed (Q-06, Q-07, and Q-79), with no partial items. Q-06 and Q-07 are resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 35 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
 
 **Proposed repair:** Declare the catalog the canonical question inventory, make OPEN_QUESTIONS an ID-mapped decision index, and have the gate count the 37 effective blockers—not just the seven short-list P0 prompts. Keep Q-79 confirmed and out of the open queue. Reconcile counts whenever either file changes.
 
@@ -89,7 +89,7 @@ The plan correctly says an APK cannot be made impossible to copy, inspect, or de
 
 The catalog remains the detailed source for each question. This grouped index is a navigation aid; it does not answer any question.
 
-- Product/input definition: Q-01, Q-06, Q-08. Q-07 (English list content) is confirmed.
+- Product/input definition: Q-01, Q-08. Q-06 (one format per page) and Q-07 (English list content) are confirmed.
 - Identification behavior: Q-16, Q-17.
 - Provider list and permitted method: Q-23, Q-24, Q-25.
 - Saudi market and claim evidence: Q-31, Q-32, Q-33, Q-37.
@@ -123,7 +123,7 @@ Add exact fixture files, devices, and thresholds only after owner input. The out
 
 | Area | Case | Expected observable result | Evidence / decision still needed |
 |---|---|---|---|
-| Photo/OCR | Legible multi-row printed or typed/on-screen English list | Distinct editable rows and fields; confidence/uncertainty visible | Sanitized English samples and supported layouts; target accuracy TBD |
+| Photo/OCR | Legible multi-row printed or typed/on-screen English list, one format per page | Distinct editable rows and fields; confidence/uncertainty visible | Sanitized English samples and supported layouts; target accuracy TBD |
 | OCR failure | Blur, rotation, handwriting, mixed language, missing fields | Mark uncertain/unsupported; allow correction or manual entry; do not search guessed data silently | Which samples and languages are in scope |
 | Segmentation | Columns, duplicates, quantity, wrapped titles | Preserve row boundaries and quantity independently; review before search | Representative layouts and meaning of “number of books” |
 | ISBN | Valid, invalid, unreadable, one-digit error | Validate format/check digit; flag mismatch; allow title/author fallback | ISBN fixture set and acceptable error rate TBD |
