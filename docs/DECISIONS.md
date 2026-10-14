@@ -8,6 +8,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 
 - Target is an Android APK app.
 - The image contains a list of multiple books; it is not a cover-photo identification workflow.
+- For v1, the owner selected printed lists and typed/on-screen lists. Handwritten lists were not selected; mixed-format pages remain undecided.
 - Book search can use ISBN, name/title, or both.
 - Show identification confidence.
 - Flag different editions and versions.
@@ -30,7 +31,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 
 ## Open
 
-- Supported image types: printed, handwritten, screen capture, or a combination.
+- Whether a single list/page may combine printed and typed/on-screen content. Printed and typed/on-screen lists were selected for v1; handwriting was not selected.
 - Languages expected in lists and desired app languages, including Arabic/English support.
 - Whether “number of books” means total entries, quantity per title, or both.
 - Initial providers to support and the permitted search/API method for each. Example providers are not yet integrations.
