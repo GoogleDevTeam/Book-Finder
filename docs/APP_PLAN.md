@@ -133,3 +133,14 @@ These are two separate checks and should not be confused:
 4. **Version check:** separately, the app makes a small, non-blocking request on launch when due. A service can check private GitHub release metadata and return only version information. If an update is available, the app notifies the user; the user starts and approves Android installation. Android verifies package signing continuity.
 
 A version check by itself does not authorize use. A one-time check only at installation is not enough for revocation. The frequency of authorization refresh, session lifetime, sign-in method, device enrollment, exact service design, and offline grace period are open decisions. This flow is a planning example, not authorization to build it.
+
+
+### Proposed performance approach — not approved
+
+- Keep a valid, short-lived session on the device using Android-protected storage, so the user is not asked to sign in on each launch. Attach the session to protected search/update calls instead of making a separate authorization round trip for each screen. The server still verifies authorization for protected requests; caching authorization decisions longer can delay revocation.
+- Run the small version check in the background and only when due. A conditional request (for example, ETag/If-None-Match) and server-side caching of GitHub release metadata can avoid downloading unchanged data. Do not let a version check block app startup. The check interval remains open.
+- Prefer on-device list OCR if quality and device-performance tests support it; this avoids uploading the image and waiting for an OCR service. On-device OCR can use CPU, memory, and battery, so it must be measured on agreed devices.
+- Search supported providers with bounded timeouts and controlled concurrency; show results as they arrive and clearly mark slow/unavailable sources. Use batching only where the provider supports it. Cache only data with an explicit freshness label and never represent stale shipping/stock as current.
+- Measure launch, scan/review, search, and update-check behavior on representative devices and network conditions before setting numeric targets.
+
+Security trade-off: keeping a session is not the same as repeatedly asking the user to authenticate. The server can verify the session during the protected request. Any offline use of cached authorization creates a revocation window; exact behavior remains undecided.

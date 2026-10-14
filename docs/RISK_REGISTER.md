@@ -46,3 +46,8 @@ Likelihood and severity remain unscored until the threat model, distribution des
 
 
 | R25 | A one-time install-only activation is treated as ongoing access control, so forwarded APKs or removed users continue accessing protected features. | Use an owner-approved invite/enrollment flow and revalidate access for protected backend requests; use short-lived sessions and a documented revocation process. | Deny the next protected request after revocation; clearly document any offline grace period. Do not represent an install-time-only check as revocable protection. |
+
+
+| R26 | Performance caching is broadened from a session token to an authorization decision, leaving a revoked user authorized longer than intended. | Distinguish session reuse from permission checks; have the service validate protected requests; set an owner-approved revocation window before caching authorization decisions. | Test revocation during active sessions and report the actual maximum delay; fail closed after the approved session/lease expires. |
+| R27 | Speed optimizations hide slow or failed providers, or display stale stock/shipping as current. | Use bounded timeouts/concurrency, progressive per-source results, and explicit freshness metadata. | Mark failed sources and stale results clearly; never interpret a timeout as “not found” or stale shipping as confirmed. |
+| R28 | On-device OCR improves privacy but is too slow or battery/memory intensive on target phones. | Benchmark representative list images and target devices before selecting the OCR approach. | Provide progress/cancel and manual entry; revise the OCR approach only through an approved plan change. |

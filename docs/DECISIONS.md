@@ -80,3 +80,14 @@ These are recommendations for discussion, not an approved access model. Sign-in 
 - Candidate update flow: a non-blocking launch-time check, when due, asks a service for version metadata from private GitHub releases. The service keeps GitHub credentials private. The app then offers a signed APK and leaves final installation approval to Android/the user.
 - If authorization or service is unavailable, protected features should not fail open. Offline local-only behavior is a separate open decision.
 - No session duration, check interval, login provider, backend, or device-binding method has been chosen.
+
+
+## Proposed performance optimizations — not approved
+
+- Avoid a separate auth request for every screen: retain a short-lived protected session and attach it to each protected backend request. Server-side authorization still applies; longer caching of authorization decisions delays revocation.
+- Make version checks asynchronous/non-blocking and conditional; check only when due and let the server cache GitHub release metadata. Check frequency is open.
+- Benchmark on-device OCR before choosing cloud OCR; local OCR avoids image upload latency/privacy exposure but may consume device CPU, memory, and battery.
+- Use bounded provider concurrency and timeouts, progressive results, and explicit per-provider status. Do not use stale shipping/availability as if current.
+- Define performance targets only after choosing representative Android devices, list sizes, and network conditions.
+
+These are candidates only. No latency target, cache duration, OCR engine, session lifetime, or provider concurrency limit is approved yet.
