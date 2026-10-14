@@ -19,7 +19,7 @@ The following is recorded as confirmed in the existing plan and decision log:
 
 - Android APK, intended for about five invited users.
 - Input is a photo of a list containing multiple books, not cover-photo recognition.
-- Search can use ISBN, title/name, or both; show identification confidence and flag edition/version differences.
+- Search can use ISBN, title/name, or both; show text-reading/OCR confidence separately from book-match confidence and flag edition/version differences. Acceptable-match criteria remain open.
 - Search physical-book and ebook options for Saudi Arabia; never describe uncertain delivery or ebook-region access as confirmed.
 - Provider names/list are maintained through GitHub. Amazon.sa and Noon are examples only; neither is an approved working integration.
 - Check for GitHub-based releases when the app launches; Android/user approval is required to install.
@@ -40,7 +40,7 @@ Open details include the criteria for a “closest” edition and fallback if no
 
 ### F-01 — The decision backlog and approval gate disagree
 
-At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 81 open, one partial (Q-19), and five confirmed (Q-01, Q-06, Q-07, Q-16, and Q-79). Q-01, Q-06, Q-07, and Q-16 are resolved; Q-19 is partially resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 33 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
+At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 80 open, two partial (Q-17 and Q-19), and five confirmed (Q-01, Q-06, Q-07, Q-16, and Q-79). Q-01, Q-06, Q-07, and Q-16 are resolved; Q-17 and Q-19 are partially resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 33 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
 
 **Proposed repair:** Declare the catalog the canonical question inventory, make OPEN_QUESTIONS an ID-mapped decision index, and have the gate count the 37 effective blockers—not just the seven short-list P0 prompts. Keep Q-79 confirmed and out of the open queue. Reconcile counts whenever either file changes.
 
@@ -90,7 +90,7 @@ The plan correctly says an APK cannot be made impossible to copy, inspect, or de
 The catalog remains the detailed source for each question. This grouped index is a navigation aid; it does not answer any question.
 
 - Product/input definition: Q-08. Q-01 (minimum outcome), Q-06 (one format per page), and Q-07 (English list content) are confirmed.
-- Identification behavior: Q-17. Q-16 (require a corrected ISBN for scanned entries before search) is confirmed.
+- Identification behavior: Q-17 is partial (separate confidence types confirmed; acceptable-match criteria open). Q-16 (require a corrected ISBN for scanned entries before search) is confirmed.
 - Provider list and permitted method: Q-23, Q-24, Q-25.
 - Saudi market and claim evidence: Q-31, Q-32, Q-33, Q-37.
 - Data, access, and backend threat boundary: Q-40, Q-41, Q-42, Q-45, Q-47.
@@ -105,7 +105,6 @@ That is 33 effective blockers. Q-79 is already confirmed: payment card required 
 
 These are proposed ways to make the future product safer and clearer. They are not new confirmed requirements or a license to build them:
 
-- Separate OCR-reading confidence from catalog-match confidence; they are different failure sources.
 - Let users review/correct extracted rows before search; preserve quantity separately from the number of rows.
 - Show per-source states so an unavailable/untested provider is not mistaken for a successful empty search.
 - Separate physical delivery from ebook-region entitlement; show evidence/source and checked time when available.
@@ -123,7 +122,7 @@ Add exact fixture files, devices, and thresholds only after owner input. The out
 
 | Area | Case | Expected observable result | Evidence / decision still needed |
 |---|---|---|---|
-| Photo/OCR | Legible multi-row printed or typed/on-screen English list, one format per page | Distinct editable rows and fields; confidence/uncertainty visible | Sanitized English samples and supported layouts; target accuracy TBD |
+| Photo/OCR | Legible multi-row printed or typed/on-screen English list, one format per page | Distinct editable rows; text-reading/OCR and book-match confidence shown separately | Sanitized English samples and supported layouts; target accuracy TBD |
 | OCR failure | Blur, rotation, handwriting, mixed language, missing fields | Mark uncertain/unsupported; allow correction or manual entry; do not search guessed data silently | Which samples and languages are in scope |
 | Segmentation | Columns, duplicates, quantity, wrapped titles | Preserve row boundaries and quantity independently; review before search | Representative layouts and meaning of “number of books” |
 | ISBN | Missing, invalid, unreadable, or one-digit error in a scanned entry | Request a valid user-entered/corrected ISBN before searching that entry | Define validation behavior and test fixtures; do not assume a title/author fallback for this case |
