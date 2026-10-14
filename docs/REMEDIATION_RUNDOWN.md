@@ -10,9 +10,9 @@
 
 The likely Saudi book project is Book-Finder. It is a proposed private Android APK for turning a photographed multi-book list into reviewable book records, matching titles/editions, and finding physical or ebook options while clearly separating confirmed from uncertain Saudi delivery/access.
 
-The repository is intentionally planning-only. It contains no app code, no GitHub issues, and no pull requests. The latest main-branch activity is planning documentation. There is therefore no runtime bug to reproduce or code fix to verify. The concrete issues are in planning consistency and feasibility: the discovery backlog is not reflected in the shorter approval checklist; confirmed requirements lack stable IDs and test links; two risk inventories overlap; an old cost question contradicts the confirmed no-card rule; and the required test plan is not yet executable.
+At the original 2026-10-14 review, the project was planning-only, with no app code, GitHub issues, or pull requests. No runtime bug hunt, build, or app test could run. That review found planning defects and feasibility risks; it could not prove the eventual app would work or that every future defect had been found. The working branch now records the repairs for F-01–F-05 below, but has not been merged into main. Remaining blockers include provider/hosting research and unresolved owner decisions; no runtime behavior is verified.
 
-The right next step is to make the planning system internally consistent and settle the owner decisions before code. Do not interpret a candidate architecture, provider, recommendation, or this rundown as approval to implement it.
+The next step is to complete research that can proceed without owner input, then ask only for decisions or samples the owner must supply. Do not interpret a candidate architecture, provider, recommendation, or this rundown as approval to implement it.
 
 ## Current product baseline
 
@@ -39,31 +39,31 @@ Open details include the criteria for a “closest” edition and fallback if no
 
 ## Findings and the safe repair for each
 
-### F-01 — The decision backlog and approval gate disagree
+### F-01 — The decision backlog and approval gate disagreed at audit time
 
 At the original 2026-10-14 audit, the catalog had 86 open items and Q-79 confirmed. After the recorded owner decisions and the 2026-10-15 backlog reconciliation, the catalog contains 73 Open, five Partial (Q-17, Q-19, Q-27, Q-33, Q-57), and nine Confirmed (Q-01, Q-06, Q-07, Q-16, Q-67, Q-68, Q-79, Q-80, Q-87). OPEN_QUESTIONS.md now has one row for every Q-01–Q-87 and is the canonical status/priority index; the catalog mirrors it. Thirty effective P0 blockers remain: 25 active catalog-P0 items plus five audit-elevated P1 items (Q-45, Q-47, Q-54, Q-55, Q-58).
 
 **Completed repair (2026-10-15):** OPEN_QUESTIONS.md is the canonical ID-mapped status/priority index; DISCOVERY_CATALOG.md carries detailed context and mirrors the index; CHANGE_CONTROL.md gates approval on its active effective-P0 list. Research-only tasks and owner decisions are distinguished. Q-79 remains confirmed; counts and blocker IDs must be updated together whenever a status changes.
 
-### F-02 — Requirement traceability is not executable yet
+### F-02 — Requirement traceability was not executable at audit time
 
 At the 2026-10-14 audit, CHANGE_CONTROL.md required a plan requirement ID before every app change, but APP_PLAN.md did not yet provide stable IDs or requirement-to-test mapping.
 
 **Completed repair (2026-10-15; working branch, not yet integrated into main):** APP_PLAN.md now assigns BF-REQ-001–BF-REQ-016 to confirmed scope, with observable acceptance criteria and mapped planned cases in TEST_MATRIX.md. Proposed and open decisions remain outside the confirmed requirement set.
 
-### F-03 — The risk inventory is duplicated
+### F-03 — The risk inventory was duplicated at audit time
 
 At the 2026-10-14 audit, DISCOVERY_CATALOG.md and RISK_REGISTER.md had overlapping risk lists with no canonical register or crosswalk, and some entries lacked consistent treatment fields.
 
 **Completed repair (2026-10-15; working branch, not yet integrated into main):** RISK_REGISTER.md is canonical for R1–R37; DISCOVERY_CATALOG.md preserves R-01–R-26 as legacy aliases in a complete crosswalk. Each canonical entry records an accountable owner, impact rationale, unrated likelihood with the evidence gap, prevention, planned detection/test, safe fallback, and residual risk. Planned tests have not run; high-impact residual risks remain open for review/acceptance.
 
-### F-04 — The no-card decision is contradicted by older wording
+### F-04 — Older wording conflicted with the no-card rule at audit time
 
 At the 2026-10-14 audit, an earlier cost paragraph appeared to conflict with the later owner-confirmed no-payment-card rule.
 
 **Completed repair (2026-10-15; working branch, not yet integrated into main):** DECISIONS.md explicitly marks the older wording as superseded for card eligibility, while preserving the separate open question about pauses/cold starts. APP_PLAN.md and COST_AND_HOSTING.md consistently retain the $0/no-card constraint; no host or billing setting has been selected.
 
-### F-05 — The test plan is a checklist, not yet a test matrix
+### F-05 — The test matrix was missing at audit time
 
 At the 2026-10-14 audit, the change-control policy required tests for OCR/correction, matching, Saudi delivery and ebook uncertainty, privacy/access, outages, and signed APK updates, but no case-by-case matrix existed. No app tests could run because there was no code.
 
