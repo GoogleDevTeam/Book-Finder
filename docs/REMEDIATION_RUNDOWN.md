@@ -40,7 +40,7 @@ Open details include the criteria for a “closest” edition and fallback if no
 
 ### F-01 — The decision backlog and approval gate disagree
 
-At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 81 open, one partial (Q-19), and five confirmed (Q-01, Q-06, Q-07, Q-16, and Q-79). Q-01, Q-06, Q-07, and Q-16 are resolved; Q-19 is partially resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 34 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
+At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists and English list content. Current catalog status is 81 open, one partial (Q-19), and five confirmed (Q-01, Q-06, Q-07, Q-16, and Q-79). Q-01, Q-06, Q-07, and Q-16 are resolved; Q-19 is partially resolved. The five additional blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58; 33 effective P0 blockers remain. OPEN_QUESTIONS.md currently has 16 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
 
 **Proposed repair:** Declare the catalog the canonical question inventory, make OPEN_QUESTIONS an ID-mapped decision index, and have the gate count the 37 effective blockers—not just the seven short-list P0 prompts. Keep Q-79 confirmed and out of the open queue. Reconcile counts whenever either file changes.
 
