@@ -24,6 +24,8 @@ This catalog deliberately distinguishes confirmed requirements from open decisio
 
 ## 2. Discovery questions
 
+**Backlog control:** OPEN_QUESTIONS.md is the canonical ID-mapped status, priority, and handling index for Q-01–Q-87. This catalog keeps detailed question context and rationale; mirror its statuses and priorities from the canonical index. Do not maintain a second, differently filtered approval backlog.
+
 Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be decided before the affected feature is built; **P2** can be deferred only if the approved scope excludes it. Status is **Open** unless explicitly marked otherwise.
 
 ### Product purpose and users
@@ -71,7 +73,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 | Q-24 | P0 / Open | What exactly will be stored in the GitHub provider list: names/links, search templates, API configuration, or something else? | A list of URLs alone may not make a provider searchable or verifiable. |
 | Q-25 | P0 / Open | For each provider, is there an official API or other permitted search method? Are credentials required? | Avoids blocked, brittle, or disallowed scraping and exposes credential needs. |
 | Q-26 | P1 / Open | Who may add/edit providers, how are changes reviewed, and how does the app know a source is supported? | Prevents arbitrary or broken source entries from becoming active. |
-| Q-27 | P1 / Open | What should happen when a provider times out, rate-limits, changes its site, or returns incomplete data? | A failed search must not look like “no book exists.” |
+| Q-27 | P1 / Partial | The plan requires a provider failure to be shown as unchecked, not as no results. Which retry/backoff and partial-response behavior, if any, should be specified? | A failed search must not look like “no book exists.” |
 | Q-28 | P1 / Open | How should results be sorted or compared, and should the app show one result or results from every enabled provider? | Affects completeness, ranking, and user trust. |
 | Q-29 | P2 / Open | Are affiliate links or sponsored results allowed? If so, how are they disclosed? | Prevents hidden ranking conflicts. |
 | Q-30 | P1 / Open | How often may the app check for source/config changes, and what stale-cache behavior is acceptable? | Controls freshness, latency, and external request volume. |
@@ -82,7 +84,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 |---|---|---|---|
 | Q-31 | P0 / Open | Does “Saudi-only” mean the seller must be based in Saudi Arabia, or may any seller appear if it ships to Saudi Arabia? | Determines source eligibility. The confirmed minimum is that Saudi delivery must not be falsely asserted. |
 | Q-32 | P0 / Open | What evidence is sufficient for “confirmed shipping to Saudi Arabia”: provider shipping policy, product page, destination-specific quote, or checkout confirmation? | Without a standard, status labels will be inconsistent. |
-| Q-33 | P0 / Open | Should uncertain-shipping results be shown with a warning, or hidden until verified? | User requested explicit uncertainty, but the display/action policy is open. |
+| Q-33 | P0 / Partial | Unconfirmed shipping must be labeled uncertain. Should an uncertain result still be shown with a warning, or hidden until verified? | User requested explicit uncertainty, but the display/action policy is open. |
 | Q-34 | P1 / Open | Does shipping need to work to all Saudi addresses, or can it vary by city, postal code, or delivery method? | Some sellers restrict remote areas or require address details. |
 | Q-35 | P1 / Open | Should price include shipping, taxes, customs, and currency conversion, or show only the provider’s listed price? | Avoids misleading comparisons. |
 | Q-36 | P1 / Open | How fresh must price, stock, and shipping data be? Should the app display the time checked? | Availability and shipping terms can change. |
@@ -136,8 +138,8 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 | Q-64 | P0 / Open | Can representative real lists be supplied for evaluation, with sensitive information removed? | Accuracy targets require examples rather than assumptions. |
 | Q-65 | P0 / Open | What error rate is acceptable for OCR fields and final book matches? | “Confidence” needs a measurable meaning and safe threshold. |
 | Q-66 | P1 / Open | What test evidence is required for Saudi shipping, ebook-region claims, provider outages, and updates? | Defines proof before labels or releases are trusted. |
-| Q-67 | P0 / Open | Who gives final approval of the complete plan and later scope changes? | Keeps decisions with the owner and prevents assistant assumptions. |
-| Q-68 | P0 / Open | What exact phrase or action will mean “plan approved; begin implementation”? | Prevents an idea or discussion from being mistaken for build authorization. |
+| Q-67 | P0 / Confirmed | The project owner gives final approval of the complete plan and later scope changes. | Keeps decisions with the owner and prevents assistant assumptions. |
+| Q-68 | P0 / Confirmed | The implementation gate opens only when the owner explicitly approves the complete plan and says to begin; no exact phrase is required. | Prevents an idea or discussion from being mistaken for build authorization. |
 
 ## 3. Foreseeable issue and prevention register
 
@@ -216,11 +218,11 @@ The owner wants everything to be free. Safe default: target $0 ongoing cost for 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
 | Q-79 | Confirmed | Can any app service require a payment card for its free tier? No. | The owner confirmed that a payment card must not be required; exclude any card-gated service even if it claims $0 usage. |
-| Q-80 | P0 / Open | If a free quota is exhausted, should the app stop/degrade with no charge? | Prevents accidental spend; current safe default is no paid overage. |
+| Q-80 | P0 / Confirmed | At a free quota limit, stop or degrade the affected service without charging; any paid change needs explicit owner approval. | Prevents accidental spend; current safe default is no paid overage. |
 | Q-81 | P0 / Open | Are sleep/idle pauses, cold starts, or manual republishing acceptable? | Free tiers can conflict with security/performance availability goals. |
 | Q-82 | P0 / Open | Which candidate backend can securely support invite-only auth, private GitHub release access, and revocation at $0? | A free hosting quota alone does not provide a secure end-to-end design. |
 | Q-83 | P0 / Open | Do Amazon.sa, Noon, and later providers offer a permitted no-cost search/data method? | Do not assume a free API exists or use prohibited scraping. |
 | Q-84 | P1 / Open | If no free permitted method exists for a source, should that source be omitted? | Safe default: omit it rather than create a paid or noncompliant dependency. |
 | Q-85 | P1 / Open | Are email/invitation delivery, storage, monitoring, and build minutes required, and can each stay within free quotas? | These indirect services can create costs even when the API host is free. |
 | Q-86 | P1 / Open | How often will users use the app, and is a service that pauses after inactivity acceptable? | Usage frequency changes whether a free tier is reliable enough. |
-| Q-87 | P1 / Open | How should the app behave when any free service reaches its quota or changes its plan? | Defines safe failure and prevents automatic charges. |
+| Q-87 | P1 / Confirmed | At a quota limit or plan change, stop or degrade safely; no automatic paid upgrade or overage. A different policy needs explicit owner approval. | Defines safe failure and prevents automatic charges. |
