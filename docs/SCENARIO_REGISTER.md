@@ -46,7 +46,7 @@ The safe outcomes below are planning recommendations, not all confirmed behavior
 
 ## D. OCR, segmentation, and correction
 
-- **SC-025** Printed and typed/on-screen lists are selected for v1; handwriting was not selected, and mixed-format pages remain open. Test only against the confirmed set and disclose excluded modes. (Q-06)
+- **SC-025** Printed and typed/on-screen lists are selected for v1, one format per page; handwritten and mixed-format pages are out of scope. Decide how to message accidental mixed-format submissions without treating them as reliable input. (Q-06)
 - **SC-026** English was selected for list content. Arabic, mixed Arabic/English, and other languages were not selected; transliterated names within English lists may still need representative samples. Do not claim unselected language support. (Q-07)
 - **SC-027** If Arabic interface support or Arabic list content is later approved, right-to-left text, mixed direction, punctuation, or digits may reorder. Arabic list content is not currently selected; interface language remains open. (Q-04, Q-07)
 - **SC-028** A title wraps across lines or includes subtitles, series, volume, or notes. Avoid splitting or joining fields without review. (Q-09, Q-11)
