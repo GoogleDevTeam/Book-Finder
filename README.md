@@ -13,13 +13,14 @@ Only requirements marked **Confirmed** in the plan may be treated as agreed. Ope
 
 ## Planning documents
 
-- [Product plan](docs/APP_PLAN.md) — intended user journey, confirmed scope, acceptance criteria, and non-goals.
+- [Product plan](docs/APP_PLAN.md) — intended user journey, confirmed scope, acceptance criteria, and stable BF-REQ IDs.
+- [Pre-build test matrix](docs/TEST_MATRIX.md) — planned test inputs, pass criteria, owners/devices, evidence, and open prerequisites; no tests have been run.
 - [Cost and hosting evaluation](docs/COST_AND_HOSTING.md) — dated free-tier comparison; no host selected.
 - [Project log](docs/PROJECT_LOG.md) — concise record of app-related decisions, proposals, risks, plan changes, and work outcomes.
 - [Discovery catalog](docs/DISCOVERY_CATALOG.md) — broad question inventory, assumptions, dependencies, and foreseeable risks.
 - [Decision log](docs/DECISIONS.md) — confirmed decisions, proposed choices, and unresolved decisions.
 - [Risk register](docs/RISK_REGISTER.md) — foreseeable issues, prevention, and fallbacks.
-- [Open questions](docs/OPEN_QUESTIONS.md) — current discovery items that must be settled before implementation.
+- [Discovery backlog](docs/OPEN_QUESTIONS.md) — canonical ID-mapped status/priority index for all Q-01–Q-87; separates owner decisions from research.
 - [Scope change control](docs/CHANGE_CONTROL.md) — plan-first traceability and implementation gate.
 
 ## Working rules
