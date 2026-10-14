@@ -30,7 +30,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-01 | P0 / Open | What exact job should the app complete for the user, and what should a successful session end with: a corrected list, a set of likely matches, or purchase options? | Prevents scope from drifting into unrelated book-management features. |
+| Q-01 | Confirmed | Minimum useful v1 outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference. Exact-edition/default selection behavior remains open under Q-19. | Prevents scope from drifting into unrelated book-management features. |
 | Q-02 | P1 / Open | Who are the approximately five users, and do they need separate private data or one shared group list? | Determines identity, data separation, sharing, and access controls. |
 | Q-03 | P1 / Open | How often and in what situation will the app be used (one-off list, recurring shopping, library/school list)? | Affects list persistence, speed, offline expectations, and what must be saved. |
 | Q-04 | P1 / Open | Which languages should the app interface support? Is Arabic/RTL required, English, or both? | Affects layout, accessibility, OCR display, and testing. |
