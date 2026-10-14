@@ -71,3 +71,12 @@ A private APK can be distributed and access-controlled, but an APK that reaches 
 - Not accepted: a one-time install-only check with no later authorization, because it cannot reliably revoke an installed/forwarded copy.
 
 These are recommendations for discussion, not an approved access model. Sign-in method, device binding, online/offline behavior, session lifetime, and revocation timing remain open.
+
+
+## Proposed automatic-check flow — not approved
+
+- Authorization and version checks are separate. A version check only reports an available release; it does not prove a user is allowed to use protected features.
+- Candidate authorization flow: invite-only sign-in/device enrollment once; securely retained, limited session; authorization checked by a backend when protected search, private provider data, or private update data is requested; denial/revocation stops the next protected request. This avoids asking the user to sign in repeatedly while still allowing access to be revoked.
+- Candidate update flow: a non-blocking launch-time check, when due, asks a service for version metadata from private GitHub releases. The service keeps GitHub credentials private. The app then offers a signed APK and leaves final installation approval to Android/the user.
+- If authorization or service is unavailable, protected features should not fail open. Offline local-only behavior is a separate open decision.
+- No session duration, check interval, login provider, backend, or device-binding method has been chosen.

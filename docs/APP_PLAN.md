@@ -121,3 +121,15 @@ These requirements take priority during planning, but no implementation begins u
 A candidate to evaluate is: each invited person signs in once and enrolls an approved device; the app then renews a short-lived session automatically rather than prompting for a password on every launch. Protected search/update requests go through an authenticated backend, which checks whether the user/device remains allowed. A valid session can be attached to the request so authorization is checked without a separate sign-in screen for every action.
 
 This is not a final architecture decision. One-time installation/activation with no later authorization check is not sufficient for reliable revocation or to stop a forwarded APK from accessing protected services. If online authorization is unavailable, protected server features should fail safely; whether non-sensitive local-only actions remain available offline is still open.
+
+
+### Proposed automatic authorization and update checks — illustrative, not approved
+
+These are two separate checks and should not be confused:
+
+1. **Authorization check:** after an invited user signs in and enrolls an approved device, the service issues a limited session. The app may keep that session securely so the user does not re-enter a password for every screen.
+2. **Protected request:** when the user searches a book or requests private provider/release data, the app sends the session over HTTPS to the service. The service checks that the account/device is still allowed, then performs or authorizes the protected request. A valid request proceeds; revoked/invalid access is denied and may require sign-in again. GitHub/provider credentials remain server-side.
+3. **No network/service:** protected online search and private release access cannot be verified, so they should fail closed with a clear message rather than silently become public. Whether local-only capture/review can continue offline is undecided.
+4. **Version check:** separately, the app makes a small, non-blocking request on launch when due. A service can check private GitHub release metadata and return only version information. If an update is available, the app notifies the user; the user starts and approves Android installation. Android verifies package signing continuity.
+
+A version check by itself does not authorize use. A one-time check only at installation is not enough for revocation. The frequency of authorization refresh, session lifetime, sign-in method, device enrollment, exact service design, and offline grace period are open decisions. This flow is a planning example, not authorization to build it.
