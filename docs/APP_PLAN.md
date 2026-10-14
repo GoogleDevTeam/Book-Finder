@@ -12,7 +12,7 @@ Help a small, private group turn a photographed list of multiple books into revi
 ## 2. Confirmed scope
 
 - Android app distributed as an APK.
-- Input is an image of a list of books, not a photo of book covers. For v1, printed lists and typed/on-screen lists are confirmed input formats. Handwritten lists were not selected; whether one list may mix formats remains open. A list can contain multiple books and fields such as number/quantity, title, author, ISBN, and other book details.
+- Input is an image of a list of books, not a photo of book covers. For v1, printed lists and typed/on-screen lists are confirmed input formats. English is the selected list-content language. Handwritten lists and Arabic/other-language recognition were not selected; whether one list may mix formats remains open. A list can contain multiple books and fields such as number/quantity, title, author, ISBN, and other book details.
 - Users can search using ISBN, book name/title, or both.
 - The app shows how confident it is in book identification.
 - Different editions and versions are flagged for the user.
@@ -67,7 +67,7 @@ The exact evidence required for a “confirmed” shipping or region label is an
 
 ## 7. Acceptance criteria for a future implementation
 
-- Given a legible printed or typed/on-screen list containing multiple book entries, the app presents separate entries for user review rather than one combined title.
+- Given a legible printed or typed/on-screen English list containing multiple book entries, the app presents separate entries for user review rather than one combined title.
 - Given an uncertain extracted field or match, the app marks uncertainty and allows correction before searching.
 - Given multiple editions or versions, the app visibly flags the differences.
 - Given uncertain Saudi shipping, the result says shipping is unconfirmed and does not imply that delivery is guaranteed.
