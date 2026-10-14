@@ -103,3 +103,8 @@ Clarification remains open: whether a free tier that requires a payment card is 
 ## Confirmed cost constraint — no payment card
 
 The owner confirmed that a service must not require a payment card to access its free tier. A card-gated “free” service is not acceptable. Do not enter a payment method or enable billing to satisfy a service requirement. The no-card rule applies to hosting, auth/database, OCR, provider data/search, storage, email, builds, updates, and other app services.
+
+
+## Confirmed workflow requirement — project activity log
+
+The owner asked for project-related work and decisions to be recorded on GitHub. A concise project log will capture every app-related requirement, answer, decision, proposal, open question, risk, plan change, implementation/test/release action, and outcome. It is not a verbatim transcript and must never contain secrets or credentials. Before app changes, the plan is updated first; after work, the commit and verification are logged.

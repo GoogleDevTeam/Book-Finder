@@ -15,6 +15,7 @@ Only requirements marked **Confirmed** in the plan may be treated as agreed. Ope
 
 - [Product plan](docs/APP_PLAN.md) — intended user journey, confirmed scope, acceptance criteria, and non-goals.
 - [Cost and hosting evaluation](docs/COST_AND_HOSTING.md) — dated free-tier comparison; no host selected.
+- [Project log](docs/PROJECT_LOG.md) — concise record of app-related decisions, proposals, risks, plan changes, and work outcomes.
 - [Discovery catalog](docs/DISCOVERY_CATALOG.md) — broad question inventory, assumptions, dependencies, and foreseeable risks.
 - [Decision log](docs/DECISIONS.md) — confirmed decisions, proposed choices, and unresolved decisions.
 - [Risk register](docs/RISK_REGISTER.md) — foreseeable issues, prevention, and fallbacks.

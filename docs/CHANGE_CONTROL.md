@@ -63,3 +63,11 @@ Planning cannot guarantee that no future defect will occur. The goal is to preve
 ## Implementation gate
 
 No implementation starts until the owner explicitly approves the complete plan and says to begin. Brainstorming, recommendations, or technical suggestions do not count as approval. If a request conflicts with the plan, stop and ask whether the plan should change.
+
+## Mandatory project activity log
+
+- Record every app-related discussion outcome: new requirement, answer, decision, proposal, open question, risk, scope change, or work result in docs/PROJECT_LOG.md. This includes this planning phase and any future implementation, testing, or release work.
+- Before making any app change, check the current plan and log; ensure the work maps to an approved requirement and update the plan first. After the change, record the commit/reference and verification result before continuing.
+- Keep entries concise and factual, with status (Confirmed, Proposed, Open, Rejected, or Completed) and links/requirement IDs. The log is a project audit trail, not a verbatim chat transcript.
+- Do not place secrets, credentials, tokens, private keys, or unnecessary personal information in GitHub.
+- If a project-relevant message cannot yet be resolved, log it as an open question rather than guessing or omitting it.
