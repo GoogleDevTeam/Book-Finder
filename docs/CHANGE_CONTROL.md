@@ -6,7 +6,9 @@ The owner requested that all work follow the plan and nothing else be added. Thi
 
 - The explicitly approved version of docs/APP_PLAN.md defines what may be built.
 - Confirmed decisions in docs/DECISIONS.md refine that plan.
-- docs/DISCOVERY_CATALOG.md tracks the complete discovery inventory, assumptions, dependencies, and risks.
+- docs/OPEN_QUESTIONS.md is the canonical ID-mapped backlog and status/priority register for Q-01–Q-87. It distinguishes owner decisions, owner-supplied evidence, research tasks, and research that must precede an owner choice.
+- docs/DISCOVERY_CATALOG.md holds detailed question context, dependencies, and risks. Its question IDs, statuses, and priorities must mirror OPEN_QUESTIONS.md; it is not a second approval gate.
+- docs/TEST_MATRIX.md maps planned checks to the stable requirement IDs in APP_PLAN.md. It is a plan, not evidence that any test has run or passed.
 - Open questions and proposed ideas are not requirements.
 - A feature or provider mentioned as an example is not an approved integration or feature.
 
@@ -14,9 +16,9 @@ The owner requested that all work follow the plan and nothing else be added. Thi
 
 Before adding, editing, or creating any app artifact—including screens, user flows, code, tests, data models, provider entries, APIs, backend services, permissions, build/release configuration, or user-visible behavior:
 
-1. Identify the approved requirement ID in the plan that authorizes the work.
+1. Identify the stable BF-REQ-NNN ID in APP_PLAN.md that authorizes the work, and verify that the requirement is approved—not merely proposed or partially specified.
 2. If no approved requirement covers it, do not make the app change. Write a change proposal and wait for the owner's explicit approval.
-3. If approved, update the plan and decision/risk documents first, assign or reference a requirement ID, then make the change.
+3. If approved, update the plan and decision/risk documents first, keep the BF-REQ-NNN ID stable, then make the change.
 4. Record the resulting implementation change and its verification against that requirement in the same change record/commit or linked change log.
 5. If work reveals a new requirement, risk, data flow, or behavior, stop and update the plan before continuing.
 
@@ -50,9 +52,11 @@ Before changing scope or implementing anything absent from the approved plan:
 
 No implementation begins until the owner has reviewed and explicitly approved the complete plan and says to begin. Before that approval, the planning documents must:
 
-- Resolve every Priority 0 question in OPEN_QUESTIONS.md and record the answers in DECISIONS.md.
+- Resolve every unresolved item marked effective P0 in OPEN_QUESTIONS.md and record owner decisions in DECISIONS.md. The live ID list there includes all catalog P0 items plus Q-45, Q-47, Q-54, Q-55, and Q-58; use that list rather than a stale count.
+- Resolve or explicitly defer remaining P1/P2 items before plan approval. A deferral must identify the affected behavior as outside approved v1 scope; an open item is not an approved requirement.
 - Define end-to-end user flows, supported inputs/outputs, access model, data flow/retention, provider boundaries, and update/distribution approach.
-- Give every in-scope requirement an observable acceptance criterion.
+- Give every in-scope requirement a stable BF-REQ-NNN ID, an observable acceptance criterion, and at least one mapped case in TEST_MATRIX.md. For each case, specify input, expected result, pass criterion, test owner/device, and retained evidence; mark prerequisites TBD where the owner has not decided.
+- Keep the test matrix marked Not run until actual app tests execute; a planned case is not a pass result.
 - For each material risk, record prevention, detection, safe fallback, and residual risk. No known high-impact risk may be silently treated as solved; it must be mitigated or explicitly accepted by the owner.
 - Validate the feasibility and permitted access method of every selected provider. Examples are not integrations.
 - Include a test plan for OCR and corrections, book/edition matching, Saudi shipping and ebook uncertainty, privacy/access, outages, and signed APK updates with user approval.
