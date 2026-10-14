@@ -42,7 +42,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 |---|---|---|---|
 | Q-06 | Confirmed | Printed and typed/on-screen lists were selected for v1, one format per page; handwritten and mixed-format pages were not selected. | OCR performance varies substantially by input type. |
 | Q-07 | Confirmed | English was selected as the list-content language; Arabic, mixed Arabic/English, and other-language recognition were not selected. | Determines OCR capability and false-match risks. |
-| Q-08 | P0 / Open | What does “number of books” mean: number of entries, a quantity for each title, or both? | Prevents quantity from being confused with book count or duplicate titles. |
+| Q-08 | P0 / Open | The owner is unsure whether “number of books” means list entries, copies per title/edition, or both. How should a line such as “Dune, 2nd edition ×3” be represented? | Prevents quantity from being confused with book count or duplicate titles. |
 | Q-09 | P1 / Open | What layouts are common: one title per line, columns, tables, checklists, notes in margins? | Affects row/column segmentation and review UI. |
 | Q-10 | P1 / Open | Can one list span multiple pages or images? Should the user combine pages? | Defines batch handling and duplicate detection. |
 | Q-11 | P1 / Open | Which fields should be extracted, and which are optional (title, author, ISBN, edition, publisher, year, quantity, language, format, notes)? | Defines data model and review screen. |
