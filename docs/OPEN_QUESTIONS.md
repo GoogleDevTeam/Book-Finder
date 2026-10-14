@@ -5,7 +5,7 @@ These are discovery questions, not permission to implement a guessed answer.
 
 ## Priority 0 — needed to define core behavior
 
-1. Which languages/scripts should be supported, and should one list/page be allowed to mix printed and typed/on-screen content? Printed and typed/on-screen lists were selected for v1; handwriting was not selected.
+1. Should a single list/page be allowed to mix printed and typed/on-screen content? Printed and typed/on-screen lists were selected for v1; handwriting was not selected. English was selected as the list-content language.
 2. Does “number of books” mean the number of list entries, a quantity for each title, or both?
 3. Which provider(s) should be tested first? Amazon.sa and Noon are examples only. What provider access methods are acceptable?
 4. Does Saudi-only allow a non-Saudi seller if Saudi delivery is explicitly confirmed, or must the seller itself be based in Saudi Arabia?
