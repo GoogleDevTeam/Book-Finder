@@ -1,7 +1,7 @@
 # Risk register
 
 **Last reviewed:** 2026-10-15  
-**Canonical register:** R1–R35 in this file. Legacy catalog IDs R-01–R-26 are aliases cross-walked in DISCOVERY_CATALOG.md; they are not a second risk inventory.
+**Canonical register:** R1–R37 in this file. Legacy catalog IDs R-01–R-26 are aliases cross-walked in DISCOVERY_CATALOG.md; they are not a second risk inventory.
 
 ## Rating and ownership rules
 
@@ -359,6 +359,26 @@
 - **Detection / test:** TC-030: review official signup terms and quota behavior before selecting service.
 - **Safe fallback:** Exclude the service; return to planning if no eligible option remains.
 - **Residual risk:** Open; Card requirements and plans can change; any future choice needs re-verification.
+
+### R36 — Unsupported handwritten, mixed-format, or non-English input is treated as reliably scanned
+
+- **Owner:** Project owner (risk acceptance); implementation/test owner TBD.
+- **Impact:** Moderate — unsupported pages may produce misleading entries and wrong searches.
+- **Likelihood:** Unrated — no runtime or representative negative-input tests exist.
+- **Prevention:** Clearly bound supported input; define unsupported-page handling before implementation and do not imply support for handwriting, mixed formats, or other languages.
+- **Detection / test:** TC-003 — submit unsupported formats and verify they are not treated as reliably extracted; exact fallback remains Q-04/Q-06/Q-07/Q-60.
+- **Safe fallback:** Stop unreliable extraction and offer only an owner-approved manual/cancel path; do not search guessed fields.
+- **Residual risk:** Open; users may submit ambiguous pages and the exact message/manual workflow is not chosen.
+
+### R37 — Launch-only update checks miss inactive users
+
+- **Owner:** Project owner (risk acceptance); implementation/test owner TBD.
+- **Impact:** Moderate — an invited user who does not open the app may not see an available update promptly.
+- **Likelihood:** Unrated — usage cadence and update interval are not known.
+- **Prevention:** Set an explicit update-check cadence and state that an in-app launch check does not notify an inactive user; do not add push/email without approval.
+- **Detection / test:** TC-037 — compare checks at the approved cadence and verify unavailable metadata is distinct from no update; cadence remains Q-53.
+- **Safe fallback:** Keep the installed version, show its last successful check when available, and offer a user-approved retry on next use.
+- **Residual risk:** Open; notification coverage depends on the owner-approved cadence and whether the user opens the app.
 
 ## Review gate
 
