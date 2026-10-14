@@ -56,7 +56,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
 | Q-16 | Confirmed | For a scanned list entry with a missing, invalid, or unreadable ISBN, require the user to enter or correct a valid ISBN before that entry is searched. | Lists may lack ISBNs; ISBN validation alone cannot identify every book. |
-| Q-17 | P0 / Open | What counts as an acceptable book match, and should OCR confidence and catalog-match confidence be shown separately? | Reading text correctly is different from matching the intended book. |
+| Q-17 | P0 / Partial | The owner chose separate text-reading/OCR and book-match confidence. Define what counts as an acceptable book match. | Reading text correctly is different from matching the intended book. |
 | Q-18 | P1 / Open | Which edition differences must be called out: publisher, year, language, translation, format, revised edition, volume, or ISBN? | Defines meaningful edition warnings. |
 | Q-19 | P1 / Partial | The owner chose to preselect the closest edition and flag differences. Define what “closest” means and what to do when no candidate is suitable or the requested edition is unavailable. | Avoids substituting a different book without consent. |
 | Q-20 | P1 / Open | How should duplicates, series/volume numbers, pseudonyms, alternate titles, and transliterations be handled? | Reduces duplicate results and incorrect merges. |
