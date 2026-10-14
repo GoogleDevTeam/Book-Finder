@@ -43,3 +43,6 @@ Risk ratings are not assigned yet; impact and likelihood need evidence from samp
 | R24 | Attempts to hide all app internals create false confidence while leaving credentials or sensitive logic in the APK. | Set a realistic threat model; classify what must be private; never rely on obfuscation as the sole protection. | Review the built APK and network flows before release; explicitly accept documented residual reverse-engineering risk. |
 
 Likelihood and severity remain unscored until the threat model, distribution design, and test devices are decided.
+
+
+| R25 | A one-time install-only activation is treated as ongoing access control, so forwarded APKs or removed users continue accessing protected features. | Use an owner-approved invite/enrollment flow and revalidate access for protected backend requests; use short-lived sessions and a documented revocation process. | Deny the next protected request after revocation; clearly document any offline grace period. Do not represent an install-time-only check as revocable protection. |

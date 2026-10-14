@@ -61,3 +61,13 @@ A private APK can be distributed and access-controlled, but an APK that reaches 
 - Whether a backend is acceptable and who maintains it; no GitHub/provider secret may be embedded in the APK.
 - Performance targets and test devices for startup, OCR, book matching, provider search, and update checks.
 - Whether integrity/attestation controls are required, considering their privacy, compatibility, cost, and bypass limitations.
+
+
+## Proposed access flow — pending owner decision
+
+- Candidate: invite and authorize each person/device once, then renew access automatically using short-lived sessions; avoid repeated password prompts during normal use.
+- Candidate: check authorization as part of protected backend requests, rather than adding a blocking login check on every screen. The backend would mediate private GitHub release/config and any protected provider access; no GitHub/provider secret belongs in the APK.
+- Candidate: revoke users/devices server-side so subsequent protected requests are denied. Any offline cache/lease creates a revocation delay and remains undecided.
+- Not accepted: a one-time install-only check with no later authorization, because it cannot reliably revoke an installed/forwarded copy.
+
+These are recommendations for discussion, not an approved access model. Sign-in method, device binding, online/offline behavior, session lifetime, and revocation timing remain open.

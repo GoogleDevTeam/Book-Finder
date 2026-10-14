@@ -114,3 +114,10 @@ Baselines and numeric targets are open decisions; do not invent them.
 - On-device processing, caching, and concurrency are design options, not yet approved architecture decisions.
 
 These requirements take priority during planning, but no implementation begins until the full plan and threat model are explicitly approved.
+
+
+### Proposed access flow — not approved
+
+A candidate to evaluate is: each invited person signs in once and enrolls an approved device; the app then renews a short-lived session automatically rather than prompting for a password on every launch. Protected search/update requests go through an authenticated backend, which checks whether the user/device remains allowed. A valid session can be attached to the request so authorization is checked without a separate sign-in screen for every action.
+
+This is not a final architecture decision. One-time installation/activation with no later authorization check is not sufficient for reliable revocation or to stop a forwarded APK from accessing protected services. If online authorization is unavailable, protected server features should fail safely; whether non-sensitive local-only actions remain available offline is still open.
