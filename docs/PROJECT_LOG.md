@@ -34,3 +34,8 @@ Every app-related discussion or action must be summarized here. Before any app c
 ## New entries
 
 Append new project events here in chronological order. Update the relevant plan, decision, discovery, or risk document in the same change when applicable.
+
+| 2026-10-14 | Work direction | Owner asked to continue with the existing discovery questions before implementation; no approval to begin the build was given. | Confirmed; planning only |
+| 2026-10-14 | Discovery | List-format/language question presented; no decision captured. | Open; OPEN_QUESTIONS.md item 1 |
+| 2026-10-14 | Discovery | Meaning of “number of books” question presented; no decision captured. | Open; OPEN_QUESTIONS.md item 2 |
+| 2026-10-14 | Project log | Owner asked for ongoing records of completed and in-progress work; this existing project log will be used rather than creating a duplicate. | Confirmed |
