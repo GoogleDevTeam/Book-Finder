@@ -141,38 +141,42 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 | Q-67 | P0 / Confirmed | The project owner gives final approval of the complete plan and later scope changes. | Keeps decisions with the owner and prevents assistant assumptions. |
 | Q-68 | P0 / Confirmed | The implementation gate opens only when the owner explicitly approves the complete plan and says to begin; no exact phrase is required. | Prevents an idea or discussion from being mistaken for build authorization. |
 
-## 3. Foreseeable issue and prevention register
+## 3. Legacy risk ID crosswalk
 
-Likelihood and severity remain unscored until sample lists, selected providers, and the access architecture are known. Each item needs prevention, detection, a safe fallback, and documented residual risk before the implementation gate.
+RISK_REGISTER.md is the only maintained risk inventory. The R-01–R-26 identifiers below are preserved as legacy aliases so earlier references remain searchable; they are not separate assessments and must not be renumbered or assigned new meanings. Use the canonical R1–R37 entries for owner, impact, likelihood rationale, prevention, detection, fallback, and residual risk.
 
-| ID | Failure mode / impact | Prevention | Detection and safe fallback |
-|---|---|---|---|
-| R-01 | OCR reads a title, author, or ISBN incorrectly, producing a wrong search. | Evaluate on representative languages and list styles; validate ISBNs; show field confidence and allow correction. | Compare extracted text with user confirmation; if uncertain, pause search and offer manual entry. |
-| R-02 | Multiple rows/columns merge, split, or lose quantities. | Define supported layouts and data fields; keep quantity separate from entry count; show all rows for review. | Flag incomplete/low-confidence rows; preserve originals and allow row correction; never silently merge duplicates. |
-| R-03 | Handwriting or mixed Arabic/English is unsupported by the chosen OCR. | Decide languages/input types before selection; test on real examples. | If unsupported, disclose limitation and use manual entry rather than claiming a reliable scan. |
-| R-04 | Invalid ISBN or a one-digit error points to another book. | Check ISBN structure/check digit; cross-check title/author/edition metadata. | Flag mismatch and allow correction; fall back to title/author search. |
-| R-05 | Same title matches another translation, volume, or edition. | Define edition fields and matching rules; show ISBN, language, publisher, year, format. | Surface alternatives and ask user to choose; do not auto-substitute. |
-| R-06 | Confidence number looks precise but is not calibrated. | Decide how confidence is generated and what it means; separate OCR confidence from catalog-match confidence if approved. | Test against labeled examples; use plain uncertainty labels until a score is validated. |
-| R-07 | Provider name in GitHub is mistaken for a functional integration. | Require each provider to have an approved method, support status, owner, and tests. | Show “not configured/unsupported” distinctly from “searched with no result.” |
-| R-08 | A provider’s API/site changes, blocks access, or disallows the search method. | Verify terms and technical access before selecting provider; keep integrations isolated and maintainable. | Detect errors/rate limits; mark source unavailable; do not imply search completeness. |
-| R-09 | Search results omit books because only a subset of sources is supported. | Display supported sources and which ones were checked; avoid “searched everywhere” claims. | Report per-source failure/incompleteness; let user retry only if approved. |
-| R-10 | Saudi shipping is assumed from a general seller page but fails for the product/address. | Define evidence standards; test destination-specific status; label source and check time. | Use Confirmed / Unconfirmed / Does not ship states; never turn unknown into confirmed. |
-| R-11 | Delivery cost, customs, taxes, or remote-area restrictions make a result misleading. | Decide which landed-cost fields are in scope; distinguish seller-listed price from total cost. | State what is excluded and ask user to confirm checkout total. |
-| R-12 | Price or stock is stale when user opens the seller page. | Define freshness rules and cache duration; show last checked time if data is retrieved. | Recheck before presenting current availability when feasible; otherwise label as potentially changed. |
-| R-13 | Ebook is geo-blocked, subscription-only, incompatible, or no longer licensed. | Separate ebook status from print shipping; define whether purchase/subscription/library access count. | Flag unknown or restricted regional status; link to source; do not promise access. |
-| R-14 | Provider configuration is altered to call an untrusted endpoint or execute code. | Treat GitHub provider data as schema-validated data, never executable code; allowlist supported source types/domains. | Reject invalid or unexpected config; keep last known-good config and show config error. |
-| R-15 | GitHub token, provider key, or signing key is extracted from APK/source. | Never place secrets in client bundle or repository; keep server credentials in managed secrets; restrict scopes. | Scan releases/repo; revoke and rotate exposed credentials; stop affected service access. |
-| R-16 | One invited user sees another person’s list or search history. | Decide isolation model; enforce authorization server-side; minimize stored records. | Test cross-account access; fail closed; revoke access and investigate without retaining unnecessary content. |
-| R-17 | Photo, book title, or ISBN is retained or sent externally unexpectedly. | Define data flow and retention; process locally where approved; disclose provider query sharing. | Audit network/log paths; provide delete/clear controls if storage is approved; avoid sensitive logs. |
-| R-18 | Phone is lost, invite is shared, or a user should be removed. | Select authentication/device enrollment and revocation rules before build. | Revoke user/device access and sessions; stop access to private updates/config. |
-| R-19 | APK is corrupted, substituted, downgraded, or signed with a different key. | Protect signing identity, verify provenance/integrity, use a secure release process, document recovery. | Refuse the package and keep installed app; provide a planned recovery/rollback procedure. |
-| R-20 | Android installer requires user action or blocks the update. | Test actual sideload flow on target devices; explain permission and approval steps. | Keep old version usable; show status and a retry path; never claim a silent update. |
-| R-21 | Update service is unavailable or users do not open the app. | Define launch-check cadence, cache policy, and whether push is needed. | Show last check; retry with backoff; accept that launch-only checks cannot notify inactive users. |
-| R-22 | GitHub rate limits, network loss, or backend outage disrupts search/update. | Use bounded requests, timeouts, caching, and retries where approved. | Show source/service unavailable; do not misreport it as no match or current release. |
-| R-23 | Authorized collaborators may create private forks, creating additional GitHub-hosted copies. This repo is user-owned and private with allow_forking=true; the API rejected disabling the setting for a non-organization-owned private repo. | Keep collaborator access limited and keep secrets out of the repo; evaluate an organization transfer only if the owner approves. | Treat private forks as possible; private visibility does not prevent local cloning. The owner chose to leave the setting unchanged for now. |
-| R-24 | Scope drifts through “small improvements” or assumptions during implementation. | Require every change to reference an approved requirement ID before work; update plan first. | Stop unplanned work, propose change, and await explicit owner approval. |
-| R-25 | External service terms, API pricing, catalog rights, or availability change. | Verify permitted use, costs, and data rights for every selected source before approving the plan. | Reassess source and update plan before replacing it; do not silently switch providers. |
-| R-26 | Costs/maintenance exceed expectations for a five-person app. | Identify service owners, recurring costs, secrets rotation, and maintenance burden in design. | Set budget/operational limits before choosing paid dependencies; define graceful degradation. |
+| Legacy ID | Original concern | Canonical risk ID(s) |
+|---|---|---|
+| R-01 | OCR reads a title, author, or ISBN incorrectly. | R1, R3, R4 |
+| R-02 | Rows/columns merge, split, or lose quantities. | R2 |
+| R-03 | Unsupported handwriting, mixed formats, or language is treated as supported. | R1, R2, R36 |
+| R-04 | Invalid or mistyped ISBN identifies another book. | R3 |
+| R-05 | Different translation, volume, edition, or format is matched. | R4, R22 |
+| R-06 | Confidence appears more precise than the evidence supports. | R1, R4 |
+| R-07 | A provider listed in GitHub is mistaken for an active integration. | R5 |
+| R-08 | Provider access changes, is blocked, or is not permitted. | R5, R6, R30, R34 |
+| R-09 | A partial source set omits books while search appears comprehensive. | R5, R6, R30 |
+| R-10 | Saudi shipping is inferred incorrectly from general seller information. | R7, R22, R27 |
+| R-11 | Price, customs, tax, or delivery limits make an offer misleading. | R7, R22 |
+| R-12 | Price or stock is stale when the seller is opened. | R27 |
+| R-13 | Ebook is region-restricted, incompatible, or unavailable. | R8 |
+| R-14 | Provider configuration points at untrusted endpoints or code. | R5 |
+| R-15 | GitHub/provider/signing secret is extracted from source or APK. | R9, R18, R23, R24 |
+| R-16 | One invited user sees another person’s data or access fails open. | R13, R19, R20, R25 |
+| R-17 | Photo, title, or ISBN is retained or sent externally unexpectedly. | R12, R13 |
+| R-18 | Phone is lost, an invite is shared, or a user is not revoked. | R13, R17, R19, R25, R26 |
+| R-19 | APK is corrupted, substituted, downgraded, or signed with another key. | R10, R23 |
+| R-20 | Android installer requires approval or blocks installation. | R11 |
+| R-21 | Launch-only update checks miss inactive users or unavailable metadata. | R16, R37 |
+| R-22 | GitHub, network, or backend outage disrupts search or updates. | R6, R16, R27, R29 |
+| R-23 | Authorized collaborators create private forks or local copies. | R14 |
+| R-24 | Scope drifts through unapproved small changes. | R15 |
+| R-25 | Provider/service terms, prices, rights, or availability change. | R30, R32, R34 |
+| R-26 | Five-person app costs or maintenance exceed expectations. | R29, R31, R32, R33, R35 |
+
+Two uncovered concerns discovered during reconciliation now have distinct canonical IDs: R36 covers unsupported input being treated as reliable, and R37 covers launch-only update checks missing inactive users. R21 and R28 in the canonical register additionally cover performance/resource constraints without a direct legacy alias.
+
+Likelihood is not numerically scored: there is no app runtime, representative sample set, selected provider set, or target-device evidence. See RISK_REGISTER.md and TEST_MATRIX.md; all referenced test cases remain planned, not run.
 
 ## 4. Dependencies and evidence to gather
 
