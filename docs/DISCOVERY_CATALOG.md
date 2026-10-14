@@ -55,7 +55,7 @@ Priority guide: **P0** blocks a reliable product/technical plan; **P1** must be 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-16 | P0 / Open | What should happen when ISBN is missing, invalid, or unreadable: title/author search, manual entry, or both? | Lists may lack ISBNs; ISBN validation alone cannot identify every book. |
+| Q-16 | Confirmed | For a scanned list entry with a missing, invalid, or unreadable ISBN, require the user to enter or correct a valid ISBN before that entry is searched. | Lists may lack ISBNs; ISBN validation alone cannot identify every book. |
 | Q-17 | P0 / Open | What counts as an acceptable book match, and should OCR confidence and catalog-match confidence be shown separately? | Reading text correctly is different from matching the intended book. |
 | Q-18 | P1 / Open | Which edition differences must be called out: publisher, year, language, translation, format, revised edition, volume, or ISBN? | Defines meaningful edition warnings. |
 | Q-19 | P1 / Partial | The owner chose to preselect the closest edition and flag differences. Define what “closest” means and what to do when no candidate is suitable or the requested edition is unavailable. | Avoids substituting a different book without consent. |
