@@ -63,12 +63,12 @@ The safe outcomes below are planning recommendations, not all confirmed behavior
 - **SC-036** A valid ISBN finds no catalog record. Offer title/author search or manual handling only as approved; state that no match was found in checked sources, not that the book does not exist. (Q-16)
 - **SC-037** ISBN, title, author, or publisher data conflict across catalogs. Show source disagreement or uncertainty; do not silently choose an authority without a decision. (Q-21)
 - **SC-038** Multiple books share a title, or authors have similar/transliterated names. Show evidence and alternatives; avoid presenting a weak match as certain. (Q-17, Q-20, Q-22)
-- **SC-039** The result is a different edition, translation, language, publisher, year, format, volume, or revised version. Flag differences before the user treats it as exact; substitution policy is open. (Q-18, Q-19)
+- **SC-039** The result is a different edition, translation, language, publisher, year, format, volume, or revised version. Preselect the closest and flag differences; define the closeness rule and when it may be treated as exact. (Q-18, Q-19)
 - **SC-040** ISBN differs but the edition may be the same, or metadata says the same ISBN but details differ. Preserve ambiguity for user review rather than deduplicating automatically. (Q-18, Q-20, Q-21)
 - **SC-041** A series title, volume number, pseudonym, alternate title, or transliteration causes duplicate or wrong matches. Define supported normalization and show enough evidence to distinguish. (Q-20)
 - **SC-042** A match has no author, edition, or publication metadata. Lower confidence or mark fields unknown; do not fill missing facts from an unverified source. (Q-17, Q-21)
 - **SC-043** Confidence appears numeric but is uncalibrated or misleading. Do not imply statistical precision; validate against labeled samples before setting a numeric threshold. (Q-17, Q-22, Q-65)
-- **SC-044** No exact edition is available but similar editions exist. The app must not choose on the user's behalf unless that behavior is explicitly approved. (Q-19)
+- **SC-044** No exact edition is available but similar editions exist. Closest-match preselection is approved; define how to signal that no exact candidate exists and what fallback is appropriate. (Q-19)
 
 ## F. Provider configuration and searches
 
@@ -100,7 +100,7 @@ The safe outcomes below are planning recommendations, not all confirmed behavior
 - **SC-067** Ebook format, DRM, reader/device, or account country prevents use after purchase. Do not equate listing/purchase availability with successful reading access. (Q-39)
 - **SC-068** Ebook availability or physical shipping cannot be checked because the source is down. Report check failure, not unavailable/no book. (Q-27, Q-32, Q-37)
 - **SC-069** Affiliate/sponsored placement could influence ranking or links. Keep commercial relationships out unless approved and visibly disclosed. (Q-29)
-- **SC-101** The user prefers physical books or ebooks, but a matched title has no result, uncertain regional access, or only the other format. Keep title-match confidence separate from offer availability; do not silently substitute a different edition or imply that a preferred format is available. Ranking/filter behavior and fallback remain open. (Q-01, Q-19, Q-27, Q-38, Q-39)
+- **SC-101** The user prefers physical books or ebooks, but a matched title has no result, uncertain regional access, or only the other format. Keep title-match confidence separate from offer availability; do not silently substitute a different edition or imply that a preferred format is available. The exact format-preference effect, closest-edition criteria, and fallback remain open. (Q-01, Q-19, Q-27, Q-38, Q-39)
 
 ## H. Privacy, retention, data separation, and logs
 
