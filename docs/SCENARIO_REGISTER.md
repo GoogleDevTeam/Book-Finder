@@ -47,8 +47,8 @@ The safe outcomes below are planning recommendations, not all confirmed behavior
 ## D. OCR, segmentation, and correction
 
 - **SC-025** Printed and typed/on-screen lists are selected for v1; handwriting was not selected, and mixed-format pages remain open. Test only against the confirmed set and disclose excluded modes. (Q-06)
-- **SC-026** The list uses Arabic, English, mixed Arabic/English, transliteration, or another script. The language set is open; show uncertainty when unsupported. (Q-07)
-- **SC-027** Right-to-left text, mixed direction, punctuation, or digits are reordered. Verify visual reading and editable fields in the selected language/locale. (Q-04, Q-07)
+- **SC-026** English was selected for list content. Arabic, mixed Arabic/English, and other languages were not selected; transliterated names within English lists may still need representative samples. Do not claim unselected language support. (Q-07)
+- **SC-027** If Arabic interface support or Arabic list content is later approved, right-to-left text, mixed direction, punctuation, or digits may reorder. Arabic list content is not currently selected; interface language remains open. (Q-04, Q-07)
 - **SC-028** A title wraps across lines or includes subtitles, series, volume, or notes. Avoid splitting or joining fields without review. (Q-09, Q-11)
 - **SC-029** The page has columns, a table, checkboxes, handwritten annotations, or marginal notes. Decide which layouts are supported; do not merge adjacent rows. (Q-09)
 - **SC-030** A row is split into two, two rows are merged, or reading order changes. Present individual reviewable entries and preserve the visible source association where approved. (Q-08, Q-09)
