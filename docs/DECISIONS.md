@@ -10,7 +10,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - The image contains a list of multiple books; it is not a cover-photo identification workflow.
 - For v1, the owner selected printed lists and typed/on-screen lists; each page must use one format. Handwritten lists and mixed-format pages were not selected.
 - English was selected as the list-content language. Arabic, mixed Arabic/English, and other-language recognition were not selected.
-- Book search can use ISBN, name/title, or both.
+- Book search can use ISBN, name/title, or both. For a scanned list entry, require a valid, readable ISBN—provided or corrected by the user—before searching that entry.
 - Show identification confidence.
 - Flag different editions and versions. When multiple editions match, preselect the closest and flag differences.
 - The minimum useful outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference.
