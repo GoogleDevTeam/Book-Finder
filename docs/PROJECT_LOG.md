@@ -39,3 +39,6 @@ Append new project events here in chronological order. Update the relevant plan,
 | 2026-10-14 | Discovery | List-format/language question presented; no decision captured. | Open; OPEN_QUESTIONS.md item 1 |
 | 2026-10-14 | Discovery | Meaning of “number of books” question presented; no decision captured. | Open; OPEN_QUESTIONS.md item 2 |
 | 2026-10-14 | Project log | Owner asked for ongoing records of completed and in-progress work; this existing project log will be used rather than creating a duplicate. | Confirmed |
+
+| 2026-10-14 | Quality planning request | Owner asked how to catch likely errors before they occur, consider features, and make the app feel smooth and polished. | Proposed; no new features or implementation approved |
+| 2026-10-14 | Recommended next work | Convert the risk register and acceptance criteria into a pre-build test matrix and UI state specification; keep new feature ideas as proposals until explicitly approved. | Proposed; planning only |
