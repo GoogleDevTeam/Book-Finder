@@ -46,7 +46,7 @@ The safe outcomes below are planning recommendations, not all confirmed behavior
 
 ## D. OCR, segmentation, and correction
 
-- **SC-025** The list is printed, handwritten, typed on a screen, or mixed. Supported modes are open; test only against the chosen set and disclose excluded modes. (Q-06)
+- **SC-025** Printed and typed/on-screen lists are selected for v1; handwriting was not selected, and mixed-format pages remain open. Test only against the confirmed set and disclose excluded modes. (Q-06)
 - **SC-026** The list uses Arabic, English, mixed Arabic/English, transliteration, or another script. The language set is open; show uncertainty when unsupported. (Q-07)
 - **SC-027** Right-to-left text, mixed direction, punctuation, or digits are reordered. Verify visual reading and editable fields in the selected language/locale. (Q-04, Q-07)
 - **SC-028** A title wraps across lines or includes subtitles, series, volume, or notes. Avoid splitting or joining fields without review. (Q-09, Q-11)
