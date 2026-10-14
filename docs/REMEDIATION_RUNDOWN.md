@@ -27,7 +27,7 @@ The following is recorded as confirmed in the existing plan and decision log:
 - The owner wants a $0 service path with no card requirement, paid overage, or automatic upgrade. If a free quota is reached, the safe default is to stop/degrade rather than charge.
 - The plan is the scope authority. No feature, provider, or app behavior outside the explicitly approved plan may be implemented.
 
-Open details—including the exact photo types/languages, access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices—remain open.
+Open details include list languages and mixed-format handling (printed and typed/on-screen inputs are selected; handwriting was not selected), access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices.
 
 ## GitHub state checked
 
@@ -40,7 +40,7 @@ Open details—including the exact photo types/languages, access model, data ret
 
 ### F-01 — The decision backlog and approval gate disagree
 
-DISCOVERY_CATALOG.md contains Q-01 through Q-87: 86 open items and Q-79 confirmed. It marks 32 items P0/Open; the catalog separately reclassifies five more as plan blockers (Q-45, Q-47, Q-54, Q-55, Q-58), for 37 effective P0 blockers. OPEN_QUESTIONS.md currently has 17 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
+At the original audit, the catalog had 86 open items and Q-79 confirmed. Since then, the owner selected printed and typed/on-screen lists for v1; Q-06 is now partially answered. Current status is 85 open, one partial (Q-06), and one confirmed (Q-79). Q-06 remains a P0 blocker because mixed-format behavior is open. The five reclassified blockers remain Q-45, Q-47, Q-54, Q-55, and Q-58, for 37 effective P0 blockers. OPEN_QUESTIONS.md currently has 17 prompts and does not map them to the catalog IDs. The approval gate can therefore be read against two different backlogs.
 
 **Proposed repair:** Declare the catalog the canonical question inventory, make OPEN_QUESTIONS an ID-mapped decision index, and have the gate count the 37 effective blockers—not just the seven short-list P0 prompts. Keep Q-79 confirmed and out of the open queue. Reconcile counts whenever either file changes.
 
