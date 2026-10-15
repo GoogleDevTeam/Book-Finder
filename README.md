@@ -1,10 +1,10 @@
 # Book Finder
 
-Book Finder is a private, native Android app for turning a photo of a book list or school syllabus into book details and one-tap searches at Saudi retailers. Its target architecture is deliberately local-first: no custom backend, account system, scraping pipeline, or price aggregator.
+Book Finder is a planned, serverless native Android app (minimum Android API 29) for turning a photo of a book list or school syllabus into book details and one-tap retailer searches. The target architecture is local-first: no custom backend, account system, scraping pipeline, or price aggregator. This repository contains the specification; the app has not been implemented yet.
 
 ## What the app does
 
-- Capture a printed or displayed list with CameraX.
+- Capture a printed or displayed list with the native CameraXViewfinder composable in embedded mode.
 - Recognize Latin-script text on-device with Google ML Kit Text Recognition v2.
 - Find and validate ISBN-10/ISBN-13 candidates; if no ISBN is present, let the user review or edit an English title.
 - Query the Google Books API and show the normalized title, author, and cover image.
@@ -15,7 +15,7 @@ Retailer links only hand off a search. Book Finder does not fetch retailer pages
 
 ## How it works
 
-CameraX capture → on-device OCR → ISBN/title review → Google Books metadata lookup → Room cache/history → retailer search link
+CameraXViewfinder capture → on-device OCR → ISBN/title review → Google Books metadata lookup → Room cache/history → retailer search link
 
 The camera image is processed on the device and is not uploaded in the default configuration. The app sends only the selected ISBN or English title to Google Books for a lookup. Cached results and scan history stay in the local Room database; there is no cloud sync or custom server.
 
@@ -27,14 +27,18 @@ If Arabic text extraction from school syllabi is a release requirement, use Goog
 
 ## Tech stack
 
-- Kotlin and Jetpack Compose for the native Android UI
-- CameraX for camera preview and capture
+- Kotlin, Jetpack Compose, and Material 3 for the native Android UI (minimum Android API 29)
+- CameraX with the native CameraXViewfinder composable using ImplementationMode.EMBEDDED
 - Google ML Kit Text Recognition v2, Latin model, for on-device OCR
 - Google Books API for book metadata
 - Android Room (SQLite) for local scan history and cached metadata
 - Kotlin coroutines and Flow for asynchronous work and observable local state
 - Retrofit/OkHttp for HTTP requests; Coil for cover images
 - Firebase App Distribution for private testing with five users
+
+## UI and motion
+
+Use Material 3 tonal palettes and standard shape tokens: 12dp card corners and 28dp bottom sheets, without heavy drop shadows. Support predictive-back animations. Wrap scan/results transitions in a Compose LookaheadScope and use spring motion; animate a bounding box to the recognized OCR text, then transition the selected text into the results card or sheet when tapped.
 
 ## Scope boundaries
 
@@ -46,4 +50,4 @@ If Arabic text extraction from school syllabi is a release requirement, use Goog
 
 ## Project documents
 
-The current product and architecture specification is this README plus [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md). Existing planning files under docs/ are retained as history; they are not current requirements and must not override these two documents.
+The current product and architecture specification is this README plus [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md). The 13 legacy planning files were removed from the current main branch; their earlier versions remain in Git history and are not current requirements.
