@@ -29,6 +29,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - Allow only invited accounts/devices, with a way to revoke access.
 - Cache provider configuration safely and show when data was last checked.
 - Check for a new app version on launch only when the last check is old enough, and keep the check non-blocking.
+- Evaluate a native Android client plus one modular authenticated API, on-device OCR, and separate metadata/offer provider adapters; see ARCHITECTURE_PROPOSAL.md. This is a planning recommendation only: no stack, host, provider, auth, persistence, or data flow is selected.
 
 ## Open
 

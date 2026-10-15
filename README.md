@@ -16,6 +16,7 @@ Only requirements marked **Confirmed** in the plan may be treated as agreed. Ope
 - [Product plan](docs/APP_PLAN.md) — intended user journey, confirmed scope, acceptance criteria, and stable BF-REQ IDs.
 - [Pre-build test matrix](docs/TEST_MATRIX.md) — planned test inputs, pass criteria, owners/devices, evidence, and open prerequisites; no tests have been run.
 - [Cost and hosting evaluation](docs/COST_AND_HOSTING.md) — dated free-tier comparison; no host selected.
+- [Architecture proposal](docs/ARCHITECTURE_PROPOSAL.md) — security, data-flow, provider, quality, release, and main-only workflow recommendations; not approved for implementation.
 - [Project log](docs/PROJECT_LOG.md) — concise record of app-related decisions, proposals, risks, plan changes, and work outcomes.
 - [Discovery catalog](docs/DISCOVERY_CATALOG.md) — broad question inventory, assumptions, dependencies, and foreseeable risks.
 - [Decision log](docs/DECISIONS.md) — confirmed decisions, proposed choices, and unresolved decisions.

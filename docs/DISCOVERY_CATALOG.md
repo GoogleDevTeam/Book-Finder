@@ -69,9 +69,9 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-23 | P0 / Open | Which providers are first-version candidates? Amazon.sa and Noon are examples only. | A bounded source list is testable; “everywhere online” is not. |
+| Q-23 | P0 / Partial | Which metadata, retail, and ebook providers are acceptable v1 candidates? Google Books (metadata/Google eBookstore) and Open Library (human-oriented metadata) are research candidates; Amazon.sa eligibility and Noon consumer search remain unverified. No provider is selected. | A bounded source list is testable; “everywhere online” is not. | 
 | Q-24 | P0 / Open | What exactly will be stored in the GitHub provider list: names/links, search templates, API configuration, or something else? | A list of URLs alone may not make a provider searchable or verifiable. |
-| Q-25 | P0 / Open | For each provider, is there an official API or other permitted search method? Are credentials required? | Avoids blocked, brittle, or disallowed scraping and exposes credential needs. |
+| Q-25 | P0 / Partial | For each provider, is there an official API or other permitted search method, and are credentials required? First-party docs were reviewed for Google Books, Open Library, Amazon.sa, and Noon; use-case terms, account eligibility, costs, live coverage, and provider-specific permission are not fully verified. | Avoids blocked, brittle, or disallowed scraping and exposes credential needs. | 
 | Q-26 | P1 / Open | Who may add/edit providers, how are changes reviewed, and how does the app know a source is supported? | Prevents arbitrary or broken source entries from becoming active. |
 | Q-27 | P1 / Partial | The plan requires a provider failure to be shown as unchecked, not as no results. Which retry/backoff and partial-response behavior, if any, should be specified? | A failed search must not look like “no book exists.” |
 | Q-28 | P1 / Open | How should results be sorted or compared, and should the app show one result or results from every enabled provider? | Affects completeness, ranking, and user trust. |
@@ -88,7 +88,7 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 | Q-34 | P1 / Open | Does shipping need to work to all Saudi addresses, or can it vary by city, postal code, or delivery method? | Some sellers restrict remote areas or require address details. |
 | Q-35 | P1 / Open | Should price include shipping, taxes, customs, and currency conversion, or show only the provider’s listed price? | Avoids misleading comparisons. |
 | Q-36 | P1 / Open | How fresh must price, stock, and shipping data be? Should the app display the time checked? | Availability and shipping terms can change. |
-| Q-37 | P0 / Open | Which ebook providers are candidates, and how will Saudi-region availability be verified? | Ebook licensing may differ from physical delivery. |
+| Q-37 | P0 / Partial | Which ebook providers are candidates, and how will Saudi-region availability be verified? Google Books reports country-specific saleability for its own eBookstore; this does not guarantee user account/DRM/device access or cover other stores. No ebook provider is approved. | Ebook licensing may differ from physical delivery. | 
 | Q-38 | P1 / Open | Should ebook results distinguish purchase, subscription, library loan, sample, and free/legal access? | These are not interchangeable forms of availability. |
 | Q-39 | P1 / Open | Should format/DRM/device compatibility be shown, and is that in initial scope? | A purchasable ebook may not work on the user’s device or preferred reader. |
 
@@ -111,9 +111,9 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 |---|---|---|---|
 | Q-48 | P1 / Open | Should this plan-only repository later contain app code, or remain separate from a future code repository? | Keeps the plan authoritative and controls who sees source/build artifacts. |
 | Q-49 | P1 / Open | Should provider configuration share this repo or live in a separate, more restricted repo? | Configuration edits can affect app behavior and must be reviewed. |
-| Q-50 | P0 / Partial | How will the first APK reach the five users privately? | Firebase App Distribution is a no-cost candidate (500 testers/project, 200/group); no-card activation and owner selection are not verified. |
+| Q-50 | P0 / Partial | How will the first APK reach the five users privately? Firebase App Distribution remains a no-cost candidate within published tester caps; Android's outside-Play developer-verification rollout begins in four countries in 2026 and expands globally in 2027. No distribution choice or eligibility is verified. | Initial installation and later updates are separate workflows; private tester delivery must not put secrets in the APK. | 
 | Q-51 | P0 / Partial | How will private releases be fetched without placing a GitHub token in the APK? | GitHub release listing requires Contents read; GitHub App installation tokens can be scoped and expire after one hour. Use only server-side credentials; backend remains unselected. |
-| Q-52 | P0 / Partial | What is the signing-key creation, storage, backup, access, and recovery procedure? | Android requires signed APKs; loss of the app signing key prevents updating existing installs. No signing key or custody policy is approved. |
+| Q-52 | P0 / Partial | What is the signing-key creation, storage, backup, access, and recovery procedure? APK updates require signing identity continuity; outside-Play package registration/developer verification may apply based on release date/region. No key exists, and custody, eligibility, registration, and recovery remain undecided. | Loss or compromise can make updates impossible or unsafe. | 
 | Q-53 | P1 / Open | On launch, how often should the app check for updates, and should checks be manual as well? | Defines the “small launch check” and prevents unnecessary requests. |
 | Q-54 | P1 / Partial | How should the app handle a failed/corrupt update, a downgrade, or a release that must be revoked? | Android update identity/signature must be preserved and version code cannot be lower; removing release metadata cannot uninstall offline APKs. Rollback/revocation/offline policy remains open. |
 | Q-55 | P1 / Open | What Android versions/devices and installation permissions must be supported? | APK installation and installer behavior vary by Android version/device policy. |

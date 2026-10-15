@@ -115,10 +115,10 @@
 - **Owner:** Project owner (risk acceptance); implementation/test owner TBD.
 - **Impact:** Moderate — updates may be delayed or unavailable on some devices.
 - **Likelihood:** Unrated — no runtime/sample/provider/device evidence exists to support a probability score.
-- **Prevention:** Explain Android's approval flow and test supported OS/device versions.
-- **Detection / test:** TC-032, TC-034, TC-036: confirm approval prompt, user cancellation, and device-specific behavior; Q-55/Q-58 open.
-- **Safe fallback:** Keep installed version usable and offer a clear retry path.
-- **Residual risk:** Open; Manufacturer/OS installer behavior varies and support devices are not selected.
+- **Prevention:** Explain Android's approval flow and test supported OS/device versions. Before private distribution, verify any developer-identity and package-registration steps that apply to the release date/region; do not assume a fee-free account is available until owner eligibility is checked.
+- **Detection / test:** TC-032, TC-034, TC-036: confirm approval prompt, user cancellation, device-specific behavior, and applicable registration evidence; Q-50/Q-52/Q-55/Q-58 remain open.
+- **Safe fallback:** Keep installed version usable and offer a clear retry path; delay distribution if a required registration or user-approval step is incomplete.
+- **Residual risk:** Open; manufacturer/OS installer behavior varies, Android's developer-verification rollout expands globally in 2027, and the owner's account eligibility/requirements and supported devices are not selected.
 
 ### R12 — External searches expose reading interests
 
