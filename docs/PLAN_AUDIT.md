@@ -77,3 +77,10 @@ Amazon's Creators API documents a Saudi marketplace and product search, but acce
 For Q-85, Firebase App Distribution is advertised as no-cost with official tester limits, while GitHub Actions private-repository quotas depend on the account plan and overage is billable. Email delivery method, storage, monitoring, build requirements, exact quotas, and no-card activation remain undecided/unverified.
 
 This was documentation research only: no account was created, no credentials or payment method were entered, no app code/tests/deployment occurred, and no provider was selected. The repo remains planning-only.
+
+
+## Research follow-up: private release and APK integrity (2026-10-15)
+
+GitHub's private release-listing API requires repository Contents read permission; GitHub App installation tokens can be limited to granted repositories/permissions and expire after one hour. This is a server-side candidate, not permission to embed a token in the Android client. Android requires signed APKs; update identity/signing must remain consistent, loss of the app signing key prevents updating installed copies, Android 8/API 26+ requires per-source install permission, and update version codes must not be lower than installed versions. Removing a release cannot uninstall existing APKs, and an offline device cannot receive revocation. A correction needs a newly signed higher-version release plus compatible data migration; protected online operations need server-side revocation checks. None of the key-custody, rollback, private-distribution, or offline policies is decided. Detailed sources and limitations are recorded in COST_AND_HOSTING.md.
+
+Firebase App Distribution is a no-cost tester-distribution candidate within its published caps (500 testers/project, 200/group). GitHub Actions private-repository build quotas depend on the account plan; overage is billable. The account plan, no-card setup, required email/storage/monitoring services, and build capacity remain unverified. No tools were installed, app code/tests were not run, and no service was configured.

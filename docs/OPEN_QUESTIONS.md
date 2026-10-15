@@ -5,7 +5,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 
 ## Current gate
 
-- 87 discovery IDs: 71 Open, 6 Partial, 10 Confirmed.
+- 87 discovery IDs: 65 Open, 12 Partial, 10 Confirmed.
 - 30 effective P0 blockers must be resolved before plan approval: Q-08, Q-17, Q-23, Q-24, Q-25, Q-31, Q-32, Q-33, Q-37, Q-40, Q-41, Q-42, Q-45, Q-47, Q-50, Q-51, Q-52, Q-54, Q-55, Q-58, Q-64, Q-65, Q-69, Q-70, Q-71, Q-72, Q-74, Q-81, Q-82, Q-83. This includes five P1 catalog items escalated by the audit: Q-45, Q-47, Q-54, Q-55, and Q-58. Q-67, Q-68, and Q-80 are now confirmed and no longer block approval.
 - P1/P2 items must be resolved or explicitly deferred before plan approval. Research findings are not product approval.
 
@@ -71,11 +71,11 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 | Q-47 | P1 | Open | Research first, then owner decision | Effective P0—resolve before plan approval | Is a private backend acceptable for mediating GitHub access and updates? Who will maintain it? |
 | Q-48 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | Should this plan-only repository later contain app code, or remain separate from a future code repository? |
 | Q-49 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | Should provider configuration share this repo or live in a separate, more restricted repo? |
-| Q-50 | P0 | Open | Owner decision | Effective P0—resolve before plan approval | How will the first APK reach the five users privately? |
-| Q-51 | P0 | Open | Research first, then owner decision | Effective P0—resolve before plan approval | How will private releases be fetched without placing a GitHub token in the APK? |
-| Q-52 | P0 | Open | Research first, then owner decision | Effective P0—resolve before plan approval | What is the signing-key creation, storage, backup, access, and recovery procedure? |
+| Q-50 | P0 | Partial | Research first, then owner decision | Effective P0—resolve before plan approval | How will the first APK reach the five users privately? Firebase App Distribution is a no-cost candidate with limits of 500 testers/project and 200/group; exact no-card setup, onboarding, and owner choice remain open. |
+| Q-51 | P0 | Partial | Research first, then owner decision | Effective P0—resolve before plan approval | How will private releases be fetched without placing a GitHub token in the APK? GitHub release listing requires Contents read; GitHub App installation tokens can be repository/permission-scoped and expire after one hour. Backend/auth flow remains unselected. |
+| Q-52 | P0 | Partial | Research first, then owner decision | Effective P0—resolve before plan approval | What is the signing-key creation, storage, backup, access, and recovery procedure? Android requires a signing identity for APKs; losing the app signing key prevents updates to existing installs. No key was created and custody/recovery remains an owner decision. |
 | Q-53 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | On launch, how often should the app check for updates, and should checks be manual as well? |
-| Q-54 | P1 | Open | Research first, then owner decision | Effective P0—resolve before plan approval | How should the app handle a failed/corrupt update, a downgrade, or a release that must be revoked? |
+| Q-54 | P1 | Partial | Research first, then owner decision | Effective P0—resolve before plan approval | How should the app handle a failed/corrupt update, a downgrade, or a release that must be revoked? Android update guidance requires preserved app/signing identity and a version code no lower than installed; removal from GitHub cannot uninstall existing/offline copies. Rollback, revocation, and offline behavior remain open. |
 | Q-55 | P1 | Open | Owner decision | Effective P0—resolve before plan approval | What Android versions/devices and installation permissions must be supported? |
 | Q-56 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | Is an in-app notice on next launch enough, or are push notifications required when users are not opening the app? |
 | Q-57 | P1 | Partial | Owner decision remains | P1/P2—resolve or explicitly defer | The owner chose to leave private forking unchanged for now; transferring the repository for stricter controls remains undecided. |
@@ -103,10 +103,10 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 | Q-79 | — | Confirmed | Recorded decision | Resolved | Can any app service require a payment card for its free tier? No. |
 | Q-80 | P0 | Confirmed | Recorded decision | Resolved | At a free quota limit, stop or degrade the affected service without charging; any paid change needs explicit owner approval. |
 | Q-81 | P0 | Open | Owner decision | Effective P0—resolve before plan approval | Are sleep/idle pauses, cold starts, or manual republishing acceptable? |
-| Q-82 | P0 | Open | Research—can proceed without owner input | Effective P0—resolve before plan approval | Which candidate backend can securely support invite-only auth, private GitHub release access, and revocation at $0? |
+| Q-82 | P0 | Partial | Research first, then owner decision | Effective P0—resolve before plan approval | Which candidate backend can securely support invite-only auth, private GitHub release access, and revocation at $0? Cloudflare Workers/D1, Firebase Spark/Auth, and Supabase Free have relevant published limits, but no complete no-card, native-auth, revocable backend path is verified; Supabase may pause after 7 days of low activity. No option selected. |
 | Q-83 | P0 | Partial | Research first, then owner decision | Effective P0—resolve before plan approval | Do Amazon.sa, Noon, and later providers offer a permitted no-cost search/data method? Official research found Amazon.sa Creators API but it requires target-marketplace Associates enrollment, 10 qualifying sales in 30 days, API registration, and credentials; Noon documentation covers partner/seller/integrator APIs, not a public consumer search API. Owner eligibility and compliant fit remain unverified; no provider is approved. |
 | Q-84 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | If no free permitted method exists for a source, should that source be omitted? |
-| Q-85 | P1 | Open | Research—can proceed without owner input | P1/P2—resolve or explicitly defer | Are email/invitation delivery, storage, monitoring, and build minutes required, and can each stay within free quotas? |
+| Q-85 | P1 | Partial | Research first, then owner decision | P1/P2—resolve or explicitly defer | Are email/invitation delivery, storage, monitoring, and build minutes required, and can each stay within free quotas? Firebase App Distribution is no-cost within published tester caps; private GitHub Actions quotas depend on account plan and overage is billed. Email, storage, monitoring, exact account quotas, and required services remain open. |
 | Q-86 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | How often will users use the app, and is a service that pauses after inactivity acceptable? |
 | Q-87 | P1 | Confirmed | Recorded decision | Resolved | At a quota limit or plan change, stop or degrade safely; no automatic paid upgrade or overage. A different policy needs explicit owner approval. |
 
