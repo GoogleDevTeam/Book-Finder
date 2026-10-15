@@ -33,6 +33,8 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 
 ## Open
 
+- The owner selected library/school inventory as the main use context, but it is unclear whether this means list-based book sourcing or collection management. The current APP_PLAN covers scanning lists and finding sourcing options, not holdings/loan tracking; clarify Q-03 before changing scope.
+
 - The app interface language(s), including whether it should support Arabic alongside English. List content is currently English-only by selection.
 - Whether to track list-entry count, copy quantity per title/edition, or both. The owner is not sure yet. Edition/version identifies the book and is separate from copies.
 - Initial providers to support and the permitted search/API method for each. Example providers are not yet integrations.
