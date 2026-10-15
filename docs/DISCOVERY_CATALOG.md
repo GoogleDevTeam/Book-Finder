@@ -34,7 +34,7 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 |---|---|---|---|
 | Q-01 | Confirmed | Minimum useful v1 outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference. Exact-edition/default selection behavior remains open under Q-19. | Prevents scope from drifting into unrelated book-management features. |
 | Q-02 | P1 / Confirmed | The owner selected one shared group list for about five users and explicitly chose to leave the group relationship/category unspecified for v1. Authentication and authorization remain open under separate questions. | Records the list-sharing model without collecting group relationship data. |
-| Q-03 | P1 / Open | How often and in what situation will the app be used (one-off list, recurring shopping, library/school list)? | Affects list persistence, speed, offline expectations, and what must be saved. |
+| Q-03 | P1 / Open | Which usage contexts must v1 support: a one-time personal list, recurring shopping, or library/school inventory? | Defines the use-case workflow; usage frequency and tolerance for free-tier pauses are handled separately under Q-86. |
 | Q-04 | P1 / Open | Which languages should the app interface support? Is Arabic/RTL required, English, or both? | Affects layout, accessibility, OCR display, and testing. |
 | Q-05 | P1 / Open | What is explicitly out of scope for version one? | Prevents optional ideas from becoming accidental requirements. |
 
@@ -101,9 +101,9 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 | Q-42 | P0 / Open | Which data may leave the device: source photo, extracted text, ISBN/title search, account identifier, diagnostics? | External searches reveal query terms to providers; backend logs may also retain them. |
 | Q-43 | P1 / Open | What should be stored locally or remotely, and how long? Is there an export/delete requirement? | Defines retention and recovery. |
 | Q-44 | P1 / Open | What is the response if a phone is lost, a user leaves, or an invite is shared? | Requires revocation and session/device handling. |
-| Q-45 | P1 / Open | What threat model matters: accidental exposure, a shared device, unauthorized group access, malicious provider response, or compromised GitHub? | “As secure as possible” needs concrete threats to test. |
+| Q-45 | P1 / Open | Which trust-boundary failures must the threat model cover: accidental data exposure, malicious provider/OCR content, or a compromised GitHub/release configuration? | “As secure as possible” needs concrete threats to test. |
 | Q-46 | P1 / Open | What operational logs are allowed, and must they avoid titles/ISBNs or user identity? | Logs can unintentionally reveal reading/search activity. |
-| Q-47 | P1 / Open | Is a private backend acceptable for mediating GitHub access and updates? Who will maintain it? | A private GitHub token must not be embedded in the APK; a server has cost and maintenance implications. |
+| Q-47 | P1 / Open | For private GitHub provider configuration and release metadata, is a server-side broker acceptable (rather than a client-held GitHub token), or should those capabilities be omitted? Who would maintain it? | A private GitHub token must not be embedded in the APK; a server has cost and maintenance implications. |
 
 ### Repository, APK distribution, and updates
 
@@ -116,7 +116,7 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 | Q-52 | P0 / Partial | What is the signing-key creation, storage, backup, access, and recovery procedure? APK updates require signing identity continuity; outside-Play package registration/developer verification may apply based on release date/region. No key exists, and custody, eligibility, registration, and recovery remain undecided. | Loss or compromise can make updates impossible or unsafe. | 
 | Q-53 | P1 / Open | On launch, how often should the app check for updates, and should checks be manual as well? | Defines the “small launch check” and prevents unnecessary requests. |
 | Q-54 | P1 / Partial | How should the app handle a failed/corrupt update, a downgrade, or a release that must be revoked? | Android update identity/signature must be preserved and version code cannot be lower; removing release metadata cannot uninstall offline APKs. Rollback/revocation/offline policy remains open. |
-| Q-55 | P1 / Open | What Android versions/devices and installation permissions must be supported? | APK installation and installer behavior vary by Android version/device policy. |
+| Q-55 | P1 / Open | Which Android OS versions and device models must the app support? | APK installation and installer behavior vary by Android version/device policy. |
 | Q-56 | P1 / Open | Is an in-app notice on next launch enough, or are push notifications required when users are not opening the app? | A launch check cannot alert a user who never launches the app. |
 | Q-57 | P1 / Partial | The owner chose to leave the existing private-fork setting unchanged for now. This repo is private and owned by the personal GitHub account GoogleDevTeam, with allow_forking=true; the connected API rejected disabling it with HTTP 422, stating the setting can only be changed on organization-owned private repositories. A UI-only control was not verified. Whether to transfer the repository for stricter fork controls remains open. | Limit access to intended collaborators; private visibility does not prevent authorized users from cloning. Any organization transfer needs separate owner approval. |
 
@@ -124,12 +124,12 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-58 | P1 / Open | What Android minimum version, screen sizes, camera permissions, and accessibility needs are required? | Sets supported devices and test matrix. |
+| Q-58 | P1 / Open | What screen sizes/layouts, camera/photo permissions, and accessibility needs must v1 support? (OS/device coverage is Q-55.) | Sets supported devices and test matrix. |
 | Q-59 | P1 / Open | Must list extraction and editing work offline? Which actions may require connectivity? | Determines OCR and offline/cache architecture. |
 | Q-60 | P1 / Open | What loading, no-match, uncertain-match, provider-error, and offline states must the user see? | Makes failure behavior explicit instead of ambiguous. |
 | Q-61 | P2 / Open | Are saved lists, history, favorites, export, or sharing required? | These add storage and privacy scope; none is approved yet. |
 | Q-62 | P1 / Open | What support and recovery path exists if a provider or update service breaks? | A private app still needs an owner and recovery process. |
-| Q-63 | P1 / Open | What ongoing hosting, API, OCR, or service costs are acceptable? | A free prototype can become costly or stop working if dependencies are overlooked. |
+| Q-63 | P1 / Confirmed | The owner-confirmed budget target is $0 recurring cost, no payment card, and no unapproved paid service/overage/upgrade; candidate-specific eligibility and quota fit remain open under Q-82/Q-85. | This resolves the budget ceiling only; it does not approve any host/provider or account. |
 
 ### Quality and approval
 
@@ -201,12 +201,12 @@ The owner has confirmed these are the product’s highest priorities. This chang
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-69 | P0 / Open | Which threat scenarios must the design address: casual forwarding, a lost device, a user sharing credentials, reverse-engineering, or a compromised account? | “Only people I allow” needs an explicit attacker and access model. |
+| Q-69 | P0 / Open | Which user/device abuse scenarios must the access model address: a forwarded APK, a lost device, shared credentials, a compromised member account, or reverse-engineering? | “Only people I allow” needs an explicit attacker and access model. |
 | Q-70 | P0 / Open | Must every protected feature require an online authorization check, or must some features work offline? | Strict server-side gating improves revocation but reduces offline availability. |
 | Q-71 | P0 / Open | Should each allowed person have a named account, an enrolled device, or both? How many devices may each use? | Defines access boundaries and how to prevent shared APKs from being useful to guests. |
 | Q-72 | P0 / Open | What information must remain confidential: source code, credentials, provider config, search activity, or app concept? | Different information needs different controls; an app’s visible behavior cannot be hidden from its authorized users. |
 | Q-73 | P1 / Open | Is obfuscation/tamper resistance acceptable as a deterrent, with the understanding it is not a guarantee? | Sets realistic reverse-engineering expectations and implementation cost. |
-| Q-74 | P0 / Open | Is a private authenticated backend acceptable for access checks, revocation, and private update delivery? Who will maintain it? | Strong access control and private GitHub access cannot depend on a secret embedded in the APK. |
+| Q-74 | P0 / Open | Is a private authenticated backend acceptable for invitation/membership authorization and revocation of the shared list, and who would maintain it? GitHub release/config brokering is separate under Q-47. | Strong access control and private GitHub access cannot depend on a secret embedded in the APK. |
 | Q-75 | P1 / Open | What are acceptable performance targets for startup, OCR/review, provider search, and update checks, and on which devices? | Performance cannot be verified without a baseline and measurable targets. |
 | Q-76 | P1 / Open | What should remain usable when the internet/backend is unavailable, and which protected operations must fail closed? | Balances security, safety, and availability. |
 | Q-77 | P1 / Open | Are device-integrity checks/attestation required? What privacy, compatibility, cost, and bypass limits are acceptable? | Attestation may add friction and is not an absolute anti-tamper guarantee. |
@@ -228,5 +228,5 @@ The owner wants everything to be free. Safe default: target $0 ongoing cost for 
 | Q-83 | P0 / Partial | Do Amazon.sa, Noon, and later providers offer a permitted no-cost search/data method? | Amazon's official Saudi Creators API has affiliate eligibility and qualifying-sales prerequisites; Noon docs are seller/partner/integrator APIs and do not establish public consumer search. Verify owner eligibility and use terms; no provider approved and no scraping. |
 | Q-84 | P1 / Open | If no free permitted method exists for a source, should that source be omitted? | Safe default: omit it rather than create a paid or noncompliant dependency. |
 | Q-85 | P1 / Partial | Are email/invitation delivery, storage, monitoring, and build minutes required, and can each stay within free quotas? | Firebase App Distribution has published no-cost tester caps; private GitHub Actions quotas are account-plan-dependent and excess is billable. Other required services remain unknown. |
-| Q-86 | P1 / Open | How often will users use the app, and is a service that pauses after inactivity acceptable? | Usage frequency changes whether a free tier is reliable enough. |
+| Q-86 | P1 / Open | How frequently will the group use the app, and are free-tier pauses, cold starts, or manual republishing acceptable at that cadence? | Connects expected use cadence to acceptable free-tier availability. |
 | Q-87 | P1 / Confirmed | At a quota limit or plan change, stop or degrade safely; no automatic paid upgrade or overage. A different policy needs explicit owner approval. | Defines safe failure and prevents automatic charges. |
