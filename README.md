@@ -1,6 +1,10 @@
 # Book Finder
 
-Book Finder is a planned, serverless native Android app (minimum Android API 29) for turning a photo of a book list or school syllabus into book details and one-tap retailer searches. The target architecture is local-first: no custom backend, account system, scraping pipeline, or price aggregator. This repository contains the specification; the app has not been implemented yet.
+Book Finder is a serverless native Android app (minimum Android API 29) for turning a photo of a book list or school syllabus into book details and one-tap retailer searches. The target architecture is local-first: no custom backend, account system, scraping pipeline, or price aggregator. The initial implementation adds camera capture, on-device Latin OCR, ISBN/title review, and Google Books metadata lookup.
+
+## Current MVP status
+
+The first vertical slice includes the native embedded CameraX viewfinder, on-device Latin OCR, ISBN-10/13 checksum validation (including Arabic-Indic digit normalization), an editable review step, and Google Books results. The default flow does not upload camera images. Local scan history, Room caching, retailer search hand-offs, and physical-device verification remain follow-on work.
 
 ## What the app does
 

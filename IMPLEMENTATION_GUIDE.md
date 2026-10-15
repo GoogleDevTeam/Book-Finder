@@ -1,14 +1,13 @@
 # Implementation Guide
 
-Build the app in the order below. The repository currently contains specifications, not an Android app. Use the README and this guide as the complete current scope. The 13 legacy planning files were removed from main; their earlier versions remain in Git history but do not add requirements.
+The project includes a Kotlin/Compose Android app scaffold. The initial implementation covers camera capture, on-device Latin OCR, ISBN/title review, and Google Books lookup. Use the README and this guide as the current scope; the remaining steps describe verification and follow-on work. The 13 legacy planning files were removed from main; their earlier versions remain in Git history and do not add requirements. The app has not yet been built or verified on a physical Android device.
 
-## 1. Create the Android app
+## 1. Open and build the Android app
 
-1. Install the current stable Android Studio release and create a new Kotlin project using the Empty Activity template with Jetpack Compose.
-2. Set an application ID, minimum SDK 29 (Android 10), and current compile/target SDK values. Keep dependency versions in the Gradle version catalog and use stable releases.
-3. Add AndroidX Compose and Material 3, lifecycle/ViewModel, CameraX (camera-core, camera-camera2, camera-lifecycle, camera-view, and camera-compose for CameraXViewfinder), ML Kit Text Recognition v2 Latin model, Room with KSP, Kotlin coroutines/Flow, Retrofit with OkHttp, and Coil.
-4. Add only the camera and internet permissions. Do not request photo-library or location access. Keep API keys and signing material out of Git.
-5. Build and run the starter app on an emulator before adding features.
+1. Open the repository root in the current stable Android Studio release, or use the included Gradle wrapper from a shell.
+2. The `app` module uses application ID `com.googledevteam.bookfinder`, minimum SDK 29, and compile/target SDK 36. Gradle dependencies and versions are declared in `app/build.gradle.kts`.
+3. Use JDK 17 or newer. Run `./gradlew testDebugUnitTest` for the pure ISBN/title parser tests and `./gradlew assembleDebug` to produce a debug APK. The first build requires Android SDK Platform 36 and the matching Build Tools.
+4. Install and run the APK on an emulator, then verify camera permission, capture, OCR, editing, and a Google Books lookup on a physical Android phone before distributing it.
 
 ## 2. Define the smallest app flow
 
@@ -23,7 +22,9 @@ Use a Material 3 theme with tonal palettes, 12dp card corners, and 28dp bottom s
 
 For scan/results motion, use a Compose LookaheadScope and spring-based transitions. When OCR finds a valid ISBN or title, animate a bounding box to the recognized text. On selection, use a shared-element transition from that text to the results card or bottom sheet, using the shared-transition APIs supported by the pinned Compose version.
 
-## 3. Add camera capture and on-device OCR
+## 3. Camera capture and on-device OCR
+
+This initial implementation is in place. Complete the device and lifecycle checks below before treating camera capture as release-ready.
 
 1. Use the native CameraXViewfinder composable, connected to the CameraX surface request, with ImplementationMode.EMBEDDED. Do not wrap the preview in AndroidView; embedded mode lets Compose clipping, shapes, bounds, and gestures work on the camera feed. Bind ImageCapture to the screen lifecycle for the still image used by OCR.
 2. Capture a still image for each scan and process it with ML Kit Text Recognition v2 using the Latin model. Keep image processing and recognition off the UI thread.
@@ -31,7 +32,9 @@ For scan/results motion, use a Compose LookaheadScope and spring-based transitio
 4. Do not upload or persist the captured image in the default flow. Release image and recognizer resources when the scan is finished or the screen is disposed.
 5. Preserve the transform between captured-image coordinates and viewfinder coordinates so the OCR bounding box lands on the correct text. Test portrait/landscape rotation, focus, glare, low light, and small printed text on at least one physical device.
 
-## 4. Extract and validate ISBNs, then fall back to English titles
+## 4. ISBN and title review
+
+The initial implementation includes the pure ISBN parser and editable candidate-review flow. Extend and verify it against the cases below.
 
 1. Normalize OCR whitespace and common ISBN separators. If OCR recognizes Arabic-Indic digits (٠١٢٣٤٥٦٧٨٩) or Eastern Arabic digits (۰۱۲۳۴۵۶۷۸۹), normalize them to ASCII digits before matching.
 2. Search the text blocks for ISBN-10 and ISBN-13 candidates. Validate the ISBN checksum, allow X only as the final ISBN-10 character, and remove duplicates. A digit-pattern match alone is not sufficient.
@@ -39,7 +42,9 @@ For scan/results motion, use a Compose LookaheadScope and spring-based transitio
 4. If no valid ISBN is found, offer likely English title lines for review and editing. Do not send an unreviewed OCR paragraph as a title query.
 5. Keep this parsing logic in a pure Kotlin component so unit tests can cover it without camera hardware.
 
-## 5. Look up metadata with Google Books
+## 5. Google Books metadata lookup
+
+The initial implementation includes a lookup repository and results view. Verify provider behavior and error cases below before release.
 
 1. Use the Google Books volumes search endpoint over HTTPS. Search ISBNs with the ISBN query operator and titles with the title query operator, URL-encoding the search value.
 2. Parse the returned volume title, authors, thumbnail URL, and volume identifier when present. Prefer an exact ISBN match over a title-only match, and let the user choose if multiple plausible results remain.
