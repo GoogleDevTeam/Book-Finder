@@ -1,11 +1,15 @@
 package com.googledevteam.bookfinder.ui
 
 import android.Manifest
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,6 +61,7 @@ import com.googledevteam.bookfinder.domain.BookCandidate
 import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
 import com.googledevteam.bookfinder.domain.IsbnParser
+import com.googledevteam.bookfinder.retail.RetailerSearch
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.Date
@@ -96,6 +102,7 @@ fun BookFinderScreen() {
     var loading by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf<String?>(null) }
     var historySavedMessage by remember { mutableStateOf<String?>(null) }
+    var retailerMessage by remember { mutableStateOf<String?>(null) }
 
     fun reviewRecognizedText(ocrText: String) {
         val isbns = IsbnParser.extractIsbns(ocrText)
@@ -132,6 +139,7 @@ fun BookFinderScreen() {
             loading = true
             message = null
             historySavedMessage = null
+            retailerMessage = null
             results = emptyList()
             page = FinderPage.RESULTS
             try {
@@ -142,6 +150,19 @@ fun BookFinderScreen() {
             } finally {
                 loading = false
             }
+        }
+    }
+
+    fun openRetailerSearch(retailer: RetailerSearch) {
+        val searchTerm = query.trim()
+        if (searchTerm.isBlank()) return
+
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(retailer.searchUrl(searchTerm)))
+        try {
+            context.startActivity(intent)
+            retailerMessage = null
+        } catch (_: ActivityNotFoundException) {
+            retailerMessage = "No browser or retailer app is available to open ${retailer.label}."
         }
     }
 
@@ -247,6 +268,8 @@ fun BookFinderScreen() {
                         loading = loading,
                         message = message,
                         saveMessage = historySavedMessage,
+                        retailerMessage = retailerMessage,
+                        onOpenRetailer = ::openRetailerSearch,
                         onSaveResult = ::saveResult,
                         onEditSearch = { page = FinderPage.REVIEW },
                         onScanAgain = {
@@ -396,6 +419,8 @@ private fun ResultsScreen(
     loading: Boolean,
     message: String?,
     saveMessage: String?,
+    retailerMessage: String?,
+    onOpenRetailer: (RetailerSearch) -> Unit,
     onSaveResult: (BookResult) -> Unit,
     onEditSearch: () -> Unit,
     onScanAgain: () -> Unit,
@@ -431,7 +456,36 @@ private fun ResultsScreen(
             InlineMessage(message)
         }
 
+        if (!loading) {
+            Text(
+                "Search this ISBN or title with a retailer",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                "Opens the retailer's search page. Prices and availability are provided by the retailer.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                RetailerSearch.entries.forEach { retailer ->
+                    OutlinedButton(
+                        onClick = { onOpenRetailer(retailer) },
+                        modifier = Modifier.weight(1f),
+                        contentPadding = PaddingValues(horizontal = 4.dp),
+                    ) {
+                        Text(
+                            text = retailer.label,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+            }
+        }
+
         saveMessage?.let { InlineMessage(it) }
+        retailerMessage?.let { InlineMessage(it) }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
