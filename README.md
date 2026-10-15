@@ -1,37 +1,49 @@
-# Book-Finder
+# Book Finder
 
-**Repository status:** Planning draft — not approved for implementation  
-**Visibility:** Private
+Book Finder is a private, native Android app for turning a photo of a book list or school syllabus into book details and one-tap searches at Saudi retailers. Its target architecture is deliberately local-first: no custom backend, account system, scraping pipeline, or price aggregator.
 
-Book-Finder is a proposed Android APK app for identifying several books from a photo of a book list and finding physical-book and ebook options with clear Saudi Arabia delivery and region status.
+## What the app does
 
-## Scope lock
+- Capture a printed or displayed list with CameraX.
+- Recognize Latin-script text on-device with Google ML Kit Text Recognition v2.
+- Find and validate ISBN-10/ISBN-13 candidates; if no ISBN is present, let the user review or edit an English title.
+- Query the Google Books API and show the normalized title, author, and cover image.
+- Save scan history and cached book metadata on the device with Room.
+- Open a prefilled search at Jarir, Amazon.sa, or Noon in the retailer app when Android can resolve it, otherwise in Chrome Custom Tabs.
 
-This repository is the single source of truth for product scope. The current plan is still in discovery. Nothing is authorized for implementation until the owner explicitly approves the complete plan and says to begin implementation.
+Retailer links only hand off a search. Book Finder does not fetch retailer pages, scrape prices, or claim live price, stock, shipping, or ebook availability.
 
-Only requirements marked **Confirmed** in the plan may be treated as agreed. Open questions and recommendations are not approvals. Do not add features, providers, data collection, integrations, or app behavior that is not in the approved plan. Put new ideas in a change proposal and wait for explicit approval before changing scope or implementing them.
+## How it works
 
-## Planning documents
+CameraX capture → on-device OCR → ISBN/title review → Google Books metadata lookup → Room cache/history → retailer search link
 
-- [Product plan](docs/APP_PLAN.md) — intended user journey, confirmed scope, acceptance criteria, and stable BF-REQ IDs.
-- [Pre-build test matrix](docs/TEST_MATRIX.md) — planned test inputs, pass criteria, owners/devices, evidence, and open prerequisites; no tests have been run.
-- [Cost and hosting evaluation](docs/COST_AND_HOSTING.md) — dated free-tier comparison; no host selected.
-- [Architecture proposal](docs/ARCHITECTURE_PROPOSAL.md) — security, data-flow, provider, quality, release, and main-only workflow recommendations; not approved for implementation.
-- [Project log](docs/PROJECT_LOG.md) — concise record of app-related decisions, proposals, risks, plan changes, and work outcomes.
-- [Discovery catalog](docs/DISCOVERY_CATALOG.md) — broad question inventory, assumptions, dependencies, and foreseeable risks.
-- [Decision log](docs/DECISIONS.md) — confirmed decisions, proposed choices, and unresolved decisions.
-- [Risk register](docs/RISK_REGISTER.md) — foreseeable issues, prevention, and fallbacks.
-- [Discovery backlog](docs/OPEN_QUESTIONS.md) — canonical ID-mapped status/priority index for all Q-01–Q-87; separates owner decisions from research.
-- [Scope change control](docs/CHANGE_CONTROL.md) — plan-first traceability and implementation gate.
+The camera image is processed on the device and is not uploaded in the default configuration. The app sends only the selected ISBN or English title to Google Books for a lookup. Cached results and scan history stay in the local Room database; there is no cloud sync or custom server.
 
-## Working rules
+## Arabic OCR
 
-1. Read the approved plan before doing product or engineering work.
-2. Every app change—including additions, edits, creations, and bug fixes—must map to an approved plan requirement before work starts and be recorded in the plan/change log.
-3. If a request conflicts with the plan, stop and propose a plan change; do not silently choose or implement it.
-4. Keep provider examples distinct from confirmed integrations.
-5. Never describe uncertain Saudi shipping or ebook-region access as confirmed.
-6. Keep secrets out of GitHub and the APK. Private repository access is not a secrets-management system.
-7. Use only `main`: never create or use alternate/temporary branches or worktrees. Make focused, verified batches directly on `main`, and add a concise project-log checkpoint every 2–3 substantive steps/batches.
+ML Kit Text Recognition v2's on-device model does not support Arabic text recognition. The default app therefore supports ISBNs and English-title fallback, not Arabic-title extraction. An ISBN can still be used when OCR reliably recognizes it on a page that also contains Arabic text.
 
-The repository intentionally contains planning documents only.
+If Arabic text extraction from school syllabi is a release requirement, use Google Cloud Vision OCR as an explicit, opt-in architecture change. That sends the selected image or crop to Google's service and changes the privacy and cost assumptions. Do not enable it silently; provide user notice and consent, restrict the Google Cloud API key to the Android app and Vision API, and set quotas. Never ship a service-account key in the app.
+
+## Tech stack
+
+- Kotlin and Jetpack Compose for the native Android UI
+- CameraX for camera preview and capture
+- Google ML Kit Text Recognition v2, Latin model, for on-device OCR
+- Google Books API for book metadata
+- Android Room (SQLite) for local scan history and cached metadata
+- Kotlin coroutines and Flow for asynchronous work and observable local state
+- Retrofit/OkHttp for HTTP requests; Coil for cover images
+- Firebase App Distribution for private testing with five users
+
+## Scope boundaries
+
+- No custom backend, broker, sign-in, cloud sync, or user tracking.
+- No web scraping, DOM parsing, headless browser, or retailer API integration.
+- No in-app price comparison or claim of current retailer prices.
+- No custom APK updater and no GitHub Release proxy.
+- Arabic OCR is not part of the default on-device feature set.
+
+## Project documents
+
+The current product and architecture specification is this README plus [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md). Existing planning files under docs/ are retained as history; they are not current requirements and must not override these two documents.
