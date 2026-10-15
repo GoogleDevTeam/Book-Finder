@@ -1,7 +1,7 @@
 # Risk register
 
 **Last reviewed:** 2026-10-15  
-**Canonical register:** R1–R37 in this file. Legacy catalog IDs R-01–R-26 are aliases cross-walked in DISCOVERY_CATALOG.md; they are not a second risk inventory.
+**Canonical register:** R1–R40 in this file. Legacy catalog IDs R-01–R-26 are aliases cross-walked in DISCOVERY_CATALOG.md; they are not a second risk inventory.
 
 ## Rating and ownership rules
 
@@ -385,3 +385,33 @@
 Before plan approval, review every High-impact item, assign the execution/test owner, resolve its blocking questions, and record evidence and any explicit residual-risk acceptance. Do not claim that a risk is solved solely because a mitigation is proposed or a test is planned.
 
 The register is planning-only. No application behavior has been implemented or tested.
+
+### R38 — Provider configuration enables SSRF or unauthorized outbound requests
+
+- **Owner:** Project owner (risk acceptance); implementation/security-test owner TBD.
+- **Impact:** High — if a future backend follows attacker-controlled destinations, it could expose internal services or credentials and make unapproved network requests.
+- **Likelihood:** Unrated — no provider schema, backend, or runtime exists to assess exposure.
+- **Prevention:** Use schema-validated known provider IDs and reviewed adapters; never execute configuration or accept arbitrary URLs/credentials. Restrict requests to exact approved HTTPS origins; if server-side fetching is selected, resolve each target, reject loopback/private/link-local/metadata-service IPs at connection time, bind the connection to the validated resolution, and revalidate every redirect.
+- **Detection / test:** TC-021 and TC-039; assert invalid config causes no request outside the allowlist. No live provider is needed for the fixture test.
+- **Safe fallback:** Reject the entry and show the provider as unsupported/unchecked; do not silently use a default endpoint.
+- **Residual risk:** Open until provider schema, redirect behavior, DNS/egress policy, and the chosen client/backend network boundary are reviewed and the tests pass.
+
+### R39 — Untrusted provider content causes injection or deceptive result presentation
+
+- **Owner:** Project owner (risk acceptance); implementation/security-test owner TBD.
+- **Impact:** High — unsafe markup or navigation can compromise the user experience, while a deceptive shipping/region claim can lead to a mistaken purchase decision.
+- **Likelihood:** Unrated — no provider set or rendered UI exists to evaluate.
+- **Prevention:** Treat all provider text and links as untrusted; validate schemas and lengths, render as inert text, validate HTTPS destinations, and keep source failure/unknown evidence distinct from confirmed availability.
+- **Detection / test:** TC-015, TC-020, TC-022, and TC-040; use deterministic hostile-content fixtures and verify safe rendering and correct source status.
+- **Safe fallback:** Reject malformed content or render only safe text; mark the provider failed/unchecked and shipping/ebook access uncertain when evidence is insufficient.
+- **Residual risk:** Open until provider-specific schemas, UI behavior, accessibility, and the evidence policy are approved and verified.
+
+### R40 — Malformed or extreme images exhaust device resources or reach an unapproved processor
+
+- **Owner:** Project owner (risk acceptance); implementation/security-test owner TBD.
+- **Impact:** Moderate — unsafe decoding can crash or stall capture/review, lose user work, or violate the approved data-flow policy.
+- **Likelihood:** Unrated — no input parser, device matrix, or sample set exists.
+- **Prevention:** Check actual file type, dimensions, and orientation; apply documented byte/pixel/decode budgets; use bounded decoding, cancellation, and a safe rejection path. Do not upload or persist images outside the approved data-flow/retention rules.
+- **Detection / test:** TC-004, TC-031, and TC-041; use sanitized malformed and extreme-dimension fixtures on selected devices, then inspect resource use and network/storage behavior.
+- **Safe fallback:** Stop processing, discard temporary work according to the approved retention policy, and offer a recoverable retake/reselect path without logging image content.
+- **Residual risk:** Open until numeric limits are benchmarked on selected devices, data handling is approved, and rejection/resource tests pass.

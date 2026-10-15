@@ -8,7 +8,7 @@
 
 This proposal stays inside the confirmed Book-Finder scope: a private Android APK for about five invited users, one shared group list, printed or typed/on-screen English lists (one format per page), user review of extracted entries, book/edition matching, and physical-book or ebook options with Saudi delivery/region uncertainty shown honestly. The $0/no-payment-card rule is confirmed. The app has no implementation approval: the owner must approve the complete plan and explicitly say to begin before any app source, provider integration, backend, build, or release is created.
 
-The current plan has 16 stable requirements and 38 planned, unrun test cases. Thirty effective P0 questions remain. A plan can reduce foreseeable errors and define safe failure behavior; it cannot guarantee zero defects, perfect OCR, accurate live stock, or an APK that cannot be copied or reverse-engineered.
+The current plan has 16 stable requirements and 41 planned, unrun test cases. Thirty effective P0 questions remain. A plan can reduce foreseeable errors and define safe failure behavior; it cannot guarantee zero defects, perfect OCR, accurate live stock, or an APK that cannot be copied or reverse-engineered.
 
 ## 2. Recommended shape (all items below are proposals)
 
@@ -49,6 +49,30 @@ Recommended Q-32 evidence floor (proposal only): label shipping confirmed only w
 
 
 ## 4. Security, resilience, and performance controls
+
+### 4.1 Threat model and trust boundaries (proposal only)
+
+This is a pre-build threat model for the confirmed product concept and the unapproved architecture candidates below. It is a security planning baseline, not a claim of compliance, certification, or risk elimination. The actual attack surface changes with the selected identity, data-retention, provider, hosting, and distribution decisions.
+
+**Assets to protect:** source photos and OCR output; the shared group list, ISBN/title searches, and any history; invited-user identities, sessions, membership and revocation state; the GitHub provider registry and any server-side access credentials; application source and build dependencies; the release-signing key, APKs, and update metadata; and the provenance/freshness of retailer and ebook claims.
+
+**Trust boundaries:** (1) camera/photo picker and device filesystem into the Android app; (2) Android app and local storage into any optional authenticated API; (3) API to GitHub and each independently operated provider; (4) GitHub-maintained provider configuration into the app/API; (5) release/build environment to GitHub distribution to Android Package Installer; and (6) provider responses into result rendering and user decisions. Treat data crossing each boundary as untrusted, including OCR text, configuration, URLs, API responses, release metadata, and claims returned by a recognized provider.
+
+| Threat scenario | Required design control (proposal) | Existing risk / planned evidence |
+|---|---|---|
+| Forwarded or inspected APK, stolen credentials/device, unauthorized or revoked member, or offline copy. | Assume client code and local state can be copied or inspected. Put no shared secret or security-critical authorization decision only in the APK. If protected shared/backend features remain in scope, authorize each protected request against server-side invite/member/device state, support revocation, and fail closed when authorization cannot be checked. Offline grace and revocation delay remain owner decisions. | R13, R17–R20, R25–R26; TC-023–TC-025, TC-029; Q-40–Q-47, Q-69–Q-76. |
+| Malicious or mistaken provider configuration causes server-side request forgery, arbitrary outbound traffic, or a source being falsely treated as enabled. | Use a versioned, schema-validated allowlist of known provider IDs and roles; keep request construction in reviewed adapters. Do not execute configuration, templates, or scripts, and do not accept arbitrary URLs or credentials from the manifest. Restrict HTTPS destinations to the reviewed provider host set; validate redirects. If a backend fetches provider URLs, resolve each target, reject loopback/private/link-local/metadata-service IPs at connection time, bind the connection to the validated resolution, and revalidate every redirect. Reject invalid configuration and mark the source unsupported/unchecked. | R5, R30, R34, R38; TC-021, TC-039; Q-24–Q-26, Q-47. |
+| Malformed or hostile provider text/links cause script/markup injection, unsafe navigation, or a false shipping/ebook claim. | Bound response size and field lengths, validate schemas and URL schemes/hosts, render provider-controlled text as text (not executable markup/WebView content), and keep provider failure separate from a successful empty result. Preserve the evidence source and checked time; never promote an unverified seller/region claim to confirmed. | R6, R7, R8, R22, R39; TC-015–TC-020, TC-022, TC-040; Q-21, Q-27, Q-31–Q-39. |
+| Crafted, corrupt, mislabeled, or extremely large image exhausts memory/CPU or reaches an unapproved processor. | Validate actual file format and orientation, apply documented byte/dimension/decoded-pixel limits before OCR, use bounded decoding and cancellation, and return a recoverable error for unsafe inputs. Do not upload or retain a source image except under an owner-approved data-flow and retention policy. Set numeric limits against selected devices rather than inventing them now. | R1, R21, R28, R40; TC-004, TC-031, TC-041; Q-13–Q-15, Q-42–Q-43, Q-55, Q-58, Q-75. |
+| Reading data, credentials, or signing material leaks through logs, storage, backups, third-party calls, or the APK/repository. | Minimize collection and retention; decide transmission before enabling it; keep tokens/signing material out of source, client bundles, logs, and ordinary backups; use platform-protected storage for any approved client session material and a server-side secret store for server credentials. Apply least privilege and a rotation/revocation plan. | R9, R12, R23, R24; TC-026–TC-028; Q-14–Q-15, Q-42–Q-47, Q-72. |
+| Malicious, corrupt, replayed, or downgraded update replaces the app, or key loss prevents legitimate updates. | Separate authorization from version discovery; use an owner-controlled signing identity, verify package identity/signature and monotonic version before offering an update, keep Android's user confirmation, and define key custody, backup, incident response, and recovery before first release. A hash alone is not a substitute for signature verification. | R10, R11, R23, R25; TC-032–TC-034; Q-50–Q-54, Q-78. |
+| Slow provider/backend or exhausted free quota produces a hang, stale answer, false empty result, or unexpected cost. | Bound image work, response sizes, per-provider timeouts/concurrency and retry budgets; cancel obsolete work; distinguish stale, failed, unchecked, empty, and partial states; stop/degrade at quota without enabling billing. Do not retry writes or trigger purchases automatically. | R16, R21, R27, R29, R31–R35; TC-015–TC-016, TC-022, TC-029–TC-031; Q-27, Q-30, Q-36, Q-75–Q-87. |
+| Compromised maintainer account, dependency, or direct-main push changes code/config or release without detection. | Keep write access minimal; before every main-only batch, re-read the current head and affected files, validate the diff and dependencies, scan for secrets, make a fast-forward-only commit, and read back the resulting main content. Main-only is the owner's workflow rule, not an independent review or branch-protection guarantee. Never deploy from a commit without separate release approval. | R14–R15, R18, R23–R24; TC-026, TC-035, TC-038; repository permissions/signature settings must be rechecked before implementation/release. |
+
+**Security invariants for any future implementation:** no GitHub/provider/signing secret in the APK; no arbitrary executable provider configuration; no unapproved image/text transmission; no protected operation based only on client-side role flags; no unverified shipping or ebook access stated as confirmed; bounded processing and network work; and no silent update, install, purchase, paid overage, or automatic tier change. Test the selected design against the relevant MASVS/MASTG controls and the existing risk/test IDs; this is a planning checklist, not an OWASP certification claim.
+
+**Owner decisions still required:** data flow/retention (Q-14/Q-15/Q-42/Q-43/Q-46), threat scope and confidential assets (Q-45/Q-69/Q-72), backend/auth/revocation/offline (Q-40–Q-47/Q-70–Q-76), providers and evidence standards (Q-23–Q-39), and hosting/release/key custody (Q-50–Q-58/Q-78/Q-81–Q-85). This proposal does not close those questions or authorize implementation.
+
 
 - Validate all input at the boundary: ISBN-10/13 check digits, image MIME/size, provider response schema, URL scheme/host, and numeric values. Use parameterized database operations and safe text rendering; treat images, OCR text, provider responses, and GitHub configuration as untrusted input.
 - Enforce HTTPS, least-privilege API scopes, server-side authorization on every protected operation, bounded request/response sizes, timeouts, rate limits, and controlled retries with jitter. Do not retry writes or send duplicate provider calls without idempotency.
@@ -93,3 +117,12 @@ At minimum, the plan gate still needs the unresolved effective P0 questions list
 - GitHub ruleset and signed-commit behavior: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets
 - Noon API overview: https://noon-docs.noonpartners.dev/docs/getting-started/intro
 - GitHub private release and token guidance is summarized in docs/COST_AND_HOSTING.md.
+
+## Mobile security references consulted (2026-10-15)
+
+OWASP MASVS/MASTG are used here as organizing and verification references, not as a claim of compliance or certification.
+
+- [OWASP MASVS](https://mas.owasp.org/MASVS/) — mobile security control groups including storage, cryptography, authentication, network, platform, code, resilience, and privacy.
+- [OWASP MASTG Android data storage](https://mas.owasp.org/MASTG/0x05d-Testing-Data-Storage) — mobile storage verification guidance.
+- [Android security best practices](https://developer.android.com/privacy-and-security/security-best-practices) — Android platform security guidance.
+- [Android Keystore system](https://developer.android.com/privacy-and-security/keystore) — platform-backed cryptographic key storage guidance.
