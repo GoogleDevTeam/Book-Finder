@@ -34,7 +34,7 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 |---|---|---|---|
 | Q-01 | Confirmed | Minimum useful v1 outcome is likely book matches with edition differences; the user can opt in to ebook lookup per search via an explicit checkbox. Exact-edition/default selection behavior remains open under Q-19. | Prevents scope from drifting into unrelated book-management features. |
 | Q-02 | P1 / Confirmed | The owner selected one shared group list for about five users and explicitly chose to leave the group relationship/category unspecified for v1. Authentication and authorization remain open under separate questions. | Records the list-sharing model without collecting group relationship data. |
-| Q-03 | P1 / Confirmed | The main use context is library/school book lists. V1 scans lists and finds book matches/sourcing options; tracking an existing collection’s holdings, locations, or loans is out of scope. Requested-copy quantity remains open under Q-08. | Keeps the confirmed sourcing journey without adding inventory persistence, location records, or loan workflows. |
+| Q-03 | P1 / Confirmed | School books are the primary product focus; school or related library book lists are the main input context. V1 scans lists and finds book matches/sourcing options; tracking an existing collection’s holdings, locations, or loans is out of scope. School-specific matching fields remain open under Q-21; requested-copy quantity remains open under Q-08. | Keeps the confirmed sourcing journey without adding inventory persistence, location records, or loan workflows. |
 | Q-04 | P1 / Open | Which languages should the app interface support? Is Arabic/RTL required, English, or both? | Affects layout, accessibility, OCR display, and testing. |
 | Q-05 | P1 / Open | What is explicitly out of scope for version one? | Prevents optional ideas from becoming accidental requirements. |
 
@@ -62,7 +62,7 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 | Q-18 | P1 / Open | Which edition differences must be called out: publisher, year, language, translation, format, revised edition, volume, or ISBN? | Defines meaningful edition warnings. |
 | Q-19 | P1 / Partial | The owner chose to preselect the closest edition and flag differences. Define what “closest” means and what to do when no candidate is suitable or the requested edition is unavailable. | Avoids substituting a different book without consent. |
 | Q-20 | P1 / Open | How should duplicates, series/volume numbers, pseudonyms, alternate titles, and transliterations be handled? | Reduces duplicate results and incorrect merges. |
-| Q-21 | P1 / Open | Which book metadata must be displayed, and what source should be considered authoritative when sources disagree? | Catalogs can disagree on title, author, ISBN, and edition. |
+| Q-21 | P1 / Open | Which book metadata must be displayed, and what source should be considered authoritative when sources disagree? For school books, should grade, subject, curriculum/country, or academic year influence matching or display? | Catalogs can disagree on title, author, ISBN, and edition. |
 | Q-22 | P1 / Open | What confidence explanation is useful: a label, detected fields, match evidence, or all of these? | Makes confidence understandable rather than a misleading score. |
 
 ### Providers and online search
@@ -135,8 +135,8 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-64 | P0 / Open | Can representative real lists be supplied for evaluation, with sensitive information removed? | Accuracy targets require examples rather than assumptions. |
-| Q-65 | P0 / Open | What error rate is acceptable for OCR fields and final book matches? | “Confidence” needs a measurable meaning and safe threshold. |
+| Q-64 | P0 / Open | Can representative real school-book lists be supplied for evaluation, with sensitive information removed? | Accuracy targets require examples rather than assumptions. |
+| Q-65 | P0 / Open | What error rate is acceptable for OCR fields and final school-book matches? | “Confidence” needs a measurable meaning and safe threshold. |
 | Q-66 | P1 / Partial | Proposed evidence package: source and access date, seller/offer or ebook country/status, checked time, synthetic fixture ID, redacted request/result, build/device identity, and install signature/hash evidence. Distinguish provider failure from empty results; exact acceptance/freshness and evidence retention remain owner decisions. | Defines proof before labels or releases are trusted. |
 | Q-67 | P0 / Confirmed | The project owner gives final approval of the complete plan and later scope changes. | Keeps decisions with the owner and prevents assistant assumptions. |
 | Q-68 | P0 / Confirmed | The implementation gate opens only when the owner explicitly approves the complete plan and says to begin; no exact phrase is required. | Prevents an idea or discussion from being mistaken for build authorization. |

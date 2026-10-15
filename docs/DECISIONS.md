@@ -20,7 +20,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - Manage the provider list through GitHub. Amazon.sa and Noon were examples, not confirmed working sources.
 - Check for a GitHub-based app update on launch; user approval is required to install the APK.
 - Intended usage is about five people, with strong privacy and security. They share one group book list. The owner explicitly chose to leave the group relationship/category unspecified for v1. Authentication, invitations, membership/permissions, user attribution, and history separation remain separate open decisions.
-- The main use context is library/school book lists. V1 scans lists and finds book matches/sourcing options; tracking an existing collection’s holdings, locations, or loans is out of scope. Requested-copy quantity remains open under Q-08.
+- School books are the primary product focus; school or related library book lists are the main input context. V1 scans lists and finds book matches/sourcing options; tracking an existing collection’s holdings, locations, or loans is out of scope. School-specific grade/curriculum/year matching remains open under Q-21; requested-copy quantity remains open under Q-08.
 - The plan is the source of truth. Do not add unapproved scope.
 
 ## Proposed, not yet approved
@@ -34,6 +34,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 
 ## Open
 
+- For school books, whether grade, subject, curriculum/country, or academic year should influence matching/display remains open under Q-21; do not assume curriculum compatibility.
 - The owner prefers Amazon.sa as the only intended source for now, as recorded in [issue #10](https://github.com/GoogleDevTeam/Book-Finder/issues/10). This is not provider approval. The permitted mobile-app use path, private GitHub APK compatibility, and Saudi ebook coverage remain unresolved.
 
 

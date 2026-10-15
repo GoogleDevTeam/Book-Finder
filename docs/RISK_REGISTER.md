@@ -43,10 +43,10 @@
 ### R4 — Wrong title, edition, translation, or format is matched
 
 - **Owner:** Project owner (risk acceptance); implementation/test owner TBD.
-- **Impact:** High — a user could rely on the wrong book or edition.
+- **Impact:** High — a user could rely on the wrong school-book title, edition, translation, or curriculum-specific version.
 - **Likelihood:** Unrated — no runtime/sample/provider/device evidence exists to support a probability score.
-- **Prevention:** Show bibliographic evidence and confidence; flag edition differences and require review.
-- **Detection / test:** TC-008–TC-012: inspect confidence separation and edition flags; closest-match criterion is blocked by Q-17/Q-19.
+- **Prevention:** Show bibliographic evidence and confidence; flag edition differences and require review. Do not infer grade/curriculum compatibility until Q-21 is decided.
+- **Detection / test:** TC-008–TC-012: inspect confidence separation and edition flags; acceptable-match, closest-match, and school metadata criteria are blocked by Q-17/Q-19/Q-21.
 - **Safe fallback:** Show alternatives/uncertainty; do not imply exact match or auto-purchase.
 - **Residual risk:** Open; Metadata sources may be wrong and the closest-edition rule is unresolved.
 

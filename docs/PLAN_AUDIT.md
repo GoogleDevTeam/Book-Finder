@@ -127,6 +127,10 @@ No benchmark, test, tabletop, account setup, app code, provider integration, ser
 Sources: [Android Macrobenchmark metrics](https://developer.android.com/topic/performance/benchmarking/macrobenchmark-metrics), [Android performance test environment](https://developer.android.com/topic/performance/appstartup/setup-env), and [NIST SP 800-61 Rev. 3 Final](https://csrc.nist.gov/pubs/sp/800/61/r3/final).
 
 
+## Owner clarification: school-book-first focus (2026-10-15)
+
+The owner clarified that school books are the app’s primary focus. Planning and test examples should prioritize school-book lists, while avoiding assumptions about grade, subject, curriculum/country, or academic year; whether these fields should affect matching/display is now explicit under Q-21. Representative de-identified school-book samples are the evidence prerequisite under Q-64. No new matching behavior or curriculum coverage is approved.
+
 ## Owner clarification: opt-in ebook search and Amazon.sa gate (2026-10-15)
 
 The owner confirmed that ebook lookup remains in the intended v1 scope but should be optional for each search through an explicit “Also search ebooks” checkbox. Unchecked means no ebook-provider request; checked may query only a configured, permitted, owner-approved source. The requirement does not approve any provider; the checkbox is a per-search control, not a saved preference.

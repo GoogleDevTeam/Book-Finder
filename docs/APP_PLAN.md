@@ -7,7 +7,7 @@
 
 ## 1. Product goal
 
-Help a small, private group turn a photographed list of multiple books into reviewable book records, identify likely titles and editions, and find physical-book or ebook options while clearly showing whether delivery or access in Saudi Arabia is confirmed, uncertain, or unavailable.
+Help a small, private group turn photographed school-book lists—the primary focus—into reviewable records, identify likely titles and editions, and find physical-book or optional ebook options while clearly showing whether delivery or access in Saudi Arabia is confirmed, uncertain, or unavailable.
 
 ## 2. Confirmed scope
 
@@ -23,7 +23,7 @@ Help a small, private group turn a photographed list of multiple books into revi
 - The provider list is to be maintained through GitHub. Amazon.sa and Noon are examples only; neither is yet a confirmed integration.
 - Users should receive an in-app update notice from GitHub-based releases. The app may make a small version check on launch. The user approves Android installation.
 - The intended group is approximately five people and uses one shared group list. The owner chose to leave the group relationship/category unspecified for v1. Authentication, invitations, membership/permissions, user attribution, and whether history is shared or separate remain open.
-- Primary use context is library/school book lists. V1 scans lists and finds book matches/sourcing options; it does not track an existing collection’s holdings, locations, or loans. Requested-copy quantity remains open under Q-08.
+- School books are the primary product focus. V1 scans school or related library book lists and finds book matches/sourcing options; it does not track an existing collection’s holdings, locations, or loans. School-specific grade/curriculum/year matching is not selected and remains open under Q-21; requested-copy quantity remains open under Q-08.
 - Work must follow this plan. New scope requires explicit approval and a plan update first.
 
 ## 3. Proposed user journey
@@ -110,8 +110,8 @@ The requirements above organize the existing plan; they do not select providers,
 
 ## 8. Success measures to define
 
-- Correct book rows and fields on representative user-provided lists.
-- Rate of results users confirm as the intended title and edition.
+- Correct book rows and fields on representative user-provided school-book lists, the primary evaluation set.
+- Rate of results users confirm as the intended school-book title and edition.
 - Correctness and freshness of Saudi shipping/ebook status labels.
 - Successful update checks and user-approved updates.
 - No unauthorized access or unexpected image retention.

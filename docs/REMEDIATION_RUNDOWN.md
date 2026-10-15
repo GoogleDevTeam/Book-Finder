@@ -19,7 +19,7 @@ The next step is to complete research that can proceed without owner input, then
 The following is recorded as confirmed in the existing plan and decision log:
 
 - Android APK, intended for about five invited users.
-- Input is a photo of a list containing multiple books, not cover-photo recognition.
+- Input is a photo of a list containing multiple books, not cover-photo recognition; school books are the primary subject focus.
 - Search can use ISBN, title/name, or both; show text-reading/OCR confidence separately from book-match confidence and flag edition/version differences. Acceptable-match criteria remain open.
 - Search physical-book and ebook options for Saudi Arabia; never describe uncertain delivery or ebook-region access as confirmed.
 - Provider names/list are maintained through GitHub. Amazon.sa and Noon are examples only; neither is an approved working integration.
@@ -28,7 +28,7 @@ The following is recorded as confirmed in the existing plan and decision log:
 - The owner wants a $0 service path with no card requirement, paid overage, or automatic upgrade. If a free quota is reached, the safe default is to stop/degrade rather than charge.
 - The plan is the scope authority. No feature, provider, or app behavior outside the explicitly approved plan may be implemented.
 
-Open details include the criteria for a “closest” edition and fallback if none is suitable, response to accidental mixed-format input, app interface language, access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices. Printed and typed/on-screen English lists, one format per page, are selected; handwritten lists, mixed-format pages, Arabic, and other-language recognition were not selected. The minimum outcome is a likely match with edition differences and a physical-book/ebook preference.
+Open details include the criteria for a “closest” edition and fallback if none is suitable, school-specific grade/curriculum/year matching (Q-21), response to accidental mixed-format input, app interface language, access model, data retention, provider methods, Saudi evidence standard, first-APK distribution, and target devices. Printed and typed/on-screen English lists, one format per page, are selected; handwritten lists, mixed-format pages, Arabic, and other-language recognition were not selected. The minimum outcome is a likely match with edition differences and a physical-book/ebook preference.
 
 ## GitHub state checked
 
