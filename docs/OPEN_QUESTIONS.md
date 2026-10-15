@@ -5,7 +5,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 
 ## Current gate
 
-- 87 discovery IDs: 60 Open, 16 Partial, 11 Confirmed.
+- 87 discovery IDs: 60 Open, 15 Partial, 12 Confirmed.
 - 30 effective P0 blockers must be resolved before plan approval: Q-08, Q-17, Q-23, Q-24, Q-25, Q-31, Q-32, Q-33, Q-37, Q-40, Q-41, Q-42, Q-45, Q-47, Q-50, Q-51, Q-52, Q-54, Q-55, Q-58, Q-64, Q-65, Q-69, Q-70, Q-71, Q-72, Q-74, Q-81, Q-82, Q-83. This includes five P1 catalog items escalated by the audit: Q-45, Q-47, Q-54, Q-55, and Q-58. Q-67, Q-68, and Q-80 are now confirmed and no longer block approval.
 - P1/P2 items must be resolved or explicitly deferred before plan approval. Research findings are not product approval.
 
@@ -24,7 +24,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 |---|---|---|---|---|---|
 | Q-01 | — | Confirmed | Recorded decision | Resolved | Minimum useful v1 outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference. Exact-edition/default selection behavior remains open under Q-19. |
 | Q-02 | P1 | Confirmed | Recorded decision | Resolved | About five users share one group list; the group relationship/category is intentionally unspecified for v1. Authentication, membership/permissions, and history separation remain open under Q-40/Q-41/Q-43. |
-| Q-03 | P1 | Partial | Owner decision remains | P1/P2—resolve or explicitly defer | The owner selected “Library or school inventory” as the main use context. Clarify whether v1 should manage an existing collection (for example, holdings, copy/location records, or loan status) or only turn school/library lists into book matches and online source options. The current plan covers the latter; collection management would require an explicit scope change. |
+| Q-03 | P1 | Confirmed | Recorded decision | Resolved | The main use context is library/school book lists. V1 scans lists and finds book matches/sourcing options; tracking an existing collection’s holdings, locations, or loans is out of scope. Requested-copy quantity remains open under Q-08. |
 | Q-04 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | Which languages should the app interface support? Is Arabic/RTL required, English, or both? |
 | Q-05 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | What is explicitly out of scope for version one? |
 | Q-06 | — | Confirmed | Recorded decision | Resolved | Printed and typed/on-screen lists were selected for v1, one format per page; handwritten and mixed-format pages were not selected. |

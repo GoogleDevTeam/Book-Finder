@@ -20,6 +20,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - Manage the provider list through GitHub. Amazon.sa and Noon were examples, not confirmed working sources.
 - Check for a GitHub-based app update on launch; user approval is required to install the APK.
 - Intended usage is about five people, with strong privacy and security. They share one group book list. The owner explicitly chose to leave the group relationship/category unspecified for v1. Authentication, invitations, membership/permissions, user attribution, and history separation remain separate open decisions.
+- The main use context is library/school book lists. V1 scans lists and finds book matches/sourcing options; tracking an existing collection’s holdings, locations, or loans is out of scope. Requested-copy quantity remains open under Q-08.
 - The plan is the source of truth. Do not add unapproved scope.
 
 ## Proposed, not yet approved
@@ -33,7 +34,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 
 ## Open
 
-- The owner selected library/school inventory as the main use context, but it is unclear whether this means list-based book sourcing or collection management. The current APP_PLAN covers scanning lists and finding sourcing options, not holdings/loan tracking; clarify Q-03 before changing scope.
+
 
 - The app interface language(s), including whether it should support Arabic alongside English. List content is currently English-only by selection.
 - Whether to track list-entry count, copy quantity per title/edition, or both. The owner is not sure yet. Edition/version identifies the book and is separate from copies.

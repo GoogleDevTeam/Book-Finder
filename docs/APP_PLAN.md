@@ -23,6 +23,7 @@ Help a small, private group turn a photographed list of multiple books into revi
 - The provider list is to be maintained through GitHub. Amazon.sa and Noon are examples only; neither is yet a confirmed integration.
 - Users should receive an in-app update notice from GitHub-based releases. The app may make a small version check on launch. The user approves Android installation.
 - The intended group is approximately five people and uses one shared group list. The owner chose to leave the group relationship/category unspecified for v1. Authentication, invitations, membership/permissions, user attribution, and whether history is shared or separate remain open.
+- Primary use context is library/school book lists. V1 scans lists and finds book matches/sourcing options; it does not track an existing collection’s holdings, locations, or loans. Requested-copy quantity remains open under Q-08.
 - Work must follow this plan. New scope requires explicit approval and a plan update first.
 
 ## 3. Proposed user journey
