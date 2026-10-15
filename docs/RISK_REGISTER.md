@@ -136,7 +136,7 @@
 - **Impact:** High — an unauthorized person could access protected functions/data.
 - **Likelihood:** Unrated — no runtime/sample/provider/device evidence exists to support a probability score.
 - **Prevention:** Choose invite/account/device limits, least privilege, and revocation before implementation.
-- **Detection / test:** TC-023–TC-025: unauthorized access, revocation window, and cross-account access; Q-40–Q-44/Q-69–Q-76 open.
+- **Detection / test:** TC-023–TC-025: unauthorized access to the shared group list, revocation window, and any separately scoped user data/history; Q-40–Q-44/Q-69–Q-76 open.
 - **Safe fallback:** Deny protected requests after revocation; keep unverified access fail-closed.
 - **Residual risk:** Open; No authentication model or local-data wipe behavior is approved.
 
