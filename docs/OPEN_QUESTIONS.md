@@ -5,7 +5,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 
 ## Current gate
 
-- 87 discovery IDs: 60 Open, 15 Partial, 12 Confirmed.
+- 87 discovery IDs: 58 Open, 17 Partial, 12 Confirmed.
 - 30 effective P0 blockers must be resolved before plan approval: Q-08, Q-17, Q-23, Q-24, Q-25, Q-31, Q-32, Q-33, Q-37, Q-40, Q-41, Q-42, Q-45, Q-47, Q-50, Q-51, Q-52, Q-54, Q-55, Q-58, Q-64, Q-65, Q-69, Q-70, Q-71, Q-72, Q-74, Q-81, Q-82, Q-83. This includes five P1 catalog items escalated by the audit: Q-45, Q-47, Q-54, Q-55, and Q-58. Q-67, Q-68, and Q-80 are now confirmed and no longer block approval.
 - P1/P2 items must be resolved or explicitly deferred before plan approval. Research findings are not product approval.
 
@@ -53,7 +53,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 | Q-29 | P2 | Open | Owner decision | P1/P2—resolve or explicitly defer | Are affiliate links or sponsored results allowed? If so, how are they disclosed? |
 | Q-30 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | How often may the app check for source/config changes, and what stale-cache behavior is acceptable? |
 | Q-31 | P0 | Open | Owner decision | Effective P0—resolve before plan approval | Does “Saudi-only” mean the seller must be based in Saudi Arabia, or may any seller appear if it ships to Saudi Arabia? |
-| Q-32 | P0 | Open | Research first, then owner decision | Effective P0—resolve before plan approval | What evidence is sufficient for “confirmed shipping to Saudi Arabia”: provider shipping policy, product page, destination-specific quote, or checkout confirmation? |
+| Q-32 | P0 | Partial | Research first, then owner decision | Effective P0—resolve before plan approval | Official Amazon Creators API documentation shows SearchItems delivery-program filters (such as AmazonGlobal, Prime, and FreeShipping) but lists related DeliveryInfo fields as unavailable in the response mapping; documented prices may use an in-marketplace default address and differ for the actual customer. These signals do not confirm shipping for a specific Saudi destination. Recommend seller-/offer-specific destination confirmation; the owner still needs to choose the evidence and freshness criteria. |
 | Q-33 | P0 | Partial | Owner decision remains | Effective P0—resolve before plan approval | Unconfirmed shipping must be labeled uncertain; whether to show candidates with a warning or hide them until verified remains open. |
 | Q-34 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | Does shipping need to work to all Saudi addresses, or can it vary by city, postal code, or delivery method? |
 | Q-35 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | Should price include shipping, taxes, customs, and currency conversion, or show only the provider’s listed price? |
@@ -98,7 +98,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 | Q-74 | P0 | Open | Owner decision | Effective P0—resolve before plan approval | Is a private authenticated backend acceptable for invitation/membership authorization and revocation of the shared list, and who would maintain it? GitHub release/config brokering is separate under Q-47. |
 | Q-75 | P1 | Open | Research first, then owner decision | P1/P2—resolve or explicitly defer | What are acceptable performance targets for startup, OCR/review, provider search, and update checks, and on which devices? |
 | Q-76 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | What should remain usable when the internet/backend is unavailable, and which protected operations must fail closed? |
-| Q-77 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | Are device-integrity checks/attestation required? What privacy, compatibility, cost, and bypass limits are acceptable? |
+| Q-77 | P1 | Partial | Owner decision remains | P1/P2—resolve or explicitly defer | Whether device-integrity checks/attestation are required and what privacy, compatibility, cost, and bypass limits are acceptable. Google Play Integrity reports UNLICENSED for sideloaded apps; do not require a Play entitlement for this private APK without verifying a compatible distribution path. No integrity method is selected. |
 | Q-78 | P1 | Open | Research first, then owner decision | P1/P2—resolve or explicitly defer | What is the incident response for a leaked APK, stolen device, exposed key, or compromised user account? |
 | Q-79 | — | Confirmed | Recorded decision | Resolved | Can any app service require a payment card for its free tier? No. |
 | Q-80 | P0 | Confirmed | Recorded decision | Resolved | At a free quota limit, stop or degrade the affected service without charging; any paid change needs explicit owner approval. |

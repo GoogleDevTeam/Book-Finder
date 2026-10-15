@@ -40,7 +40,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - Whether to track list-entry count, copy quantity per title/edition, or both. The owner is not sure yet. Edition/version identifies the book and is separate from copies.
 - Initial providers to support and the permitted search/API method for each. Example providers are not yet integrations.
 - Whether “Saudi-only” means Saudi-based sellers only, or any seller that can deliver to Saudi Arabia; the confirmed requirement is that Saudi delivery must not be falsely asserted.
-- What evidence is sufficient to mark delivery or ebook access as confirmed.
+- Q-32: A seller-/offer-specific destination confirmation is the conservative recommendation. Amazon SearchItems exposes delivery-program flags but maps related DeliveryInfo fields as unavailable; its offer price may use a default in-marketplace address. These signals do not prove delivery to a specific Saudi destination. The exact evidence and freshness threshold remain owner decisions.
 - How to present an uncertain shipping result and what user action should follow.
 - What “closest” means for edition/translation ranking and what to do if no candidate is suitable; preselection of the closest with a visible difference flag is confirmed. Physical-book versus ebook preference is requested, but its exact effect on ranking/filtering is not defined.
 - Whether images, recognized entries, history, or favorites are saved; where and for how long.
@@ -65,7 +65,7 @@ A private APK can be distributed and access-controlled, but an APK that reaches 
 - Threat scenarios and acceptable residual risk; what specifically must remain confidential (credentials, source code, provider configuration, search data, or proprietary logic).
 - Whether a backend is acceptable and who maintains it; no GitHub/provider secret may be embedded in the APK.
 - Performance targets and test devices for startup, OCR, book matching, provider search, and update checks.
-- Whether integrity/attestation controls are required, considering their privacy, compatibility, cost, and bypass limitations.
+- Q-77: Whether device-integrity checks/attestation are required. Google Play Integrity reports UNLICENSED for sideloaded apps; do not gate this private APK on Play entitlement without verifying a compatible distribution path. Privacy, compatibility, cost, and bypass limits remain open.
 
 
 ## Proposed access flow — pending owner decision

@@ -75,7 +75,7 @@
 - **Owner:** Project owner (risk acceptance); implementation/test owner TBD.
 - **Impact:** High — a result may mislead a user about delivery or cost.
 - **Likelihood:** Unrated — no runtime/sample/provider/device evidence exists to support a probability score.
-- **Prevention:** Define acceptable destination evidence; show source and checked time; do not infer from a general policy page.
+- **Prevention:** Define destination-specific evidence and show source and checked time. Do not infer delivery from a general policy page, marketplace/country setting, Prime/FreeShipping flag, or in-marketplace default price.
 - **Detection / test:** TC-017–TC-019: positive confirmation is blocked by Q-31/Q-32; unknown stays uncertain and no-delivery is distinct.
 - **Safe fallback:** Label uncertain/unconfirmed; never promise delivery.
 - **Residual risk:** Open; Retailer availability can change between check and checkout; evidence standard remains open.

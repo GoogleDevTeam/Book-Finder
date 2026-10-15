@@ -36,6 +36,8 @@ If private GitHub releases, membership/device revocation, or shared-list synchro
 
 Use separate interfaces and result types for book metadata, physical retail offers, and ebook-store offers. A metadata match is not a purchasable offer. Each provider result should carry provider identity, the checked time, the fields actually returned, and a status that distinguishes not configured, not checked, successful with no match, partial results, and provider failure.
 
+Recommended Q-24 registry shape (proposal only): use a versioned declarative allowlist with a stable provider ID, role (metadata/physical/ebook), official source and terms links plus review date, permitted access method, approved market, allowed HTTPS host, credential class (none or server-side secret reference), attribution/privacy requirements, rate limits, and operational status. Keep endpoints and request construction in reviewed code; do not accept arbitrary URLs, executable templates, scripts, or secrets from the GitHub list. Validate the manifest schema and host allowlist and fail closed. Q-24 remains owner-open; this is not a provider selection.
+
 - Google Books is a metadata candidate: its API supports ISBN searches and country-specific sale information for the Google eBookstore. That signal applies to Google's store only; it does not establish physical stock/shipping, account purchase eligibility, device/DRM compatibility, or access across all ebook stores. Google Books terms also require user notice about submitted content potentially being made publicly available through Google services; review the exact data flow and notice before selection.
 - Open Library is a possible human-oriented metadata lookup, not a default production backend. Its current API guidance asks developers to register the use case, recommends identifying requests, lists 1 request/second by default and 3/second for identified requests, and says its APIs are not intended as a third-party data backend or high-traffic commercial infrastructure. Confirm the private five-person app fits its terms before relying on it.
 - Amazon.sa has an official Creators API path, but current prerequisites include target-marketplace Associates enrollment and at least 10 qualifying sales in the previous 30 days, plus API registration and credentials. Owner eligibility and app-use terms are unverified.
@@ -43,6 +45,8 @@ Use separate interfaces and result types for book metadata, physical retail offe
 - Until a provider has a permitted method, eligibility, cost, and coverage verified, mark it unsupported and show that it was not checked. Never convert provider failure into a no-match result.
 
 For every physical offer, keep delivery status separate from stock/price and require owner-approved evidence before using a confirmed-Saudi-delivery label. For ebooks, expose the named store's country-specific availability and the checked time, but label unknown account, DRM, or entitlement conditions as unknown. The evidence standards and presentation remain open at Q-31–Q-39.
+Recommended Q-32 evidence floor (proposal only): label shipping confirmed only when an approved source returns a current seller-/offer-specific confirmation or quote for the relevant Saudi destination. A marketplace/country setting, generic shipping policy, Prime/FreeShipping flag, or default in-marketplace price is insufficient. If the source cannot provide destination-specific evidence without checkout or an unapproved address, show Uncertain/Unchecked rather than claiming confirmed; never place an order. Destination granularity and freshness depend on Q-34/Q-36.
+
 
 ## 4. Security, resilience, and performance controls
 
@@ -51,6 +55,7 @@ For every physical offer, keep delivery status separate from stock/price and req
 - Handle each source independently with bounded concurrency and progressive results. Preserve explicit states for unavailable, rate-limited, stale, partial, and not configured. Any cache must show its age and must never make stale shipping/stock look current.
 - Keep launch responsive: on-device OCR and update checks must not block startup indefinitely. Use cancellation, lifecycle-aware work, and clear offline/degraded states. Set numeric latency/accuracy thresholds only after Q-55/Q-58/Q-64/Q-65/Q-75 and representative test data are available.
 - Protect local session material with Android-protected storage; avoid custom password storage. Define lock/logout, shared-device handling, lost-device response, session expiry, and revocation behavior before implementation.
+- Do not require Google Play licensing entitlement as access control for the current private sideloaded APK proposal: official Play Integrity documentation reports UNLICENSED when the app is sideloaded and describes PLAY_RECOGNIZED for app/certificate versions distributed by Google Play. Any optional device-integrity signal must be tested for the actual distribution channel and evaluated for privacy, compatibility, cost, and bypass limits; attestation is not a substitute for server-side authorization. Q-77 remains open.
 - Obfuscation and tamper checks can raise effort, not guarantee secrecy. Assume an APK can be copied and inspected; place no secret or authorization decision that must remain secret solely in the client.
 
 ## 5. Verification and release gates
@@ -66,11 +71,12 @@ Android's developer-verification documentation describes a rollout beginning Sep
 - Work only on the existing main branch. Never create or use a topic, temporary, release, or backup branch or worktree; never force-push. Before each batch, read the latest main commit and every affected file, then prepare one focused, internally consistent change.
 - For documentation, validate question-ID uniqueness/status counts, requirement/test mappings, links, source claims, and absence of secrets. For code, complete local tests/security checks before committing; do not rely on a post-push workflow as the only gate. Keep commits small and focused, then verify GitHub main points to the intended commit and its files match the checked content.
 - Add a concise PROJECT_LOG.md checkpoint after every 2–3 substantive steps/batches with the exact commit, verification, unresolved decisions, and next safe step. Do not copy private book data or credentials into the log.
+- Repository-state check (2026-10-15): only main exists; it is unprotected; only GoogleDevTeam currently has push/admin access. The latest GitHub API commit is unsigned. GitHub rejects unsigned commits when required-signature rules are enabled, so do not enable that rule until a compatible signed-write path is available and the owner approves it. No branch or repository setting was changed; re-check access before adding collaborators or releasing.
 - Main is the only code source of truth; no alternate branch or PR workflow. A commit to main is not production approval. Never automatically publish an APK or change production services from a main push. Obtain the owner's explicit approval for each consequential release/deployment; distribute only a signed, owner-approved artifact and preserve update identity.
 
 ## 7. Decisions still required
 
-At minimum, the plan gate still needs the unresolved effective P0 questions listed in OPEN_QUESTIONS.md. Research has narrowed Q-23/Q-25/Q-37 but has not selected providers or closed them. The next unanswered sequential owner question remains Q-03. Do not implement, configure accounts, enter a payment card, create signing keys, or deploy while these decisions remain open.
+At minimum, the plan gate still needs the unresolved effective P0 questions listed in OPEN_QUESTIONS.md. Research has narrowed Q-23/Q-25/Q-37 but has not selected providers or closed them. Q-03 is now confirmed; the next unanswered sequential owner question is Q-04 (interface languages). Do not implement, configure accounts, enter a payment card, create signing keys, or deploy while these decisions remain open.
 
 ## First-party sources consulted
 
@@ -81,5 +87,9 @@ At minimum, the plan gate still needs the unresolved effective P0 questions list
 - Android developer verification: https://developer.android.com/developer-verification/guides
 - Android APK update identity: https://developer.android.com/google/play/app-updates
 - Amazon Creators API prerequisites: https://affiliate-program.amazon.com/creatorsapi/docs/en-us/introduction
+- Amazon SearchItems delivery flags and response mapping: https://affiliate-program.amazon.com/creatorsapi/docs/en-us/api-reference/operations/search-items
+- Amazon OffersV2 fields and price caveat: https://affiliate-program.amazon.com/creatorsapi/docs/en-us/api-reference/resources/offersV2
+- Google Play Integrity verdicts: https://developer.android.com/google/play/integrity/verdicts
+- GitHub ruleset and signed-commit behavior: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets
 - Noon API overview: https://noon-docs.noonpartners.dev/docs/getting-started/intro
 - GitHub private release and token guidance is summarized in docs/COST_AND_HOSTING.md.
