@@ -75,3 +75,13 @@ No implementation starts until the owner explicitly approves the complete plan a
 - Keep entries concise and factual, with status (Confirmed, Proposed, Open, Rejected, or Completed) and links/requirement IDs. The log is a project audit trail, not a verbatim chat transcript.
 - Do not place secrets, credentials, tokens, private keys, or unnecessary personal information in GitHub.
 - If a project-relevant message cannot yet be resolved, log it as an open question rather than guessing or omitting it.
+
+
+## Direct-main, small-batch workflow (owner instruction)
+
+- Work only on the existing `main` branch. Never create, check out, merge, or otherwise use an alternate/temporary branch or worktree.
+- Before each batch, read the latest `main` head and the current versions of every affected file. Commit directly to `main` with a fast-forward update; never force-push or overwrite concurrent work.
+- Keep each batch narrowly scoped and self-contained. Group mutually dependent documentation changes atomically so the main branch is not left in a partially updated state. After implementation is explicitly approved, apply the same rule to code: small vertical slices with requirement IDs, automated checks, security checks, and a concise review before each commit.
+- Do not commit partial or unverified work. Run the checks applicable to the batch; report tests not run separately from checks that passed. Record the commit and verification in the project log.
+- Append a concise checkpoint after every 2–3 substantive work steps/batches, including the current task state, latest commit, checks completed, unresolved decisions, and the next safe action.
+- Committing to `main` does not authorize production deployment; obtain approval for each consequential deployment.

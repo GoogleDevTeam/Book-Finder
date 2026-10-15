@@ -31,5 +31,6 @@ Only requirements marked **Confirmed** in the plan may be treated as agreed. Ope
 4. Keep provider examples distinct from confirmed integrations.
 5. Never describe uncertain Saudi shipping or ebook-region access as confirmed.
 6. Keep secrets out of GitHub and the APK. Private repository access is not a secrets-management system.
+7. Use only `main`: never create or use alternate/temporary branches or worktrees. Make focused, verified batches directly on `main`, and add a concise project-log checkpoint every 2–3 substantive steps/batches.
 
 The repository intentionally contains planning documents only.
