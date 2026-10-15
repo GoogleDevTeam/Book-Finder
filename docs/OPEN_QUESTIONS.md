@@ -5,7 +5,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 
 ## Current gate
 
-- 87 discovery IDs: 72 Open, 5 Partial, 10 Confirmed.
+- 87 discovery IDs: 71 Open, 6 Partial, 10 Confirmed.
 - 30 effective P0 blockers must be resolved before plan approval: Q-08, Q-17, Q-23, Q-24, Q-25, Q-31, Q-32, Q-33, Q-37, Q-40, Q-41, Q-42, Q-45, Q-47, Q-50, Q-51, Q-52, Q-54, Q-55, Q-58, Q-64, Q-65, Q-69, Q-70, Q-71, Q-72, Q-74, Q-81, Q-82, Q-83. This includes five P1 catalog items escalated by the audit: Q-45, Q-47, Q-54, Q-55, and Q-58. Q-67, Q-68, and Q-80 are now confirmed and no longer block approval.
 - P1/P2 items must be resolved or explicitly deferred before plan approval. Research findings are not product approval.
 
@@ -104,7 +104,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 | Q-80 | P0 | Confirmed | Recorded decision | Resolved | At a free quota limit, stop or degrade the affected service without charging; any paid change needs explicit owner approval. |
 | Q-81 | P0 | Open | Owner decision | Effective P0—resolve before plan approval | Are sleep/idle pauses, cold starts, or manual republishing acceptable? |
 | Q-82 | P0 | Open | Research—can proceed without owner input | Effective P0—resolve before plan approval | Which candidate backend can securely support invite-only auth, private GitHub release access, and revocation at $0? |
-| Q-83 | P0 | Open | Research—can proceed without owner input | Effective P0—resolve before plan approval | Do Amazon.sa, Noon, and later providers offer a permitted no-cost search/data method? |
+| Q-83 | P0 | Partial | Research first, then owner decision | Effective P0—resolve before plan approval | Do Amazon.sa, Noon, and later providers offer a permitted no-cost search/data method? Official research found Amazon.sa Creators API but it requires target-marketplace Associates enrollment, 10 qualifying sales in 30 days, API registration, and credentials; Noon documentation covers partner/seller/integrator APIs, not a public consumer search API. Owner eligibility and compliant fit remain unverified; no provider is approved. |
 | Q-84 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | If no free permitted method exists for a source, should that source be omitted? |
 | Q-85 | P1 | Open | Research—can proceed without owner input | P1/P2—resolve or explicitly defer | Are email/invitation delivery, storage, monitoring, and build minutes required, and can each stay within free quotas? |
 | Q-86 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | How often will users use the app, and is a service that pauses after inactivity acceptable? |
