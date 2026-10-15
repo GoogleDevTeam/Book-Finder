@@ -44,19 +44,29 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.room.withTransaction
 import coil.compose.AsyncImage
 import com.googledevteam.bookfinder.camera.CameraCapture
+import com.googledevteam.bookfinder.data.BookFinderDatabase
+import com.googledevteam.bookfinder.data.HistoryWithBook
 import com.googledevteam.bookfinder.data.GoogleBooksRepository
+import com.googledevteam.bookfinder.data.ScanHistoryEntity
+import com.googledevteam.bookfinder.data.toBookResult
+import com.googledevteam.bookfinder.data.toCachedEntity
 import com.googledevteam.bookfinder.domain.BookCandidate
 import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
 import com.googledevteam.bookfinder.domain.IsbnParser
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.util.Date
 
 private enum class FinderPage {
     SCAN,
     REVIEW,
     RESULTS,
+    HISTORY,
 }
 
 @Composable
@@ -64,6 +74,9 @@ fun BookFinderScreen() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val repository = remember { GoogleBooksRepository() }
+    val database = remember { BookFinderDatabase.get(context) }
+    val historyDao = remember(database) { database.historyDao() }
+    val historyEntries by historyDao.observeHistory().collectAsStateWithLifecycle(initialValue = emptyList())
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
@@ -84,6 +97,7 @@ fun BookFinderScreen() {
     var results by remember { mutableStateOf(emptyList<BookResult>()) }
     var loading by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf<String?>(null) }
+    var historySavedMessage by remember { mutableStateOf<String?>(null) }
 
     fun reviewRecognizedText(ocrText: String) {
         val isbns = IsbnParser.extractIsbns(ocrText)
@@ -119,6 +133,7 @@ fun BookFinderScreen() {
         scope.launch {
             loading = true
             message = null
+            historySavedMessage = null
             results = emptyList()
             page = FinderPage.RESULTS
             try {
@@ -128,6 +143,31 @@ fun BookFinderScreen() {
                 message = exception.localizedMessage ?: "Search failed. Try again."
             } finally {
                 loading = false
+            }
+        }
+    }
+
+    fun saveResult(book: BookResult) {
+        val selectedTerm = query.trim()
+        val selectedKind = queryKind
+        if (selectedTerm.isBlank()) return
+        historySavedMessage = null
+        scope.launch {
+            try {
+                database.withTransaction {
+                    historyDao.upsertBook(book.toCachedEntity())
+                    historyDao.insertHistory(
+                        ScanHistoryEntity(
+                            lookupTerm = selectedTerm,
+                            lookupKind = selectedKind.name,
+                            bookId = book.id,
+                            scannedAt = System.currentTimeMillis(),
+                        ),
+                    )
+                }
+                historySavedMessage = "Saved on this device. It will be available in History offline."
+            } catch (exception: Exception) {
+                historySavedMessage = exception.localizedMessage ?: "Could not save this result. Try again."
             }
         }
     }
@@ -146,11 +186,13 @@ fun BookFinderScreen() {
                     FinderPage.SCAN -> "Find a book"
                     FinderPage.REVIEW -> "Check the text"
                     FinderPage.RESULTS -> "Book matches"
+                    FinderPage.HISTORY -> "Scan history"
                 },
                 subtitle = when (page) {
                     FinderPage.SCAN -> "Scan a school list or enter a title."
                     FinderPage.REVIEW -> "Correct the ISBN or English title before searching."
                     FinderPage.RESULTS -> "Results come from Google Books."
+                    FinderPage.HISTORY -> "Saved books stay on this device and work offline."
                 },
             )
 
@@ -188,6 +230,12 @@ fun BookFinderScreen() {
                     ) {
                         Text("Enter a title instead")
                     }
+                    OutlinedButton(
+                        onClick = { page = FinderPage.HISTORY },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("History (${historyEntries.size})")
+                    }
                     message?.let { InlineMessage(it) }
                 }
 
@@ -210,11 +258,20 @@ fun BookFinderScreen() {
                         results = results,
                         loading = loading,
                         message = message,
+                        saveMessage = historySavedMessage,
+                        onSaveResult = ::saveResult,
                         onEditSearch = { page = FinderPage.REVIEW },
                         onScanAgain = {
                             page = FinderPage.SCAN
                             message = null
                         },
+                    )
+                }
+
+                FinderPage.HISTORY -> {
+                    HistoryScreen(
+                        entries = historyEntries,
+                        onBack = { page = FinderPage.SCAN },
                     )
                 }
             }
@@ -350,6 +407,8 @@ private fun ResultsScreen(
     results: List<BookResult>,
     loading: Boolean,
     message: String?,
+    saveMessage: String?,
+    onSaveResult: (BookResult) -> Unit,
     onEditSearch: () -> Unit,
     onScanAgain: () -> Unit,
 ) {
@@ -370,11 +429,21 @@ private fun ResultsScreen(
             )
         } else if (results.isNotEmpty()) {
             results.forEach { book ->
-                BookResultCard(book)
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    BookResultCard(book)
+                    OutlinedButton(
+                        onClick = { onSaveResult(book) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Save this result to history")
+                    }
+                }
             }
         } else if (message != null) {
             InlineMessage(message)
         }
+
+        saveMessage?.let { InlineMessage(it) }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -386,6 +455,42 @@ private fun ResultsScreen(
             Button(onClick = onScanAgain, modifier = Modifier.weight(1f)) {
                 Text("Scan again")
             }
+        }
+    }
+}
+
+@Composable
+private fun HistoryScreen(
+    entries: List<HistoryWithBook>,
+    onBack: () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Text(
+            "History is stored locally. Saved metadata remains viewable offline.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        if (entries.isEmpty()) {
+            InlineMessage("No saved books yet. Save a result after a lookup to see it here.")
+        } else {
+            entries.forEach { entry ->
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        "${entry.history.lookupKind.lowercase().replace('_', ' ')}: ${entry.history.lookupTerm}",
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                    Text(
+                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                            .format(Date(entry.history.scannedAt)),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    BookResultCard(entry.book.toBookResult())
+                }
+            }
+        }
+        TextButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text("Back to scan")
         }
     }
 }
