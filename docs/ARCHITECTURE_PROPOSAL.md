@@ -8,7 +8,7 @@
 
 This proposal stays inside the confirmed Book-Finder scope: a private Android APK for about five invited users, one shared group list, printed or typed/on-screen English lists (one format per page), user review of extracted entries, book/edition matching, and physical-book or ebook options with Saudi delivery/region uncertainty shown honestly. The $0/no-payment-card rule is confirmed. The app has no implementation approval: the owner must approve the complete plan and explicitly say to begin before any app source, provider integration, backend, build, or release is created.
 
-The current plan has 16 stable requirements and 42 planned, unrun test cases. Thirty effective P0 questions remain. A plan can reduce foreseeable errors and define safe failure behavior; it cannot guarantee zero defects, perfect OCR, accurate live stock, or an APK that cannot be copied or reverse-engineered.
+The current plan has 16 stable requirements and 43 planned, unrun test cases. Thirty effective P0 questions remain. A plan can reduce foreseeable errors and define safe failure behavior; it cannot guarantee zero defects, perfect OCR, accurate live stock, or an APK that cannot be copied or reverse-engineered.
 
 ## 2. Recommended shape (all items below are proposals)
 
@@ -34,7 +34,7 @@ If private GitHub releases, membership/device revocation, or shared-list synchro
 
 ## 3. Search and provider boundaries
 
-Use separate interfaces and result types for book metadata, physical retail offers, and ebook-store offers. A metadata match is not a purchasable offer. Each provider result should carry provider identity, the checked time, the fields actually returned, and a status that distinguishes not configured, not checked, successful with no match, partial results, and provider failure.
+Use separate interfaces and result types for book metadata, physical retail offers, and ebook-store offers. A metadata match is not a purchasable offer. Each provider result should carry provider identity, the checked time, the fields actually returned, and a status that distinguishes not configured, not checked, successful with no match, partial results, and provider failure. The confirmed per-search “Also search ebooks” checkbox is an explicit opt-in: when it is unchecked, do not invoke ebook adapters and show “not searched,” not zero results. A privacy-conservative default is unchecked, and the choice applies only to the current search rather than becoming a saved preference. A checked box still activates only an owner-approved, permitted ebook provider; no source is currently approved.
 
 Recommended Q-24 registry shape (proposal only): use a versioned declarative allowlist with a stable provider ID, role (metadata/physical/ebook), official source and terms links plus review date, permitted access method, approved market, allowed HTTPS host, credential class (none or server-side secret reference), attribution/privacy requirements, rate limits, and operational status. Keep endpoints and request construction in reviewed code; do not accept arbitrary URLs, executable templates, scripts, or secrets from the GitHub list. Validate the manifest schema and host allowlist and fail closed. Q-24 remains owner-open; this is not a provider selection.
 

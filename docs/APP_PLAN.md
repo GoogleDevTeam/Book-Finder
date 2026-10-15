@@ -16,8 +16,8 @@ Help a small, private group turn a photographed list of multiple books into revi
 - Users can search using ISBN, book name/title, or both. For a scanned list entry, a missing, invalid, or unreadable ISBN must be entered or corrected before that entry is searched.
 - The app shows text-reading/OCR confidence separately from book-match confidence; acceptable-match criteria remain open.
 - Different editions and versions are flagged for the user. When several likely editions match, preselect the closest and flag its differences; the criteria for “closest” remain open.
-- The minimum useful outcome is a likely book match with edition differences; the user can choose a physical-book or ebook preference.
-- Search for physical books and ebooks online.
+- The minimum useful outcome is a likely book match with edition differences. Ebook search is optional per search and is controlled by an explicit “Also search ebooks” checkbox. If unchecked, no ebook provider is queried; if checked, only an owner-approved provider may be queried. This does not approve a provider.
+- Search physical books online; ebook search is an explicit per-search opt-in and runs only against configured, permitted, owner-approved providers.
 - Saudi Arabia is the required delivery/access market. If shipping is uncertain, label it as uncertain rather than confirmed.
 - Ebook regional availability or restrictions must also be flagged.
 - The provider list is to be maintained through GitHub. Amazon.sa and Noon are examples only; neither is yet a confirmed integration.
@@ -31,10 +31,11 @@ Help a small, private group turn a photographed list of multiple books into revi
 1. User photographs or uploads a book list.
 2. App extracts separate book entries and their visible fields.
 3. User reviews/corrects uncertain entries and enters or corrects any missing, invalid, or unreadable ISBN before that scanned entry is searched.
-4. App searches by available ISBN/title/author details and displays likely matches with separate text-reading/OCR and book-match confidence.
+4. App matches each reviewed entry to likely book records, showing separate text-reading/OCR and book-match confidence.
 5. App preselects the closest likely edition and flags differences rather than treating distinct versions as identical; the criteria for “closest” remain open.
-6. App displays supported physical and ebook sources with explicit Saudi delivery or region status, source, and checked time where available; the user can choose a physical-book or ebook preference.
-7. If a newer signed app release is available, the app notifies the user and offers the Android installer; installation requires user approval.
+6. Before retailer/source lookup, the user may opt in to ebook search with an explicit “Also search ebooks” checkbox. If unchecked, no ebook provider is queried; if checked, only configured, permitted, owner-approved ebook providers may be queried.
+7. The app displays supported physical-book sources and, when selected, ebook sources with distinct Saudi delivery/region status, source, and checked time where available. An unselected ebook source is shown as not searched, not as an empty result.
+8. If a newer signed app release is available, the app notifies the user and offers the Android installer; installation requires user approval.
 
 The details in this section beyond confirmed scope are proposed design direction and remain subject to open questions.
 
@@ -43,7 +44,7 @@ The details in this section beyond confirmed scope are proposed design direction
 - Text-reading/OCR confidence and book-match confidence must be visible separately; uncertain text or matches must not be presented as certain.
 - Edition/version differences must be visible before a user treats a result as the exact requested book.
 - Physical delivery must distinguish confirmed Saudi shipping, uncertain shipping, and no Saudi shipping. Unknown must never be labeled confirmed.
-- Ebook results must show Saudi-region availability or uncertainty separately from physical shipping.
+- Ebook results must show Saudi-region availability or uncertainty separately from physical shipping. When ebook search is not selected, the app must not query an ebook provider or imply that ebook sources returned no results.
 - A failed or unavailable provider must not be reported as having no matching books; show that the source could not be checked.
 
 The exact evidence required for a “confirmed” shipping or region label is an open decision.
@@ -74,7 +75,7 @@ The exact evidence required for a “confirmed” shipping or region label is an
 - Given an uncertain extracted field or match, the app marks uncertainty and allows correction before searching; text-reading and book-match confidence are displayed separately.
 - Given a scanned entry has a missing, invalid, or unreadable ISBN, the app requests a user-entered/corrected ISBN before searching that entry.
 - Given multiple editions or versions, the app preselects the closest likely match and visibly flags differences; the rule for “closest” remains to be defined.
-- Given physical-book and ebook options for a likely match, the user can choose a physical-book or ebook preference.
+- Given a search, the user can opt in to ebook lookup with the “Also search ebooks” checkbox. When unchecked, no ebook provider is queried and the result says ebook sources were not searched; when checked, only configured, owner-approved ebook providers may be queried and their results retain separate Saudi-region status. Physical-book lookup is not suppressed by this checkbox.
 - Given uncertain Saudi shipping, the result says shipping is unconfirmed and does not imply that delivery is guaranteed.
 - Given uncertain ebook-region access, the result flags the uncertainty.
 - Given a new app release, the app can notify the user and invoke Android installation only after user approval.
@@ -93,8 +94,8 @@ IDs below identify confirmed scope only. An ID does not resolve its linked open 
 | BF-REQ-003 | Users review/correct uncertain scanned fields; a scanned entry with missing, invalid, or unreadable ISBN is not searched until the user supplies/corrects a valid ISBN. | Search is blocked for that entry until a valid user-confirmed ISBN is present; corrected fields are visible before search. | TC-004–TC-007, TC-041; Q-12, Q-16 |
 | BF-REQ-004 | Text-reading/OCR confidence is shown separately from book-match confidence. | The result view presents two distinct confidence indicators; no unvalidated numeric threshold is implied. | TC-008, TC-009; acceptable-match rule remains open at Q-17 |
 | BF-REQ-005 | Edition/version differences are flagged; when several likely editions match, the closest is preselected. | Edition differences are visible before the user treats a result as exact; the chosen candidate follows an owner-approved closeness rule. | TC-010, TC-011; Q-18, Q-19 |
-| BF-REQ-006 | Minimum useful outcome is a likely book match with edition differences; user can choose physical-book or ebook preference. | The user can express the selected format preference on a likely match; exact ranking/filtering effects remain open. | TC-012; Q-01, Q-19 |
-| BF-REQ-007 | Search physical books and ebooks online using only supported, permitted providers. | Each result identifies the source checked; unconfigured or unsupported sources are not reported as searched. | TC-013–TC-016, TC-021, TC-039–TC-040; Q-23–Q-27, Q-37 |
+| BF-REQ-006 | Minimum useful outcome is a likely book match with edition differences; the user can opt into ebook search per search via an explicit checkbox. | The user can include or omit ebook lookup independently of physical-book lookup; unchecked ebook search makes no ebook-provider request and is not presented as a zero-result search. | TC-012, TC-043; Q-01, Q-19, Q-37 |
+| BF-REQ-007 | Search physical-book sources and, only when the user opts in, ebook sources using supported, permitted providers. | Each result identifies the source checked; unconfigured, unsupported, unselected, or unchecked sources are not reported as searched or as having zero results. | TC-013–TC-016, TC-021, TC-039–TC-040, TC-043; Q-23–Q-27, Q-37 |
 | BF-REQ-008 | Saudi Arabia is the required physical-delivery market; uncertain shipping must be labeled uncertain. | Confirmed, uncertain, unavailable, and unchecked delivery states are not conflated; unknown is never described as confirmed. | TC-017–TC-019; evidence and seller rules remain open at Q-31–Q-34 |
 | BF-REQ-009 | Ebook Saudi-region availability or restrictions are flagged separately from physical shipping. | Ebook region status is separately identified and unknown access is not presented as confirmed. | TC-020; Q-37–Q-39 |
 | BF-REQ-010 | The provider list is maintained through GitHub; Amazon.sa and Noon are examples only, not approved integrations. | A listed provider is treated as searchable only after its permitted method and support status are verified; an example alone never activates a source. | TC-021, TC-039–TC-040; Q-23–Q-26 |

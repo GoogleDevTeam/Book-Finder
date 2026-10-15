@@ -13,8 +13,8 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - Book search can use ISBN, name/title, or both. For a scanned list entry, require a valid, readable ISBN—provided or corrected by the user—before searching that entry.
 - Show text-reading/OCR confidence separately from book-match confidence.
 - Flag different editions and versions. When multiple editions match, preselect the closest and flag differences.
-- The minimum useful outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference.
-- Search physical books and ebooks.
+- The minimum useful outcome is likely book matches with edition differences. The owner chose an explicit per-search “Also search ebooks” checkbox; when unchecked, ebook providers are not queried. Ebook search remains in v1, but this UI choice does not approve any provider or use of Amazon-derived content.
+- Search physical books; offer ebook search only when the user opts in for that search. Only configured, owner-approved, permitted providers may be queried.
 - Saudi Arabia is the required destination/market. If shipping is uncertain, state that it is uncertain.
 - Flag ebook regional restrictions or uncertain availability.
 - Manage the provider list through GitHub. Amazon.sa and Noon were examples, not confirmed working sources.
@@ -34,6 +34,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 
 ## Open
 
+- The owner prefers Amazon.sa as the only intended source for now, as recorded in [issue #10](https://github.com/GoogleDevTeam/Book-Finder/issues/10). This is not provider approval. The permitted mobile-app use path, private GitHub APK compatibility, and Saudi ebook coverage remain unresolved.
 
 
 - The app interface language(s), including whether it should support Arabic alongside English. List content is currently English-only by selection.

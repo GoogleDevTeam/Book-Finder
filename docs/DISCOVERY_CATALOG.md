@@ -15,7 +15,7 @@ This catalog deliberately distinguishes confirmed requirements from open decisio
 | C-02 | The input image is a list of multiple books, not a photo of the books themselves. |
 | C-03 | Search by ISBN, book name/title, or both; show identification confidence. |
 | C-04 | Flag different editions and versions. |
-| C-05 | Search physical-book and ebook sources; flag uncertain ebook-region availability. |
+| C-05 | Search physical-book sources and offer ebook search as a per-search opt-in checkbox; flag uncertain ebook-region availability. |
 | C-06 | Saudi Arabia is the required destination/market; uncertain shipping must be labeled uncertain, not confirmed. |
 | C-07 | Provider names/list are managed through GitHub. Amazon.sa and Noon are examples only, not confirmed integrations. |
 | C-08 | Check for updates from GitHub when the app launches; installation requires the user's Android approval. |
@@ -32,7 +32,7 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-01 | Confirmed | Minimum useful v1 outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference. Exact-edition/default selection behavior remains open under Q-19. | Prevents scope from drifting into unrelated book-management features. |
+| Q-01 | Confirmed | Minimum useful v1 outcome is likely book matches with edition differences; the user can opt in to ebook lookup per search via an explicit checkbox. Exact-edition/default selection behavior remains open under Q-19. | Prevents scope from drifting into unrelated book-management features. |
 | Q-02 | P1 / Confirmed | The owner selected one shared group list for about five users and explicitly chose to leave the group relationship/category unspecified for v1. Authentication and authorization remain open under separate questions. | Records the list-sharing model without collecting group relationship data. |
 | Q-03 | P1 / Confirmed | The main use context is library/school book lists. V1 scans lists and finds book matches/sourcing options; tracking an existing collection’s holdings, locations, or loans is out of scope. Requested-copy quantity remains open under Q-08. | Keeps the confirmed sourcing journey without adding inventory persistence, location records, or loan workflows. |
 | Q-04 | P1 / Open | Which languages should the app interface support? Is Arabic/RTL required, English, or both? | Affects layout, accessibility, OCR display, and testing. |
@@ -69,9 +69,9 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
-| Q-23 | P0 / Partial | Which metadata, retail, and ebook providers are acceptable v1 candidates? Google Books (metadata/Google eBookstore) and Open Library (human-oriented metadata) are research candidates; Amazon.sa eligibility and Noon consumer search remain unverified. No provider is selected. | A bounded source list is testable; “everywhere online” is not. | 
+| Q-23 | P0 / Partial | Which metadata, retail, and ebook providers are acceptable v1 candidates? Google Books (metadata/Google eBookstore) and Open Library (human-oriented metadata) are research candidates; Amazon.sa remains the owner's preferred source but is not selected or approved; issue #10 reports unresolved mobile-app approval/private GitHub APK fit. Noon consumer search remains unverified; no provider is selected. | A bounded source list is testable; “everywhere online” is not. | 
 | Q-24 | P0 / Partial | Research recommendation: a versioned declarative registry with stable provider IDs/roles, official source/terms and review date, permitted method, approved market, exact HTTPS host, credential reference class, and operational/privacy limits. No schema is approved; arbitrary URLs, executable templates, and secrets are excluded. | A list of URLs alone may not make a provider searchable or verifiable. |
-| Q-25 | P0 / Partial | For each provider, is there an official API or other permitted search method, and are credentials required? First-party docs were reviewed for Google Books, Open Library, Amazon.sa, and Noon; use-case terms, account eligibility, costs, live coverage, and provider-specific permission are not fully verified. | Avoids blocked, brittle, or disallowed scraping and exposes credential needs. | 
+| Q-25 | P0 / Partial | For each provider, is there an official API or other permitted search method, and are credentials required? First-party docs were reviewed for Google Books, Open Library, Amazon.sa, and Noon; use-case terms, account eligibility, costs, live coverage, and provider-specific permission are not fully verified. Issue #10 additionally requires confirmation that Amazon.sa product content may be used in this private APK distribution path. | Avoids blocked, brittle, or disallowed scraping and exposes credential needs. | 
 | Q-26 | P1 / Open | Who may add/edit providers, how are changes reviewed, and how does the app know a source is supported? | Prevents arbitrary or broken source entries from becoming active. |
 | Q-27 | P1 / Partial | The plan requires a provider failure to be shown as unchecked, not as no results. Which retry/backoff and partial-response behavior, if any, should be specified? | A failed search must not look like “no book exists.” |
 | Q-28 | P1 / Open | How should results be sorted or compared, and should the app show one result or results from every enabled provider? | Affects completeness, ranking, and user trust. |
@@ -88,8 +88,8 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 | Q-34 | P1 / Open | Does shipping need to work to all Saudi addresses, or can it vary by city, postal code, or delivery method? | Some sellers restrict remote areas or require address details. |
 | Q-35 | P1 / Open | Should price include shipping, taxes, customs, and currency conversion, or show only the provider’s listed price? | Avoids misleading comparisons. |
 | Q-36 | P1 / Open | How fresh must price, stock, and shipping data be? Should the app display the time checked? | Availability and shipping terms can change. |
-| Q-37 | P0 / Partial | Which ebook providers are candidates, and how will Saudi-region availability be verified? Google Books reports country-specific saleability for its own eBookstore; this does not guarantee user account/DRM/device access or cover other stores. No ebook provider is approved. | Ebook licensing may differ from physical delivery. | 
-| Q-38 | P1 / Open | Should ebook results distinguish purchase, subscription, library loan, sample, and free/legal access? | These are not interchangeable forms of availability. |
+| Q-37 | P0 / Partial | Which ebook providers are candidates, and how will Saudi-region availability be verified? Google Books reports country-specific saleability for its own eBookstore; this does not guarantee user account/DRM/device access or cover other stores. No ebook provider is approved. The owner chose to retain ebook lookup as per-search opt-in; issue #10 reports unresolved Amazon.sa Kindle coverage and mobile-app approval. | Ebook licensing may differ from physical delivery. | 
+| Q-38 | P1 / Open | Should ebook results distinguish purchase, subscription, library loan, sample, and free/legal access? The per-search checkbox controlling whether ebook lookup runs is confirmed; this question remains about result categories. | These are not interchangeable forms of availability. |
 | Q-39 | P1 / Open | Should format/DRM/device compatibility be shown, and is that in initial scope? | A purchasable ebook may not work on the user’s device or preferred reader. |
 
 ### Privacy, security, and access
@@ -111,7 +111,7 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 |---|---|---|---|
 | Q-48 | P1 / Open | Should this plan-only repository later contain app code, or remain separate from a future code repository? | Keeps the plan authoritative and controls who sees source/build artifacts. |
 | Q-49 | P1 / Open | Should provider configuration share this repo or live in a separate, more restricted repo? | Configuration edits can affect app behavior and must be reviewed. |
-| Q-50 | P0 / Partial | How will the first APK reach the five users privately? Firebase App Distribution remains a no-cost candidate within published tester caps; Android's outside-Play developer-verification rollout begins in four countries in 2026 and expands globally in 2027. No distribution choice or eligibility is verified. | Initial installation and later updates are separate workflows; private tester delivery must not put secrets in the APK. | 
+| Q-50 | P0 / Partial | How will the first APK reach the five users privately? Firebase App Distribution remains a no-cost candidate within published tester caps; Android's outside-Play developer-verification rollout begins in four countries in 2026 and expands globally in 2027. No distribution choice or eligibility is verified. Issue #10 reports a potential mismatch between Amazon.sa Approved Mobile Application requirements and private GitHub APK distribution; direct confirmation is still required. | Initial installation and later updates are separate workflows; private tester delivery must not put secrets in the APK. | 
 | Q-51 | P0 / Partial | How will private releases be fetched without placing a GitHub token in the APK? | GitHub release listing requires Contents read; GitHub App installation tokens can be scoped and expire after one hour. Use only server-side credentials; backend remains unselected. |
 | Q-52 | P0 / Partial | What is the signing-key creation, storage, backup, access, and recovery procedure? APK updates require signing identity continuity; outside-Play package registration/developer verification may apply based on release date/region. No key exists, and custody, eligibility, registration, and recovery remain undecided. | Loss or compromise can make updates impossible or unsafe. | 
 | Q-53 | P1 / Open | On launch, how often should the app check for updates, and should checks be manual as well? | Defines the “small launch check” and prevents unnecessary requests. |
@@ -143,7 +143,7 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 
 ## 3. Legacy risk ID crosswalk
 
-RISK_REGISTER.md is the only maintained risk inventory. The R-01–R-26 identifiers below are preserved as legacy aliases so earlier references remain searchable; they are not separate assessments and must not be renumbered or assigned new meanings. Use the canonical R1–R37 entries for owner, impact, likelihood rationale, prevention, detection, fallback, and residual risk.
+RISK_REGISTER.md is the only maintained risk inventory. The R-01–R-26 identifiers below are preserved as legacy aliases so earlier references remain searchable; they are not separate assessments and must not be renumbered or assigned new meanings. Use the canonical R1–R41 entries for owner, impact, likelihood rationale, prevention, detection, fallback, and residual risk.
 
 | Legacy ID | Original concern | Canonical risk ID(s) |
 |---|---|---|

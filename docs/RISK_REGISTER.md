@@ -125,8 +125,8 @@
 - **Owner:** Project owner (risk acceptance); implementation/test owner TBD.
 - **Impact:** High — title/ISBN queries can reveal sensitive interests to providers or logs.
 - **Likelihood:** Unrated — no runtime/sample/provider/device evidence exists to support a probability score.
-- **Prevention:** Minimize query fields; document data flow; avoid retaining server-side history by default.
-- **Detection / test:** TC-027, TC-028: inspect synthetic network/log traces after data-flow policy is approved.
+- **Prevention:** Minimize query fields; document data flow; avoid retaining server-side history by default. The “Also search ebooks” checkbox is an explicit per-search opt-in; do not send ebook queries when it is unchecked, and disclose that selected searches may reveal query terms to the approved provider.
+- **Detection / test:** TC-027, TC-028, TC-043: inspect synthetic network/log traces and prove unchecked ebook search makes no ebook-provider request after the data-flow policy is approved.
 - **Safe fallback:** Do not claim queries are invisible to providers; disable unapproved logging/transmission.
 - **Residual risk:** Open; Providers may retain queries under their own terms; broker/direct-search choice is open.
 

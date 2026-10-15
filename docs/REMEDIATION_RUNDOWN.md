@@ -2,7 +2,7 @@
 
 **Snapshot date:** 2026-10-14  
 **Status:** Historical audit plus remediation status; planning documentation only. Not approval to build.  
-**Status refresh (2026-10-15):** The documentation repairs for issues #1–#7 are on main, and those issues are closed as completed. Draft PR #8 was closed without merge after confirming that its substantive repair documents were already on main and GitHub marked it unmergeable due to conflicts. The project-log history/status was reconciled in commit f2402507455046d34486c28b578f0a81400e6a72; issue #9 tracks that documentation discrepancy. F-06 provider feasibility and F-07 owner/security decisions remain open. No application code exists, no app build or tests have run, and the implementation gate remains closed.  
+**Status refresh (2026-10-15):** The documentation repairs for issues #1–#7 are on main, and those issues are closed as completed. Draft PR #8 was closed without merge after confirming that its substantive repair documents were already on main and GitHub marked it unmergeable due to conflicts. Issue #9's project-log/status discrepancy was reconciled. Issue #10 remains open: the owner chose to keep ebooks in v1 but require permitted-use approval first, with an explicit per-search “Also search ebooks” checkbox; Amazon.sa/private-APK compatibility and Kindle coverage are unresolved. Current verified planning inventory is 16 requirements, 43 planned/unrun test cases, 41 risks, and 30 effective P0 blockers. No application code exists, no app build or tests have run, and the implementation gate remains closed.  
 **Repository:** GoogleDevTeam/Book-Finder  
 **Basis:** Main-branch documents and GitHub state read for this review.
 
@@ -56,7 +56,7 @@ At the 2026-10-14 audit, CHANGE_CONTROL.md required a plan requirement ID before
 
 At the 2026-10-14 audit, DISCOVERY_CATALOG.md and RISK_REGISTER.md had overlapping risk lists with no canonical register or crosswalk, and some entries lacked consistent treatment fields.
 
-**Completed repair (2026-10-15; committed directly to main):** RISK_REGISTER.md is canonical for R1–R37; DISCOVERY_CATALOG.md preserves R-01–R-26 as legacy aliases in a complete crosswalk. Each canonical entry records an accountable owner, impact rationale, unrated likelihood with the evidence gap, prevention, planned detection/test, safe fallback, and residual risk. Planned tests have not run; high-impact residual risks remain open for review/acceptance.
+**Completed repair (2026-10-15; committed directly to main):** RISK_REGISTER.md was established as canonical for R1–R37 at the time of that repair; it has since been extended to R1–R41. DISCOVERY_CATALOG.md preserves R-01–R-26 as legacy aliases in a complete crosswalk. Each canonical entry records an accountable owner, impact rationale, unrated likelihood with the evidence gap, prevention, planned detection/test, safe fallback, and residual risk. Planned tests have not run; high-impact residual risks remain open for review/acceptance.
 
 ### F-04 — Older wording conflicted with the no-card rule at audit time
 
@@ -68,7 +68,7 @@ At the 2026-10-14 audit, an earlier cost paragraph appeared to conflict with the
 
 At the 2026-10-14 audit, the change-control policy required tests for OCR/correction, matching, Saudi delivery and ebook uncertainty, privacy/access, outages, and signed APK updates, but no case-by-case matrix existed. No app tests could run because there was no code.
 
-**Completed planning repair (2026-10-15; committed directly to main):** TEST_MATRIX.md now contains 38 planned cases covering those required flows and additional failure states. Each case records input, expected result, pass criterion, owner/environment, evidence, and unresolved prerequisites; unavailable thresholds/devices/owners remain explicitly TBD. The matrix is a plan only: it has not been executed, and the repository still has no app code.
+**Completed planning repair (2026-10-15; committed directly to main):** TEST_MATRIX.md contained 38 planned cases at the time of the initial repair and now contains 43 planned cases covering required flows and additional failure states. Each case records input, expected result, pass criterion, owner/environment, evidence, and unresolved prerequisites; unavailable thresholds/devices/owners remain explicitly TBD. The matrix is a plan only: it has not been executed, and the repository still has no app code.
 
 ### F-06 — Provider feasibility is not established
 
