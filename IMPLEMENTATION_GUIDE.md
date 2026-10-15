@@ -1,12 +1,12 @@
 # Implementation Guide
 
-Build the app in the order below. The repository currently contains specifications, not an Android app. Use the README and this guide as the complete current scope; the older files under docs/ are archival and do not add requirements.
+Build the app in the order below. The repository currently contains specifications, not an Android app. Use the README and this guide as the complete current scope. The 13 legacy planning files were removed from main; their earlier versions remain in Git history but do not add requirements.
 
 ## 1. Create the Android app
 
 1. Install the current stable Android Studio release and create a new Kotlin project using the Empty Activity template with Jetpack Compose.
-2. Set an application ID, a minimum Android API level supported by the chosen CameraX and ML Kit releases, and current compile/target SDK values. Keep dependency versions in the Gradle version catalog and use stable releases.
-3. Add AndroidX Compose, lifecycle/ViewModel, CameraX (camera-core, camera-camera2, camera-lifecycle, camera-view), ML Kit Text Recognition v2 Latin model, Room with KSP, Kotlin coroutines/Flow, Retrofit with OkHttp, and Coil.
+2. Set an application ID, minimum SDK 29 (Android 10), and current compile/target SDK values. Keep dependency versions in the Gradle version catalog and use stable releases.
+3. Add AndroidX Compose and Material 3, lifecycle/ViewModel, CameraX (camera-core, camera-camera2, camera-lifecycle, camera-view, and camera-compose for CameraXViewfinder), ML Kit Text Recognition v2 Latin model, Room with KSP, Kotlin coroutines/Flow, Retrofit with OkHttp, and Coil.
 4. Add only the camera and internet permissions. Do not request photo-library or location access. Keep API keys and signing material out of Git.
 5. Build and run the starter app on an emulator before adding features.
 
@@ -19,15 +19,17 @@ Implement these Compose screens and a single clear path through them:
 3. **Book result:** show title, author, cover when available, and retailer search buttons.
 4. **History:** list locally saved scans and cached metadata; cached entries remain viewable offline.
 
-Keep UI state in ViewModels and data work in repositories. Start with a small set of models: a scan candidate, normalized book metadata, and a timestamped local history record. Do not add accounts, cloud sync, analytics, or a custom service.
+Use a Material 3 theme with tonal palettes, 12dp card corners, and 28dp bottom sheets; avoid heavy drop shadows. Enable predictive-back animations in the activity and navigation flow. Keep UI state in ViewModels and data work in repositories. Start with a small set of models: a scan candidate, normalized book metadata, and a timestamped local history record. Do not add accounts, cloud sync, analytics, or a custom service.
+
+For scan/results motion, use a Compose LookaheadScope and spring-based transitions. When OCR finds a valid ISBN or title, animate a bounding box to the recognized text. On selection, use a shared-element transition from that text to the results card or bottom sheet, using the shared-transition APIs supported by the pinned Compose version.
 
 ## 3. Add camera capture and on-device OCR
 
-1. Bind CameraX Preview and ImageCapture to the Compose screen's lifecycle.
+1. Use the native CameraXViewfinder composable, connected to the CameraX surface request, with ImplementationMode.EMBEDDED. Do not wrap the preview in AndroidView; embedded mode lets Compose clipping, shapes, bounds, and gestures work on the camera feed. Bind ImageCapture to the screen lifecycle for the still image used by OCR.
 2. Capture a still image for each scan and process it with ML Kit Text Recognition v2 using the Latin model. Keep image processing and recognition off the UI thread.
 3. Show a clear permission-denied, capture-failed, and no-text state with retry/manual-entry actions.
 4. Do not upload or persist the captured image in the default flow. Release image and recognizer resources when the scan is finished or the screen is disposed.
-5. Test portrait/landscape rotation, focus, glare, low light, and small printed text on at least one physical device.
+5. Preserve the transform between captured-image coordinates and viewfinder coordinates so the OCR bounding box lands on the correct text. Test portrait/landscape rotation, focus, glare, low light, and small printed text on at least one physical device.
 
 ## 4. Extract and validate ISBNs, then fall back to English titles
 
@@ -73,7 +75,7 @@ If Arabic title extraction is mandatory, get approval for the changed privacy/co
 - **Title parsing:** empty text, numeric-only lines, mixed Arabic/English text, and user-edited titles.
 - **Google Books:** exact ISBN result, ambiguous title results, no items, missing author/thumbnail, timeout, offline, and quota/error responses.
 - **Room:** save, load, cache hit, chronological history, and schema migration.
-- **UI and device:** camera permission grant/denial, capture retry, review/edit flow, no-network history, and retailer handoff with and without a retailer app installed.
+- **UI and device:** camera permission grant/denial, EMBEDDED viewfinder clipping/gesture behavior, OCR bounding-box alignment, review/edit flow, predictive-back navigation, shared-element/spring transitions, no-network history, and retailer handoff with and without a retailer app installed.
 - **Privacy boundary:** in the default configuration, verify that only a selected ISBN/title is sent to Google Books and that no camera image or history data is uploaded.
 
 Run the Gradle unit-test and Android test tasks configured in the project, then make a release build and install it on a physical Android phone. Record actual test outcomes; do not mark planned checks as passed until they have run.
@@ -88,6 +90,7 @@ Run the Gradle unit-test and Android test tasks configured in the project, then 
 
 ## Release acceptance checklist
 
+- The app targets minimum SDK 29, uses the native embedded CameraXViewfinder, and presents the specified Material 3 shapes and motion.
 - A user can capture a page, review a validated ISBN or English title, and correct the candidate before lookup.
 - A matching Google Books result displays the available title, author, and cover, and can be cached locally.
 - History works offline, and a retailer action opens a search page without scraping or presenting claimed live prices.
@@ -97,6 +100,7 @@ Run the Gradle unit-test and Android test tasks configured in the project, then 
 ## Official references
 
 - Jetpack Compose: https://developer.android.com/develop/ui/compose
+- Material 3 for Compose: https://developer.android.com/develop/ui/compose/designsystems/material3
 - CameraX: https://developer.android.com/training/camerax
 - ML Kit Text Recognition v2 for Android: https://developers.google.com/ml-kit/vision/text-recognition/v2/android
 - Google Books API: https://developers.google.com/books/docs/v1/using
