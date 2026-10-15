@@ -45,15 +45,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.room.withTransaction
 import coil.compose.AsyncImage
 import com.googledevteam.bookfinder.camera.CameraCapture
 import com.googledevteam.bookfinder.data.BookFinderDatabase
+import com.googledevteam.bookfinder.data.BookHistoryRepository
 import com.googledevteam.bookfinder.data.HistoryWithBook
 import com.googledevteam.bookfinder.data.GoogleBooksRepository
-import com.googledevteam.bookfinder.data.ScanHistoryEntity
 import com.googledevteam.bookfinder.data.toBookResult
-import com.googledevteam.bookfinder.data.toCachedEntity
 import com.googledevteam.bookfinder.domain.BookCandidate
 import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
@@ -75,8 +73,8 @@ fun BookFinderScreen() {
     val scope = rememberCoroutineScope()
     val repository = remember { GoogleBooksRepository() }
     val database = remember { BookFinderDatabase.get(context) }
-    val historyDao = remember(database) { database.historyDao() }
-    val historyEntries by historyDao.observeHistory().collectAsStateWithLifecycle(initialValue = emptyList())
+    val historyRepository = remember(database) { BookHistoryRepository(database) }
+    val historyEntries by historyRepository.historyEntries.collectAsStateWithLifecycle(initialValue = emptyList())
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
@@ -154,17 +152,7 @@ fun BookFinderScreen() {
         historySavedMessage = null
         scope.launch {
             try {
-                database.withTransaction {
-                    historyDao.upsertBook(book.toCachedEntity())
-                    historyDao.insertHistory(
-                        ScanHistoryEntity(
-                            lookupTerm = selectedTerm,
-                            lookupKind = selectedKind.name,
-                            bookId = book.id,
-                            scannedAt = System.currentTimeMillis(),
-                        ),
-                    )
-                }
+                historyRepository.saveResult(book, selectedTerm, selectedKind)
                 historySavedMessage = "Saved on this device. It will be available in History offline."
             } catch (exception: Exception) {
                 historySavedMessage = exception.localizedMessage ?: "Could not save this result. Try again."
