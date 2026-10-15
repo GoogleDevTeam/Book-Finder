@@ -19,7 +19,7 @@ Only items in **Confirmed** are settled by the user. **Proposed** items are reco
 - Flag ebook regional restrictions or uncertain availability.
 - Manage the provider list through GitHub. Amazon.sa and Noon were examples, not confirmed working sources.
 - Check for a GitHub-based app update on launch; user approval is required to install the APK.
-- Intended usage is about five people, with strong privacy and security. They share one group book list. The group relationship/category was not provided; this does not settle authentication, invitations, membership/permissions, user attribution, or history separation (Q-02 remains partial).
+- Intended usage is about five people, with strong privacy and security. They share one group book list. The owner explicitly chose to leave the group relationship/category unspecified for v1. Authentication, invitations, membership/permissions, user attribution, and history separation remain separate open decisions.
 - The plan is the source of truth. Do not add unapproved scope.
 
 ## Proposed, not yet approved

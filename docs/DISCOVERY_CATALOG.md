@@ -33,7 +33,7 @@ Priority guide: **P0** blocks approval of a complete plan; unresolved effective 
 | ID | Priority / status | Question or decision | Why it matters |
 |---|---|---|---|
 | Q-01 | Confirmed | Minimum useful v1 outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference. Exact-edition/default selection behavior remains open under Q-19. | Prevents scope from drifting into unrelated book-management features. |
-| Q-02 | P1 / Partial | The owner selected one shared group list for about five users; the group relationship/category was not provided. | Resolves list sharing, but not group context, identity, or access controls. |
+| Q-02 | P1 / Confirmed | The owner selected one shared group list for about five users and explicitly chose to leave the group relationship/category unspecified for v1. Authentication and authorization remain open under separate questions. | Records the list-sharing model without collecting group relationship data. |
 | Q-03 | P1 / Open | How often and in what situation will the app be used (one-off list, recurring shopping, library/school list)? | Affects list persistence, speed, offline expectations, and what must be saved. |
 | Q-04 | P1 / Open | Which languages should the app interface support? Is Arabic/RTL required, English, or both? | Affects layout, accessibility, OCR display, and testing. |
 | Q-05 | P1 / Open | What is explicitly out of scope for version one? | Prevents optional ideas from becoming accidental requirements. |

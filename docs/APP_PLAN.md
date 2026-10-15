@@ -22,7 +22,7 @@ Help a small, private group turn a photographed list of multiple books into revi
 - Ebook regional availability or restrictions must also be flagged.
 - The provider list is to be maintained through GitHub. Amazon.sa and Noon are examples only; neither is yet a confirmed integration.
 - Users should receive an in-app update notice from GitHub-based releases. The app may make a small version check on launch. The user approves Android installation.
-- The intended group is approximately five people and uses one shared group list. The group relationship/category was not provided. Authentication, invitations, membership/permissions, user attribution, and whether history is shared or separate remain open.
+- The intended group is approximately five people and uses one shared group list. The owner chose to leave the group relationship/category unspecified for v1. Authentication, invitations, membership/permissions, user attribution, and whether history is shared or separate remain open.
 - Work must follow this plan. New scope requires explicit approval and a plan update first.
 
 ## 3. Proposed user journey
@@ -49,7 +49,7 @@ The exact evidence required for a “confirmed” shipping or region label is an
 
 ## 5. Privacy and security requirements
 
-- Limit use to the intended small invited group. One shared group list is selected; group relationship/category and exact access-control method (authentication, invitations, membership/permissions, and revocation) remain undecided.
+- Limit use to the intended small invited group. One shared group list is selected; the group relationship/category is intentionally unspecified for v1; the exact access-control method (authentication, invitations, membership/permissions, and revocation) remains undecided.
 - Protect images, extracted lists, search history, provider credentials, GitHub credentials, and app-signing material.
 - Do not put GitHub tokens, provider secrets, or signing keys in the APK or repository.
 - Do not claim that private GitHub hosting alone makes app data or external searches private.
@@ -98,7 +98,7 @@ IDs below identify confirmed scope only. An ID does not resolve its linked open 
 | BF-REQ-009 | Ebook Saudi-region availability or restrictions are flagged separately from physical shipping. | Ebook region status is separately identified and unknown access is not presented as confirmed. | TC-020; Q-37–Q-39 |
 | BF-REQ-010 | The provider list is maintained through GitHub; Amazon.sa and Noon are examples only, not approved integrations. | A listed provider is treated as searchable only after its permitted method and support status are verified; an example alone never activates a source. | TC-021; Q-23–Q-26 |
 | BF-REQ-011 | Users receive an in-app update notice for GitHub-based releases; Android installation requires user approval. | A verified signed update may be offered, but installation is not triggered without the user’s explicit Android approval. | TC-032–TC-034; private delivery, signer custody, and supported devices remain open |
-| BF-REQ-012 | Intended access is a small invited group (about five people) sharing one group list; privacy and security are top priorities. | Authorized group members can access the same shared list and unauthorized users are denied; invitation, identity, membership/permissions, revocation, and any user-specific history/data model must be approved before testing can pass. | TC-023–TC-025; Q-02 (group relationship partial), Q-40–Q-47, Q-69–Q-78 |
+| BF-REQ-012 | Intended access is a small invited group (about five people) sharing one group list; privacy and security are top priorities. | Authorized group members can access the same shared list and unauthorized users are denied; invitation, identity, membership/permissions, revocation, and any user-specific history/data model must be approved before testing can pass. | TC-023–TC-025; Q-02 resolved; Q-40–Q-47, Q-69–Q-78 |
 | BF-REQ-013 | Protect images, extracted lists, search history, provider/GitHub credentials, and signing material; no tokens, provider secrets, or signing keys in the APK or repository. | Release/repository inspection finds no embedded secrets; data is not retained or transmitted outside the owner-approved data flow. | TC-026–TC-028; retention and data flow remain open at Q-14, Q-15, Q-42, Q-43, Q-46 |
 | BF-REQ-014 | Security, safety, and performance outrank convenience; uncertain states and provider failures are explicit. | Uncertain results remain uncertain, provider failure is distinct from a successful empty search, and bounded work does not leave routine startup hanging indefinitely. | TC-015–TC-020, TC-029, TC-031; Q-27, Q-32, Q-33, Q-75, Q-76 |
 | BF-REQ-015 | Owner-confirmed $0 target and no-payment-card rule; no paid overage or automatic tier upgrade without explicit approval. | No card is requested and no unapproved charge/upgrade occurs; reaching a free limit stops or degrades the affected service. | TC-030; Q-79, Q-80, Q-81–Q-87 |

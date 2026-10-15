@@ -5,7 +5,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 
 ## Current gate
 
-- 87 discovery IDs: 72 Open, 6 Partial, 9 Confirmed.
+- 87 discovery IDs: 72 Open, 5 Partial, 10 Confirmed.
 - 30 effective P0 blockers must be resolved before plan approval: Q-08, Q-17, Q-23, Q-24, Q-25, Q-31, Q-32, Q-33, Q-37, Q-40, Q-41, Q-42, Q-45, Q-47, Q-50, Q-51, Q-52, Q-54, Q-55, Q-58, Q-64, Q-65, Q-69, Q-70, Q-71, Q-72, Q-74, Q-81, Q-82, Q-83. This includes five P1 catalog items escalated by the audit: Q-45, Q-47, Q-54, Q-55, and Q-58. Q-67, Q-68, and Q-80 are now confirmed and no longer block approval.
 - P1/P2 items must be resolved or explicitly deferred before plan approval. Research findings are not product approval.
 
@@ -23,7 +23,7 @@ Authority: This is the canonical, ID-mapped backlog and status/priority register
 | ID | Catalog priority | Status | Handling | Gate | Question or recorded answer |
 |---|---|---|---|---|---|
 | Q-01 | — | Confirmed | Recorded decision | Resolved | Minimum useful v1 outcome is likely book matches with edition differences; the user can choose a physical-book or ebook preference. Exact-edition/default selection behavior remains open under Q-19. |
-| Q-02 | P1 | Partial | Owner decision remains | P1/P2—resolve or explicitly defer | One shared group list for about five users is confirmed; the group relationship/category was not provided. Authentication, membership/permissions, and history separation remain open under Q-40/Q-41/Q-43. |
+| Q-02 | P1 | Confirmed | Recorded decision | Resolved | About five users share one group list; the group relationship/category is intentionally unspecified for v1. Authentication, membership/permissions, and history separation remain open under Q-40/Q-41/Q-43. |
 | Q-03 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | How often and in what situation will the app be used (one-off list, recurring shopping, library/school list)? |
 | Q-04 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | Which languages should the app interface support? Is Arabic/RTL required, English, or both? |
 | Q-05 | P1 | Open | Owner decision | P1/P2—resolve or explicitly defer | What is explicitly out of scope for version one? |
