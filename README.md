@@ -4,7 +4,7 @@ Book Finder is a serverless native Android app (minimum Android API 29) for turn
 
 ## Current MVP status
 
-The first vertical slice includes the native embedded CameraX viewfinder, on-device Latin OCR, ISBN-10/13 checksum validation (including Arabic-Indic digit normalization), an editable review step, and Google Books results. The default flow does not upload camera images. Local scan history, Room caching, retailer search hand-offs, and physical-device verification remain follow-on work.
+The first vertical slice includes the native embedded CameraX viewfinder, on-device Latin OCR, ISBN-10/13 checksum validation (including Arabic-Indic digit normalization), an editable review step, and Google Books results. The default flow does not upload camera images. Local scan history and cached metadata are now stored on-device with Room. Retailer search hand-offs and physical-device verification remain follow-on work.
 
 ## What the app does
 
