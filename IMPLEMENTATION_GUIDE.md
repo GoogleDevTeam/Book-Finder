@@ -60,12 +60,13 @@ Verify the Room flow before release: save a result, relaunch and load History of
 
 ## 7. Build retailer search links, not a price scraper
 
-1. Add one explicit action per retailer: Jarir, Amazon.sa, and Noon. Prefer an ISBN as the search term; use the reviewed title when there is no ISBN.
-2. Build URLs with Android Uri.Builder or equivalent query-parameter encoding. Never concatenate unescaped OCR text into a URL.
-3. The Jarir search pattern from the product brief is https://www.jarir.com/sa-en/catalogsearch/result?q={encoded-query}.
-4. Confirm the current Amazon.sa and Noon search-link formats manually before release. Keep each retailer link configurable; do not discover or update it by crawling retailer pages.
-5. Hand the link to Android using ACTION_VIEW. Allow the retailer app to handle its verified app link when installed; otherwise open the HTTPS result in Chrome Custom Tabs or the user's browser.
-6. The app stops at opening the retailer's search results. Do not parse the result page or display a price, stock, shipping, or ebook claim as app data.
+RetailerSearch.searchUrl builds encoded query URLs for Jarir, Amazon.sa, and Noon; results remain available even if Google Books returns no match. The results screen opens the HTTPS URL with Android ACTION_VIEW, allowing Android to resolve an installed retailer app link or a browser.
+
+- Jarir: https://www.jarir.com/sa-en/catalogsearch/result?q={encoded-query} (from the product brief).
+- Amazon.sa: https://www.amazon.sa/s?k={encoded-query}; a live public search fetch returned results for a sample term.
+- Noon: https://www.noon.com/saudi-en/search/?q={encoded-query}; a live fetch did not confirm search results, so verify this destination and app/browser routing on an Android device before release.
+
+Unit tests cover each URL shape, reserved-character encoding, and blank-query rejection. Keep the destinations configurable; do not discover or update them by crawling retailer pages. The app stops at handing off the search; it never parses retailer pages or presents prices, stock, shipping, or ebook availability as app data.
 
 ## 8. Treat Arabic OCR as an explicit optional change
 
