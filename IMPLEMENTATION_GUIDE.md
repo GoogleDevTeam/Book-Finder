@@ -54,10 +54,9 @@ The initial implementation includes a lookup repository and results view. Verify
 
 ## 6. Persist history and cached metadata with Room
 
-1. Create Room entities for normalized book metadata and scan history. Store the lookup term, selected metadata, and scan time; store a cover URL rather than duplicating cover-image bytes in the database.
-2. Save a history entry after the user confirms a result. Cache metadata so a later visit to History works without network access.
-3. Expose database reads as Flow and use a DAO for insert/query operations. Add a database version and migration when the schema changes.
-4. Verify that clearing app data removes the local history and that the default app sends no history list or camera image to a server.
+The current slice now implements a version-1 Room database with separate normalized book metadata and scan-history tables. A result is cached only when the user explicitly chooses **Save this result to history**; the history row stores the reviewed lookup term, lookup kind, selected book, and timestamp. Metadata and scan history remain on-device and the History screen reads them from Room, so saved results remain available offline. Cover URLs are stored as text rather than copying image bytes into the database. No scan image, history list, or custom backend is used.
+
+Verify the Room flow before release: save a result, relaunch and load History offline, confirm newest entries appear first, and verify clearing app data removes the database. If the schema changes, increment the database version and add a migration; do not mark migration checks as passed until run.
 
 ## 7. Build retailer search links, not a price scraper
 
