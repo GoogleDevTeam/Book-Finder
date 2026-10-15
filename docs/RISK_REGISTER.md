@@ -1,7 +1,7 @@
 # Risk register
 
 **Last reviewed:** 2026-10-15  
-**Canonical register:** R1–R40 in this file. Legacy catalog IDs R-01–R-26 are aliases cross-walked in DISCOVERY_CATALOG.md; they are not a second risk inventory.
+**Canonical register:** R1–R41 in this file. Legacy catalog IDs R-01–R-26 are aliases cross-walked in DISCOVERY_CATALOG.md; they are not a second risk inventory.
 
 ## Rating and ownership rules
 
@@ -415,3 +415,13 @@ The register is planning-only. No application behavior has been implemented or t
 - **Detection / test:** TC-004, TC-031, and TC-041; use sanitized malformed and extreme-dimension fixtures on selected devices, then inspect resource use and network/storage behavior.
 - **Safe fallback:** Stop processing, discard temporary work according to the approved retention policy, and offer a recoverable retake/reselect path without logging image content.
 - **Residual risk:** Open until numeric limits are benchmarked on selected devices, data handling is approved, and rejection/resource tests pass.
+
+### R41 — Undefined incident ownership delays containment and safe recovery
+
+- **Owner:** Project owner (risk acceptance); incident responder and release/security contacts TBD.
+- **Impact:** High — delay or confusion after a credential/device/release compromise can extend unauthorized access, expose shared data, or cause users to install an untrusted update.
+- **Likelihood:** Unrated — no deployed service, incident history, or named response roles exist.
+- **Prevention:** Approve a concise incident playbook, maintain a secret/release/provider inventory without storing secret values, identify an accountable responder and user contact channel, and rehearse synthetic compromise scenarios before first release.
+- **Detection / test:** TC-042 tabletop exercise; record scope, containment/recovery actions, approvals, communications, and unresolved dependencies. A rehearsal is planned, not passed.
+- **Safe fallback:** Revoke affected sessions/credentials where supported, disable the affected provider or protected release path, fail closed, pause releases if signer/source integrity is in doubt, and notify through the owner-approved channel. Do not promise remote uninstall or immediate offline revocation.
+- **Residual risk:** Open until the owner assigns response roles, notification channel, escalation authority, and acceptable response windows; jurisdiction-specific reporting duties require separate review.

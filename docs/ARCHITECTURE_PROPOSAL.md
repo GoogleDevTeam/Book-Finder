@@ -8,7 +8,7 @@
 
 This proposal stays inside the confirmed Book-Finder scope: a private Android APK for about five invited users, one shared group list, printed or typed/on-screen English lists (one format per page), user review of extracted entries, book/edition matching, and physical-book or ebook options with Saudi delivery/region uncertainty shown honestly. The $0/no-payment-card rule is confirmed. The app has no implementation approval: the owner must approve the complete plan and explicitly say to begin before any app source, provider integration, backend, build, or release is created.
 
-The current plan has 16 stable requirements and 41 planned, unrun test cases. Thirty effective P0 questions remain. A plan can reduce foreseeable errors and define safe failure behavior; it cannot guarantee zero defects, perfect OCR, accurate live stock, or an APK that cannot be copied or reverse-engineered.
+The current plan has 16 stable requirements and 42 planned, unrun test cases. Thirty effective P0 questions remain. A plan can reduce foreseeable errors and define safe failure behavior; it cannot guarantee zero defects, perfect OCR, accurate live stock, or an APK that cannot be copied or reverse-engineered.
 
 ## 2. Recommended shape (all items below are proposals)
 
@@ -74,6 +74,14 @@ This is a pre-build threat model for the confirmed product concept and the unapp
 **Owner decisions still required:** data flow/retention (Q-14/Q-15/Q-42/Q-43/Q-46), threat scope and confidential assets (Q-45/Q-69/Q-72), backend/auth/revocation/offline (Q-40–Q-47/Q-70–Q-76), providers and evidence standards (Q-23–Q-39), and hosting/release/key custody (Q-50–Q-58/Q-78/Q-81–Q-85). This proposal does not close those questions or authorize implementation.
 
 
+### 4.2 Performance measurement proposal (Q-75; not approved)
+
+Before setting a latency target, select representative Android devices, supported OS versions, realistic sanitized list sizes, and network conditions. On release builds, use Android Macrobenchmark for cold, warm, and hot startup and relevant end-user interactions; report repeated-run medians for typical startup and the distribution/percentiles for frame timing. Measure image decode/OCR, review rendering, provider round trips, and update metadata checks as separate stages so network variance is not attributed to local work. Test on each selected device class, include a lower/mid-range device, control background apps, battery/thermal state, compilation mode, and network, and record build/device/OS/fixture identifiers. Use deterministic provider fixtures for reproducible app timing; use live-source timings only as separately labeled observations. Numeric pass thresholds remain unset until the owner selects devices, list sizes, and acceptable trade-offs. This is a method proposal, not evidence that the app was benchmarked.
+
+### 4.3 Incident-response proposal (Q-78; not approved)
+
+Use a small, rehearsed playbook aligned with NIST SP 800-61 Rev. 3's incident-response risk-management guidance: prepare; detect and assess; contain; eradicate/recover; communicate; and record lessons. Maintain a current inventory of credentials, owners, release signer/package identity, approved provider IDs, and a safe contact route without copying secrets into the plan. For a suspected account/device compromise, deny or revoke the affected identity/device at the server if that capability is selected; for a GitHub/provider credential leak, revoke/rotate the credential and inspect recent access; for hostile provider configuration, disable that source and fail closed; for a suspected release/signing compromise, pause distribution and protected update metadata until signer, artifact, and source integrity are re-established. Recover only from a known-good reviewed main commit and verified release identity; issue no silent install, payment, or unapproved user-data action. Preserve only sanitized evidence, notify affected users through an owner-approved channel, and record decisions and follow-up risks. A removed GitHub release cannot uninstall installed copies; offline devices cannot receive immediate revocation. The named responder, severity, response window, user notice channel, escalation authority, and any jurisdiction-specific notification duties remain owner decisions.
+
 - Validate all input at the boundary: ISBN-10/13 check digits, image MIME/size, provider response schema, URL scheme/host, and numeric values. Use parameterized database operations and safe text rendering; treat images, OCR text, provider responses, and GitHub configuration as untrusted input.
 - Enforce HTTPS, least-privilege API scopes, server-side authorization on every protected operation, bounded request/response sizes, timeouts, rate limits, and controlled retries with jitter. Do not retry writes or send duplicate provider calls without idempotency.
 - Handle each source independently with bounded concurrency and progressive results. Preserve explicit states for unavailable, rate-limited, stale, partial, and not configured. Any cache must show its age and must never make stale shipping/stock look current.
@@ -126,3 +134,9 @@ OWASP MASVS/MASTG are used here as organizing and verification references, not a
 - [OWASP MASTG Android data storage](https://mas.owasp.org/MASTG/0x05d-Testing-Data-Storage) — mobile storage verification guidance.
 - [Android security best practices](https://developer.android.com/privacy-and-security/security-best-practices) — Android platform security guidance.
 - [Android Keystore system](https://developer.android.com/privacy-and-security/keystore) — platform-backed cryptographic key storage guidance.
+
+## Performance and incident-response sources consulted (2026-10-15)
+
+- [Android Macrobenchmark metrics](https://developer.android.com/topic/performance/benchmarking/macrobenchmark-metrics) — startup timing and frame-timing metrics.
+- [Android performance test environment](https://developer.android.com/topic/performance/appstartup/setup-env) — release builds and reducing measurement noise.
+- [NIST SP 800-61 Rev. 3 Final](https://csrc.nist.gov/pubs/sp/800/61/r3/final) — incident-response recommendations within cybersecurity risk management.
