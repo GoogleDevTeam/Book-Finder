@@ -254,6 +254,7 @@ fun BookFinderScreen() {
                         selectedIndex = selectedIndex,
                         query = query,
                         queryKind = queryKind,
+                        onQueryKindChanged = { queryKind = it },
                         message = message,
                         onSelectCandidate = ::chooseCandidate,
                         onQueryChanged = { query = it },
@@ -339,6 +340,7 @@ private fun CandidateReview(
     selectedIndex: Int,
     query: String,
     queryKind: CandidateKind,
+    onQueryKindChanged: (CandidateKind) -> Unit,
     message: String?,
     onSelectCandidate: (Int) -> Unit,
     onQueryChanged: (String) -> Unit,
@@ -390,12 +392,12 @@ private fun CandidateReview(
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
                 selected = queryKind == CandidateKind.ISBN,
-                onClick = { queryKind = CandidateKind.ISBN },
+                onClick = { onQueryKindChanged(CandidateKind.ISBN) },
                 label = { Text("ISBN") },
             )
             FilterChip(
                 selected = queryKind == CandidateKind.ENGLISH_TITLE,
-                onClick = { queryKind = CandidateKind.ENGLISH_TITLE },
+                onClick = { onQueryKindChanged(CandidateKind.ENGLISH_TITLE) },
                 label = { Text("English title") },
             )
         }
@@ -436,7 +438,7 @@ private fun ResultsScreen(
                 CircularProgressIndicator()
             }
             Text(
-                "Looking up the confirmed ISBN or title…",
+                "Looking up the confirmed ISBN or titleâ¦",
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.bodyMedium,
             )
