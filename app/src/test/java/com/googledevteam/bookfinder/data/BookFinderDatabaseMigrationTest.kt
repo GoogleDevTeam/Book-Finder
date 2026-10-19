@@ -9,9 +9,14 @@ import androidx.room.RoomDatabase
 import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
 import com.googledevteam.bookfinder.domain.ConfirmedReadingListBook
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
@@ -137,6 +142,54 @@ class BookFinderDatabaseMigrationTest {
             }
         } finally {
             if (migratedDatabase.isOpen) migratedDatabase.close()
+        }
+    }
+
+    @Test
+    fun readingListsFlowEmitsNewListAfterInitialSnapshot() = runBlocking {
+        val context: Context = RuntimeEnvironment.getApplication()
+        val database = Room.inMemoryDatabaseBuilder(
+            context,
+            BookFinderDatabase::class.java,
+        ).allowMainThreadQueries().build()
+
+        try {
+            val repository = BookHistoryRepository(database)
+            val initialEmission = CompletableDeferred<List<ReadingListSummary>>()
+            val pendingUpdate = async {
+                withTimeout(5_000L) {
+                    repository.readingLists
+                        .onEach { snapshot ->
+                            if (!initialEmission.isCompleted) initialEmission.complete(snapshot)
+                        }
+                        .first { lists -> lists.any { it.list.name == "Flow update" } }
+                }
+            }
+
+            assertTrue(withTimeout(5_000L) { initialEmission.await() }.isEmpty())
+            repository.saveReadingList(
+                name = "Flow update",
+                grade = "",
+                subject = "",
+                books = listOf(
+                    ConfirmedReadingListBook(
+                        book = BookResult(
+                            id = "flow-volume",
+                            title = "Flow Book",
+                            authors = emptyList(),
+                            thumbnailUrl = null,
+                        ),
+                        lookupTerm = "Flow Book",
+                        lookupKind = CandidateKind.ENGLISH_TITLE,
+                    ),
+                ),
+            )
+
+            val updatedLists = pendingUpdate.await()
+            assertEquals("Flow update", updatedLists.single().list.name)
+            assertEquals(1, updatedLists.single().bookCount)
+        } finally {
+            database.close()
         }
     }
 }
