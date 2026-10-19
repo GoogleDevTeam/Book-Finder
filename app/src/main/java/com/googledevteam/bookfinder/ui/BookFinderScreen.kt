@@ -459,7 +459,7 @@ private fun ResultsScreen(
                 CircularProgressIndicator()
             }
             Text(
-                "Looking up the confirmed ISBN or titleâ¦",
+                "Looking up the confirmed ISBN or title…",
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.bodyMedium,
             )
