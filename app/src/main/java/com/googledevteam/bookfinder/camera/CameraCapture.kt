@@ -155,6 +155,6 @@ fun CameraCapture(
             )
         },
     ) {
-        androidx.compose.material3.Text(if (isCapturing) "Reading pageâ¦" else "Capture page")
+        androidx.compose.material3.Text(if (isCapturing) "Reading page…" else "Capture page")
     }
 }
