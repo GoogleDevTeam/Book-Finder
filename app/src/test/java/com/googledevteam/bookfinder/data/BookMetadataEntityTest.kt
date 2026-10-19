@@ -12,6 +12,10 @@ class BookMetadataEntityTest {
             title = "A Book",
             authors = listOf("First Author", "Second, Jr."),
             thumbnailUrl = "https://example.test/cover.jpg",
+            isbn10 = "0306406152",
+            isbn13 = "9780306406157",
+            publisher = "Example Education",
+            publishedDate = "2024",
         )
 
         assertEquals(original, original.toCachedEntity().toBookResult())
