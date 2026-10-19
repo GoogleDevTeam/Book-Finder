@@ -4,14 +4,14 @@ Book Finder is a serverless native Android app (minimum Android API 29) for turn
 
 ## Current MVP status
 
-The first vertical slice includes the native embedded CameraX viewfinder, on-device Latin OCR, ISBN-10/13 checksum validation (including Arabic-Indic digit normalization), an editable review step, and Google Books results. The default flow does not upload camera images. Local scan history and cached metadata are now stored on-device with Room. The results screen now hands off the reviewed ISBN or title to Jarir, Amazon.sa, or Noon using encoded HTTPS search URLs. Android app/browser routing and physical-device behavior still need verification.
+The current Android slice includes the native embedded CameraX viewfinder, on-device Latin OCR, ISBN-10/13 checksum validation (including Arabic-Indic digit normalization), an editable review step, and Google Books results. Results expose returned ISBNs, publisher, and publication date when available, and distinguish an exact ISBN match from an unverified ISBN result or title candidate. The default flow does not upload camera images. Local scan history and cached metadata are stored on-device with Room. The results screen hands off the reviewed ISBN or title to Jarir, Amazon.sa, or Noon using encoded HTTPS search URLs. Android app/browser routing and physical-device behavior still need verification.
 
 ## What the app does
 
 - Capture a printed or displayed list with the native CameraXViewfinder composable in embedded mode.
 - Recognize Latin-script text on-device with Google ML Kit Text Recognition v2.
 - Find and validate ISBN-10/ISBN-13 candidates; if no ISBN is present, let the user review or edit an English title.
-- Query the Google Books API and show the normalized title, author, and cover image.
+- Query Google Books and show title, author, cover, and any returned ISBN, publisher, and publication date; label ISBN matches only when the returned identifiers confirm the lookup ISBN.
 - Save scan history and cached book metadata on the device with Room.
 - Open a prefilled search at Jarir, Amazon.sa, or Noon in the retailer app when Android can resolve it, otherwise in Chrome Custom Tabs.
 

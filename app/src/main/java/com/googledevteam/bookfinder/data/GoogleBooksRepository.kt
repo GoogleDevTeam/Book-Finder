@@ -3,6 +3,7 @@ package com.googledevteam.bookfinder.data
 import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
 import com.googledevteam.bookfinder.domain.IsbnParser
+import com.googledevteam.bookfinder.domain.withLookupMatch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -50,7 +51,7 @@ class GoogleBooksRepository {
                 }
 
                 val payload = connection.inputStream.bufferedReader().use { it.readText() }
-                parseResults(JSONObject(payload))
+                parseResults(JSONObject(payload)).map { it.withLookupMatch(trimmedQuery, kind) }
             } finally {
                 connection.disconnect()
             }
@@ -73,6 +74,22 @@ class GoogleBooksRepository {
                         .mapNotNull { authorsJson.optString(it).takeIf(String::isNotBlank) }
                 }
 
+                var isbn10: String? = null
+                var isbn13: String? = null
+                val identifiers = volume.optJSONArray("industryIdentifiers")
+                if (identifiers != null) {
+                    for (identifierIndex in 0 until identifiers.length()) {
+                        val identifier = identifiers.optJSONObject(identifierIndex) ?: continue
+                        val normalizedIsbn = IsbnParser.extractIsbns(
+                            identifier.optString("identifier"),
+                        ).firstOrNull() ?: continue
+                        when (identifier.optString("type")) {
+                            "ISBN_10" -> if (isbn10 == null) isbn10 = normalizedIsbn
+                            "ISBN_13" -> if (isbn13 == null) isbn13 = normalizedIsbn
+                        }
+                    }
+                }
+
                 val imageLinks = volume.optJSONObject("imageLinks")
                 val thumbnail = imageLinks?.optString("thumbnail")
                     ?.takeIf { !it.isNullOrBlank() }
@@ -84,9 +101,18 @@ class GoogleBooksRepository {
                         title = title,
                         authors = authors,
                         thumbnailUrl = thumbnail,
+                        isbn10 = isbn10,
+                        isbn13 = isbn13,
+                        publisher = volume.optionalText("publisher"),
+                        publishedDate = volume.optionalText("publishedDate"),
                     ),
                 )
             }
         }
+    }
+
+    private fun JSONObject.optionalText(key: String): String? {
+        val value = optString(key).trim()
+        return value.takeIf { it.isNotEmpty() && !it.equals("null", ignoreCase = true) }
     }
 }

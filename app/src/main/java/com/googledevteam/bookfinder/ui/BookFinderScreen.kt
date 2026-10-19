@@ -61,6 +61,7 @@ import com.googledevteam.bookfinder.domain.BookCandidate
 import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
 import com.googledevteam.bookfinder.domain.IsbnParser
+import com.googledevteam.bookfinder.domain.withLookupMatch
 import com.googledevteam.bookfinder.retail.RetailerSearch
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -527,7 +528,12 @@ private fun HistoryScreen(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    BookResultCard(entry.book.toBookResult())
+                    val lookupKind = runCatching {
+                        CandidateKind.valueOf(entry.history.lookupKind)
+                    }.getOrDefault(CandidateKind.ENGLISH_TITLE)
+                    BookResultCard(
+                        entry.book.toBookResult().withLookupMatch(entry.history.lookupTerm, lookupKind),
+                    )
                 }
             }
         }
@@ -577,10 +583,26 @@ private fun BookResultCard(book: BookResult) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    "Google Books result",
+                    text = when (book.matchType) {
+                        com.googledevteam.bookfinder.domain.BookMatchType.EXACT_ISBN -> "ISBN confirmed in Google Books"
+                        com.googledevteam.bookfinder.domain.BookMatchType.ISBN_UNVERIFIED -> "ISBN not listed — verify this edition"
+                        com.googledevteam.bookfinder.domain.BookMatchType.TITLE_CANDIDATE -> "Title candidate — confirm edition"
+                    },
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
+                book.isbn13?.let {
+                    Text("ISBN-13: $it", style = MaterialTheme.typography.bodySmall)
+                }
+                book.isbn10?.let {
+                    Text("ISBN-10: $it", style = MaterialTheme.typography.bodySmall)
+                }
+                book.publisher?.let {
+                    Text("Publisher: $it", style = MaterialTheme.typography.bodySmall)
+                }
+                book.publishedDate?.let {
+                    Text("Published: $it", style = MaterialTheme.typography.bodySmall)
+                }
             }
         }
     }

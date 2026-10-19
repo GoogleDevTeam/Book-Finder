@@ -47,14 +47,14 @@ The initial implementation includes the pure ISBN parser and editable candidate-
 The initial implementation includes a lookup repository and results view. Verify provider behavior and error cases below before release.
 
 1. Use the Google Books volumes search endpoint over HTTPS. Search ISBNs with the ISBN query operator and titles with the title query operator, URL-encoding the search value.
-2. Parse the returned volume title, authors, thumbnail URL, and volume identifier when present. Prefer an exact ISBN match over a title-only match, and let the user choose if multiple plausible results remain.
+2. Parse the returned title, authors, thumbnail, ISBN-10/ISBN-13 identifiers, publisher, and publication date when present. Mark a result as an exact ISBN match only when its returned identifiers contain the queried ISBN; otherwise show that the ISBN is unverified. Label title-query results as candidates and let the user choose when multiple plausible results remain. Do not infer a specific edition from a title or publication date alone.
 3. Handle no results, missing author or cover, timeouts, offline mode, quota responses, and other HTTP errors. Never treat an empty result as proof that a book does not exist.
 4. Send only the selected ISBN or reviewed English title to Google Books. Never send the scan image to this endpoint.
 5. Follow Google's current API identification and quota requirements. If an API key is required, restrict it to this Android package/signing certificate and the Books API, set quotas, and assume the key can be extracted from the APK. Do not put a service-account credential in the app.
 
 ## 6. Persist history and cached metadata with Room
 
-The current slice now implements a version-1 Room database with separate normalized book metadata and scan-history tables. A result is cached only when the user explicitly chooses **Save this result to history**; the history row stores the reviewed lookup term, lookup kind, selected book, and timestamp. Metadata and scan history remain on-device and the History screen reads them from Room, so saved results remain available offline. Cover URLs are stored as text rather than copying image bytes into the database. No scan image, history list, or custom backend is used.
+The current slice implements a Room database with separate normalized book metadata and scan-history tables. Version 2 adds nullable ISBN, publisher, and publication-date columns; the 1-to-2 migration preserves existing saved books. A result is cached only when the user explicitly chooses **Save this result to history**; the history row stores the reviewed lookup term, lookup kind, selected book, and timestamp. Metadata and scan history remain on-device and the History screen reads them from Room, so saved results remain available offline. Cover URLs are stored as text rather than copying image bytes into the database. No scan image, history list, or custom backend is used.
 
 Verify the Room flow before release: save a result, relaunch and load History offline, confirm newest entries appear first, and verify clearing app data removes the database. If the schema changes, increment the database version and add a migration; do not mark migration checks as passed until run.
 
@@ -78,7 +78,7 @@ If Arabic title extraction is mandatory, get approval for the changed privacy/co
 
 - **ISBN parsing:** valid and invalid ISBN-10/13 checksums, final X, spaces/hyphens, duplicate matches, OCR noise, and normalized Arabic-Indic digits.
 - **Title parsing:** empty text, numeric-only lines, mixed Arabic/English text, and user-edited titles.
-- **Google Books:** exact ISBN result, ambiguous title results, no items, missing author/thumbnail, timeout, offline, and quota/error responses.
+- **Google Books:** exact ISBN result, a different-edition result, missing identifiers, title-only candidates, missing publisher/date/author/thumbnail, ambiguous titles, no items, timeout, offline, and quota/error responses.
 - **Room:** save, load, cache hit, chronological history, and schema migration.
 - **UI and device:** camera permission grant/denial, EMBEDDED viewfinder clipping/gesture behavior, OCR bounding-box alignment, review/edit flow, predictive-back navigation, shared-element/spring transitions, no-network history, and retailer handoff with and without a retailer app installed.
 - **Privacy boundary:** in the default configuration, verify that only a selected ISBN/title is sent to Google Books and that no camera image or history data is uploaded.
