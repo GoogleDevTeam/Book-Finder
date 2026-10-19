@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -136,6 +137,16 @@ class BookFinderDatabaseMigrationTest {
                 assertEquals(CandidateKind.ISBN.name, savedItems.first().item.lookupKind)
                 assertEquals("World History", savedItems.last().item.lookupTerm)
                 assertEquals("9780306406157", savedItems.first().book.isbn13)
+
+                reopenedRepository.renameReadingList(listId, "Grade 7 textbooks")
+                val renamedLists = reopenedRepository.readingLists.first()
+                assertEquals("Grade 7 textbooks", renamedLists.single().list.name)
+                assertEquals(2, reopenedRepository.readingListItems(listId).first().size)
+
+                assertTrue(reopenedRepository.deleteReadingList(listId))
+                assertTrue(reopenedRepository.readingLists.first().isEmpty())
+                assertTrue(reopenedRepository.readingListItems(listId).first().isEmpty())
+                assertFalse(reopenedRepository.deleteReadingList(listId))
             } finally {
                 reopenedDatabase.close()
                 context.deleteDatabase(databaseName)

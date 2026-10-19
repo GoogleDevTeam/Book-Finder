@@ -30,8 +30,18 @@ class BookHistoryRepository(private val database: BookFinderDatabase) {
         }
     }
 
-    suspend fun saveReadingList(
-        name: String,
+    suspend fun renameReadingList(listId: Long, name: String) {
+        val normalizedName = name.trim()
+        require(normalizedName.isNotBlank()) { "A reading list name is required." }
+        check(historyDao.renameReadingList(listId, normalizedName) == 1) {
+            "This reading list is no longer available."
+        }
+    }
+
+    suspend fun deleteReadingList(listId: Long): Boolean =
+        historyDao.deleteReadingList(listId) > 0
+
+    suspend fun saveReadingList(        name: String,
         grade: String,
         subject: String,
         books: List<ConfirmedReadingListBook>,

@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
@@ -125,6 +126,7 @@ fun BookFinderScreen() {
     var readingListGrade by remember { mutableStateOf("") }
     var readingListSubject by remember { mutableStateOf("") }
     var savingReadingList by remember { mutableStateOf(false) }
+    var listManagementMessage by remember { mutableStateOf<String?>(null) }
 
     val searchRequestVersion = remember { SearchRequestVersion() }
 
@@ -285,6 +287,34 @@ fun BookFinderScreen() {
         }
     }
 
+    fun renameSavedList(listId: Long, name: String) {
+        listManagementMessage = null
+        scope.launch {
+            try {
+                historyRepository.renameReadingList(listId, name)
+                listManagementMessage = "Reading list renamed."
+            } catch (exception: Exception) {
+                listManagementMessage = exception.localizedMessage ?: "Could not rename this reading list. Try again."
+            }
+        }
+    }
+
+    fun deleteSavedList(listId: Long) {
+        listManagementMessage = null
+        scope.launch {
+            try {
+                if (historyRepository.deleteReadingList(listId)) {
+                    if (selectedReadingListId == listId) selectedReadingListId = null
+                    listManagementMessage = "Reading list deleted."
+                } else {
+                    listManagementMessage = "This reading list is no longer available."
+                }
+            } catch (exception: Exception) {
+                listManagementMessage = exception.localizedMessage ?: "Could not delete this reading list. Try again."
+            }
+        }
+    }
+
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { contentPadding ->
         Column(
             modifier = Modifier
@@ -418,10 +448,14 @@ fun BookFinderScreen() {
                 FinderPage.READING_LISTS -> {
                     ReadingListsScreen(
                         lists = readingLists,
+                        message = listManagementMessage,
                         onOpenList = { id ->
                             selectedReadingListId = id
+                            listManagementMessage = null
                             page = FinderPage.READING_LIST_DETAIL
                         },
+                        onRenameList = ::renameSavedList,
+                        onDeleteList = ::deleteSavedList,
                         onBack = { page = FinderPage.SCAN },
                     )
                 }
@@ -771,15 +805,23 @@ private fun HistoryScreen(
 @Composable
 private fun ReadingListsScreen(
     lists: List<ReadingListSummary>,
+    message: String?,
     onOpenList: (Long) -> Unit,
+    onRenameList: (Long, String) -> Unit,
+    onDeleteList: (Long) -> Unit,
     onBack: () -> Unit,
 ) {
+    var renameTarget by remember { mutableStateOf<ReadingListSummary?>(null) }
+    var renameValue by remember { mutableStateOf("") }
+    var deleteTarget by remember { mutableStateOf<ReadingListSummary?>(null) }
+
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
             "Reading lists are stored on this device and can be opened offline.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        message?.let { InlineMessage(it) }
         if (lists.isEmpty()) {
             InlineMessage("No reading lists yet. Scan a school list, confirm books, and save them together.")
         } else {
@@ -809,11 +851,83 @@ private fun ReadingListsScreen(
                         )
                     }
                 }
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    TextButton(
+                        onClick = {
+                            renameValue = summary.list.name
+                            renameTarget = summary
+                        },
+                    ) {
+                        Text("Rename")
+                    }
+                    TextButton(onClick = { deleteTarget = summary }) {
+                        Text("Delete", color = MaterialTheme.colorScheme.error)
+                    }
+                }
             }
         }
         TextButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text("Back to scan")
         }
+    }
+
+    renameTarget?.let { target ->
+        AlertDialog(
+            onDismissRequest = { renameTarget = null },
+            title = { Text("Rename reading list") },
+            text = {
+                OutlinedTextField(
+                    value = renameValue,
+                    onValueChange = { renameValue = it },
+                    label = { Text("List name") },
+                    singleLine = true,
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = renameValue.isNotBlank() && renameValue.trim() != target.list.name,
+                    onClick = {
+                        onRenameList(target.list.id, renameValue)
+                        renameTarget = null
+                    },
+                ) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { renameTarget = null }) {
+                    Text("Cancel")
+                }
+            },
+        )
+    }
+
+    deleteTarget?.let { target ->
+        AlertDialog(
+            onDismissRequest = { deleteTarget = null },
+            title = { Text("Delete reading list?") },
+            text = {
+                Text("Delete \"${target.list.name}\" and its saved items from this device? This cannot be undone.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDeleteList(target.list.id)
+                        deleteTarget = null
+                    },
+                ) {
+                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { deleteTarget = null }) {
+                    Text("Cancel")
+                }
+            },
+        )
     }
 }
 

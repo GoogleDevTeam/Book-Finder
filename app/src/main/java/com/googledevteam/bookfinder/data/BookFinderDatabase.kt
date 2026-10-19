@@ -120,6 +120,12 @@ interface HistoryDao {
     @Insert
     suspend fun insertReadingList(list: ReadingListEntity): Long
 
+    @Query("UPDATE reading_lists SET name = :name WHERE id = :listId")
+    suspend fun renameReadingList(listId: Long, name: String): Int
+
+    @Query("DELETE FROM reading_lists WHERE id = :listId")
+    suspend fun deleteReadingList(listId: Long): Int
+
     @Insert
     suspend fun insertReadingListItem(item: ReadingListItemEntity)
 
