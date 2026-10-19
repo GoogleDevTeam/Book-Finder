@@ -36,7 +36,7 @@ class GoogleBooksRepository(
                 }
 
                 val payload = connection.inputStream.bufferedReader().use { it.readText() }
-                parseResults(JSONObject(payload)).map { it.withLookupMatch(trimmedQuery, kind) }
+                parseResults(JSONObject(payload)).map { it.withLookupMatch(query.trim(), kind) }
             } finally {
                 connection.disconnect()
             }
