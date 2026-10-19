@@ -15,20 +15,43 @@ class ScannedBookDraftTest {
     )
 
     @Test
-    fun oneScanKeepsIsbnsAndEnglishTitleLinesTogether() {
+    fun oneScanKeepsOrderAndPairsAnAdjacentTitleWithItsIsbn() {
         val candidates = candidatesFromOcrText(
             "Algebra Foundations\nISBN 978-0-306-40615-7\nWorld History",
         )
 
-        assertEquals(3, candidates.size)
+        assertEquals(2, candidates.size)
         assertEquals(
-            listOf(CandidateKind.ISBN, CandidateKind.ENGLISH_TITLE, CandidateKind.ENGLISH_TITLE),
+            listOf(CandidateKind.ISBN, CandidateKind.ENGLISH_TITLE),
             candidates.map { it.kind },
         )
+        assertEquals(listOf("9780306406157", "World History"), candidates.map { it.value })
+        assertEquals("Algebra Foundations", candidates.first().titleHint)
+    }
+
+    @Test
+    fun interleavedCandidatesStayInOcrOrderAndKeepEachPairedTitleVisible() {
+        val candidates = candidatesFromOcrText(
+            "Algebra Foundations\nISBN 978-0-306-40615-7\nWorld History\nISBN 978-0-13-110362-7\nBiology",
+        )
+
         assertEquals(
-            listOf("9780306406157", "Algebra Foundations", "World History"),
+            listOf("9780306406157", "9780131103627", "Biology"),
             candidates.map { it.value },
         )
+        assertEquals("Algebra Foundations", candidates[0].titleHint)
+        assertEquals("World History", candidates[1].titleHint)
+    }
+
+    @Test
+    fun retainsMoreThanFiveTitleOnlyEntriesAndRepeatedTitles() {
+        val candidates = candidatesFromOcrText(
+            "Algebra\nWorld History\nBiology\nChemistry\nPhysics\nArt\nAlgebra",
+        )
+
+        assertEquals(7, candidates.size)
+        assertEquals("Algebra", candidates.first().value)
+        assertEquals("Algebra", candidates.last().value)
     }
 
     @Test
@@ -83,5 +106,30 @@ class ScannedBookDraftTest {
         assertNull(edited.selectedBook)
         assertTrue(edited.searchResults.isEmpty())
         assertTrue(listOf(edited).confirmedReadingListBooks().isEmpty())
+    }
+
+    @Test
+    fun selectingTheAlreadyActiveKindKeepsTheConfirmedBook() {
+        val confirmed = ScannedBookDraft(1, "9780306406157", CandidateKind.ISBN)
+            .withSearchResults(listOf(selectedBook))
+            .withSelectedBook(selectedBook)
+
+        val unchanged = confirmed.withKindChanged(CandidateKind.ISBN)
+
+        assertEquals(CandidateStatus.MATCHED, unchanged.status)
+        assertEquals(selectedBook, unchanged.selectedBook)
+    }
+
+    @Test
+    fun changingKindClearsTheOldConfirmedMatch() {
+        val confirmed = ScannedBookDraft(1, "9780306406157", CandidateKind.ISBN)
+            .withSearchResults(listOf(selectedBook))
+            .withSelectedBook(selectedBook)
+
+        val changed = confirmed.withKindChanged(CandidateKind.ENGLISH_TITLE)
+
+        assertEquals(CandidateStatus.NEEDS_REVIEW, changed.status)
+        assertNull(changed.selectedBook)
+        assertEquals(CandidateKind.ENGLISH_TITLE, changed.kind)
     }
 }

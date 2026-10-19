@@ -1,10 +1,14 @@
 package com.googledevteam.bookfinder.ui
 
 import android.Manifest
+import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
-import android.net.Uri
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -34,10 +38,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +52,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.googledevteam.bookfinder.camera.CameraCapture
@@ -63,6 +73,7 @@ import com.googledevteam.bookfinder.domain.SearchRequestVersion
 import com.googledevteam.bookfinder.domain.candidatesFromOcrText
 import com.googledevteam.bookfinder.domain.confirmedReadingListBooks
 import com.googledevteam.bookfinder.domain.withEditedQuery
+import com.googledevteam.bookfinder.domain.withKindChanged
 import com.googledevteam.bookfinder.domain.withSearchCancelled
 import com.googledevteam.bookfinder.domain.withSearchResults
 import com.googledevteam.bookfinder.domain.withSelectedBook
@@ -74,6 +85,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.flowOf
 import java.text.DateFormat
 import java.util.Date
+
+private fun Context.findActivity(): Activity? {
+    var current: Context? = this
+    while (current != null) {
+        if (current is Activity) return current
+        current = (current as? ContextWrapper)?.baseContext
+    }
+    return null
+}
 
 private enum class FinderPage {
     SCAN,
@@ -105,12 +125,31 @@ fun BookFinderScreen() {
                 PackageManager.PERMISSION_GRANTED,
         )
     }
+    var hasRequestedCameraPermission by rememberSaveable { mutableStateOf(false) }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { granted ->
+        hasRequestedCameraPermission = true
         hasCameraPermission = granted
     }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, context) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                hasCameraPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
+                    PackageManager.PERMISSION_GRANTED
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+    val activity = context.findActivity()
+    val shouldShowCameraRationale = activity?.let {
+        ActivityCompat.shouldShowRequestPermissionRationale(it, Manifest.permission.CAMERA)
+    } ?: false
+    val cameraSettingsRequired = hasRequestedCameraPermission && !hasCameraPermission && !shouldShowCameraRationale
 
+    var activeCaptureId by remember { mutableStateOf<Long?>(null) }
     var page by remember { mutableStateOf(FinderPage.SCAN) }
     var drafts by remember { mutableStateOf(emptyList<ScannedBookDraft>()) }
     var nextDraftId by remember { mutableStateOf(1L) }
@@ -141,8 +180,8 @@ fun BookFinderScreen() {
         drafts = drafts.map { it.withSearchCancelled() }
     }
 
-    fun newDraft(value: String, kind: CandidateKind): ScannedBookDraft {
-        val draft = ScannedBookDraft(id = nextDraftId, query = value, kind = kind)
+    fun newDraft(value: String, kind: CandidateKind, titleHint: String? = null): ScannedBookDraft {
+        val draft = ScannedBookDraft(id = nextDraftId, query = value, kind = kind, titleHint = titleHint)
         nextDraftId += 1
         return draft
     }
@@ -163,7 +202,7 @@ fun BookFinderScreen() {
     fun reviewRecognizedText(ocrText: String) {
         clearSearchState()
         val detected = candidatesFromOcrText(ocrText)
-        drafts = detected.map { newDraft(it.value, it.kind) }.ifEmpty {
+        drafts = detected.map { newDraft(it.value, it.kind, it.titleHint) }.ifEmpty {
             listOf(newDraft("", CandidateKind.ENGLISH_TITLE))
         }
         resetListFields()
@@ -178,6 +217,7 @@ fun BookFinderScreen() {
     }
 
     fun startManualEntry() {
+        activeCaptureId = null
         clearSearchState()
         drafts = listOf(newDraft("", CandidateKind.ENGLISH_TITLE))
         resetListFields()
@@ -347,9 +387,22 @@ fun BookFinderScreen() {
                 FinderPage.SCAN -> {
                     if (hasCameraPermission) {
                         CameraCapture(
-                            onCaptureStarted = { clearSearchState() },
-                            onTextRecognized = ::reviewRecognizedText,
-                            onCaptureError = { message = it },
+                            onCaptureStarted = { captureId ->
+                                activeCaptureId = captureId
+                                clearSearchState()
+                            },
+                            onTextRecognized = { captureId, text ->
+                                if (page == FinderPage.SCAN && activeCaptureId == captureId) {
+                                    activeCaptureId = null
+                                    reviewRecognizedText(text)
+                                }
+                            },
+                            onCaptureError = { captureId, error ->
+                                if (activeCaptureId == captureId) {
+                                    activeCaptureId = null
+                                    message = error
+                                }
+                            },
                             modifier = Modifier.fillMaxWidth(),
                         )
                         Text(
@@ -359,8 +412,20 @@ fun BookFinderScreen() {
                         )
                     } else {
                         PermissionCard(
+                            settingsRequired = cameraSettingsRequired,
                             onRequestPermission = {
+                                hasRequestedCameraPermission = true
                                 permissionLauncher.launch(Manifest.permission.CAMERA)
+                            },
+                            onOpenSettings = {
+                                try {
+                                    val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                        data = Uri.fromParts("package", context.packageName, null)
+                                    }
+                                    context.startActivity(settingsIntent)
+                                } catch (_: ActivityNotFoundException) {
+                                    message = "Open Book Finder's app settings to enable camera access."
+                                }
                             },
                         )
                     }
@@ -373,13 +438,13 @@ fun BookFinderScreen() {
                         Text("Enter books manually")
                     }
                     OutlinedButton(
-                        onClick = { page = FinderPage.HISTORY },
+                        onClick = { activeCaptureId = null; page = FinderPage.HISTORY },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text("History (${historyEntries.size})")
                     }
                     OutlinedButton(
-                        onClick = { page = FinderPage.READING_LISTS },
+                        onClick = { activeCaptureId = null; page = FinderPage.READING_LISTS },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text("Reading lists (${readingLists.size})")
@@ -404,12 +469,17 @@ fun BookFinderScreen() {
                             message = null
                         },
                         onKindChanged = { id, kind ->
-                            clearSearchState()
-                            updateDraft(id) { it.withEditedQuery(it.query, kind) }
-                            message = null
+                            val currentDraft = drafts.firstOrNull { it.id == id }
+                            if (currentDraft != null && currentDraft.kind != kind) {
+                                clearSearchState()
+                                updateDraft(id) { it.withKindChanged(kind) }
+                                message = null
+                            }
                         },
                         onSearchCandidate = ::searchCandidate,
-                        onAddCandidate = { drafts = drafts + newDraft("", CandidateKind.ENGLISH_TITLE) },
+                        onAddCandidate = { title ->
+                            drafts = drafts + newDraft(title.orEmpty(), CandidateKind.ENGLISH_TITLE)
+                        },
                         onRemoveCandidate = { id -> if (drafts.size > 1) drafts = drafts.filterNot { it.id == id } },
                         onChangeMatch = { id -> updateDraft(id) { it.withEditedQuery(it.query, it.kind) } },
                         onSaveList = ::saveReadingList,
@@ -492,7 +562,11 @@ private fun AppHeader(title: String, subtitle: String) {
 }
 
 @Composable
-private fun PermissionCard(onRequestPermission: () -> Unit) {
+private fun PermissionCard(
+    settingsRequired: Boolean,
+    onRequestPermission: () -> Unit,
+    onOpenSettings: () -> Unit,
+) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -505,12 +579,22 @@ private fun PermissionCard(onRequestPermission: () -> Unit) {
         ) {
             Text("Camera access", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Text(
-                "Book Finder uses the camera only when you choose to scan a page. The image stays on this device.",
+                if (settingsRequired) {
+                    "Camera access is disabled for Book Finder. Enable it in app settings, or enter books manually."
+                } else {
+                    "Book Finder uses the camera only when you choose to scan a page. The image stays on this device."
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Button(onClick = onRequestPermission) {
-                Text("Allow camera")
+            if (settingsRequired) {
+                Button(onClick = onOpenSettings) {
+                    Text("Open app settings")
+                }
+            } else {
+                Button(onClick = onRequestPermission) {
+                    Text("Allow camera")
+                }
             }
         }
     }
@@ -530,7 +614,7 @@ private fun CandidateReview(
     onQueryChanged: (Long, String) -> Unit,
     onKindChanged: (Long, CandidateKind) -> Unit,
     onSearchCandidate: (Long) -> Unit,
-    onAddCandidate: () -> Unit,
+    onAddCandidate: (String?) -> Unit,
     onRemoveCandidate: (Long) -> Unit,
     onChangeMatch: (Long) -> Unit,
     onSaveList: () -> Unit,
@@ -613,6 +697,23 @@ private fun CandidateReview(
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                     )
+                    draft.titleHint?.let { titleHint ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = "Detected nearby title: " + titleHint,
+                                modifier = Modifier.weight(1f),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            TextButton(onClick = { onAddCandidate(titleHint) }) {
+                                Text("Add separately")
+                            }
+                        }
+                    }
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         FilterChip(
                             selected = draft.kind == CandidateKind.ISBN,
@@ -649,7 +750,7 @@ private fun CandidateReview(
                 }
             }
         }
-        OutlinedButton(onClick = onAddCandidate, modifier = Modifier.fillMaxWidth()) {
+        OutlinedButton(onClick = { onAddCandidate(null) }, modifier = Modifier.fillMaxWidth()) {
             Text("Add another book manually")
         }
         message?.let { InlineMessage(it) }

@@ -21,12 +21,57 @@ enum class CandidateStatus {
 data class BookCandidate(
     val value: String,
     val kind: CandidateKind,
+    val titleHint: String? = null,
 )
 
 fun candidatesFromOcrText(text: String): List<BookCandidate> {
-    val isbnCandidates = IsbnParser.extractIsbns(text).map { BookCandidate(it, CandidateKind.ISBN) }
-    val titleCandidates = IsbnParser.titleCandidates(text).map { BookCandidate(it, CandidateKind.ENGLISH_TITLE) }
-    return (isbnCandidates + titleCandidates).distinctBy { it.kind to it.value.trim().lowercase() }
+    val lines = text.lineSequence()
+        .map { it.trim().replace(Regex("""\s+"""), " ") }
+        .filter(String::isNotBlank)
+        .toList()
+    val isbnsByLine = lines.map(IsbnParser::extractIsbns)
+    val titlesByLine = lines.map { IsbnParser.titleCandidates(it).firstOrNull() }
+    val pairedTitleByIsbnLine = mutableMapOf<Int, String>()
+    val pairedTitleLines = mutableSetOf<Int>()
+
+    // If a title and ISBN are on the same or immediately adjacent OCR lines, keep them
+    // together as one ISBN-first candidate and show the detected title for user review.
+    for (index in lines.indices) {
+        if (isbnsByLine[index].isEmpty()) continue
+        val titleLine = if (titlesByLine[index] != null) {
+            index
+        } else {
+            listOf(index - 1, index + 1).firstOrNull { neighbor ->
+                neighbor in lines.indices &&
+                    isbnsByLine[neighbor].isEmpty() &&
+                    titlesByLine[neighbor] != null &&
+                    neighbor !in pairedTitleLines
+            }
+        } ?: continue
+        pairedTitleByIsbnLine[index] = titlesByLine[titleLine].orEmpty()
+        pairedTitleLines += titleLine
+    }
+
+    return buildList {
+        for (index in lines.indices) {
+            val isbns = isbnsByLine[index]
+            if (isbns.isNotEmpty()) {
+                isbns.forEachIndexed { isbnIndex, isbn ->
+                    add(
+                        BookCandidate(
+                            value = isbn,
+                            kind = CandidateKind.ISBN,
+                            titleHint = if (isbnIndex == 0) pairedTitleByIsbnLine[index] else null,
+                        ),
+                    )
+                }
+            } else if (index !in pairedTitleLines) {
+                titlesByLine[index]?.let { title ->
+                    add(BookCandidate(title, CandidateKind.ENGLISH_TITLE))
+                }
+            }
+        }
+    }
 }
 
 data class BookResult(
@@ -48,6 +93,7 @@ data class ScannedBookDraft(
     val status: CandidateStatus = CandidateStatus.NEEDS_REVIEW,
     val searchResults: List<BookResult> = emptyList(),
     val selectedBook: BookResult? = null,
+    val titleHint: String? = null,
 )
 
 data class ConfirmedReadingListBook(
@@ -63,6 +109,9 @@ fun ScannedBookDraft.withEditedQuery(query: String, kind: CandidateKind): Scanne
     searchResults = emptyList(),
     selectedBook = null,
 )
+
+fun ScannedBookDraft.withKindChanged(kind: CandidateKind): ScannedBookDraft =
+    if (kind == this.kind) this else withEditedQuery(query, kind)
 
 fun ScannedBookDraft.withSearchResults(results: List<BookResult>): ScannedBookDraft = copy(
     status = if (results.isEmpty()) CandidateStatus.NO_RESULT else CandidateStatus.NEEDS_REVIEW,

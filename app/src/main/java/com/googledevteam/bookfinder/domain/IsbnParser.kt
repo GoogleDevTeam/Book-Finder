@@ -45,19 +45,22 @@ object IsbnParser {
 
     fun titleCandidates(text: String): List<String> = text
         .lineSequence()
-        .map { it.trim().replace(Regex("""\s+"""), " ") }
+        .map { line ->
+            val withoutIsbns = candidatePattern.replace(normalizeDigits(line), " ")
+            withoutIsbns
+                .replace(
+                    Regex("""\bISBN(?:[\s-]?(?:10|13))?\b\s*[:#-]?\s*""", RegexOption.IGNORE_CASE),
+                    " ",
+                )
+                .replace(Regex("""^(?:title|book)\s*[:\-]\s*""", RegexOption.IGNORE_CASE), " ")
+                .trim()
+                .replace(Regex("""\s+"""), " ")
+        }
         .filter { line ->
             line.length in 3..120 &&
                 line.any(Char::isLetter) &&
-                line.any { it in 'A'..'Z' || it in 'a'..'z' } &&
-                extractIsbns(line).isEmpty()
+                line.any { it in 'A'..'Z' || it in 'a'..'z' }
         }
-        .map { line ->
-            line.replace(Regex("""^(?:title|book)\s*[:\-]\s*""", RegexOption.IGNORE_CASE), "").trim()
-        }
-        .filter(String::isNotBlank)
-        .distinct()
-        .take(5)
         .toList()
 
     private fun isValidIsbn10(isbn: String): Boolean {
