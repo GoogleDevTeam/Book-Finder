@@ -5,7 +5,7 @@ import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
 import kotlinx.coroutines.flow.Flow
 
-class BookHistoryRepository(database: BookFinderDatabase) {
+class BookHistoryRepository(private val database: BookFinderDatabase) {
     private val historyDao = database.historyDao()
 
     val historyEntries: Flow<List<HistoryWithBook>> = historyDao.observeHistory()

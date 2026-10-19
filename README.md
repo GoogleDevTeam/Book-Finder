@@ -17,6 +17,12 @@ The current Android slice includes the native embedded CameraX viewfinder, on-de
 
 Retailer links only hand off a search. Book Finder does not fetch retailer pages, scrape prices, or claim live price, stock, shipping, or ebook availability.
 
+## Google Books API key
+
+Google Books requires an API key or OAuth for public-data requests. The Android build reads the GOOGLE_BOOKS_API_KEY environment variable; GitHub Actions reads a repository secret with that name. Add it under **Settings → Secrets and variables → Actions**. Without it, the app explains that Google Books is not configured and keeps retailer searches available.
+
+The key is included in the APK so the app can call Google Books directly; a person can extract it from the APK. Do not commit it. Restrict it in Google Cloud to the Books API and, for a distributable APK, to this Android application ID and the SHA-1 signing certificate used for the build. CI needs a stable signing certificate if that Android restriction is used.
+
 ## How it works
 
 CameraXViewfinder capture → on-device OCR → ISBN/title review → Google Books metadata lookup → Room cache/history → retailer search link

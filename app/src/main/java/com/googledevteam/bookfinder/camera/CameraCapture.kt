@@ -107,7 +107,6 @@ fun CameraCapture(
                 surfaceRequest = request,
                 modifier = Modifier.fillMaxSize(),
                 implementationMode = ImplementationMode.EMBEDDED,
-                isTapToFocusEnabled = true,
             )
         }
     }
