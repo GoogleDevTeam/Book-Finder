@@ -270,11 +270,11 @@ fun BookFinderScreen() {
         page = FinderPage.REVIEW
     }
 
-    fun openRetailerSearch(retailer: RetailerSearch) {
-        val searchTerm = query.trim()
-        if (searchTerm.isBlank()) return
+    fun openRetailerSearchFor(searchTerm: String, retailer: RetailerSearch) {
+        val normalizedTerm = searchTerm.trim()
+        if (normalizedTerm.isBlank()) return
 
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(retailer.searchUrl(searchTerm)))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(retailer.searchUrl(normalizedTerm)))
         try {
             context.startActivity(intent)
             retailerMessage = null
@@ -283,6 +283,9 @@ fun BookFinderScreen() {
         }
     }
 
+    fun openRetailerSearch(retailer: RetailerSearch) {
+        openRetailerSearchFor(query, retailer)
+    }
     fun saveResult(book: BookResult) {
         val selectedTerm = query.trim()
         val selectedKind = queryKind
@@ -535,6 +538,8 @@ fun BookFinderScreen() {
                     ReadingListDetailScreen(
                         list = selectedList,
                         items = readingListItems,
+                        retailerMessage = retailerMessage,
+                        onOpenRetailerSearch = ::openRetailerSearchFor,
                         onBack = { page = FinderPage.READING_LISTS },
                     )
                 }
@@ -1036,6 +1041,8 @@ private fun ReadingListsScreen(
 private fun ReadingListDetailScreen(
     list: com.googledevteam.bookfinder.data.ReadingListEntity?,
     items: List<ReadingListItemWithBook>,
+    retailerMessage: String?,
+    onOpenRetailerSearch: (String, RetailerSearch) -> Unit,
     onBack: () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -1058,12 +1065,35 @@ private fun ReadingListDetailScreen(
                 items.forEach { item ->
                     val kind = runCatching { CandidateKind.valueOf(item.item.lookupKind) }
                         .getOrDefault(CandidateKind.ENGLISH_TITLE)
-                    BookResultCard(
-                        item.book.toBookResult().withLookupMatch(item.item.lookupTerm, kind),
-                    )
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        BookResultCard(
+                            item.book.toBookResult().withLookupMatch(item.item.lookupTerm, kind),
+                        )
+                        Text(
+                            "Search this book with a retailer",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            RetailerSearch.entries.forEach { retailer ->
+                                OutlinedButton(
+                                    onClick = { onOpenRetailerSearch(item.item.lookupTerm, retailer) },
+                                    modifier = Modifier.weight(1f),
+                                    contentPadding = PaddingValues(horizontal = 4.dp),
+                                ) {
+                                    Text(
+                                        text = retailer.label,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+        retailerMessage?.let { InlineMessage(it) }
         TextButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text("Back to reading lists")
         }
