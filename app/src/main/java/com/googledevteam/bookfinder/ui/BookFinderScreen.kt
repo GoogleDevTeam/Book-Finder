@@ -62,6 +62,7 @@ import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
 import com.googledevteam.bookfinder.domain.IsbnParser
 import com.googledevteam.bookfinder.domain.withLookupMatch
+import com.googledevteam.bookfinder.domain.SearchRequestVersion
 import com.googledevteam.bookfinder.retail.RetailerSearch
 import kotlinx.coroutines.launch
 import java.text.DateFormat
