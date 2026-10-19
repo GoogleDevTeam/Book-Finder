@@ -40,6 +40,8 @@ jobs:
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
       - name: Build debug APK
+        env:
+          GOOGLE_BOOKS_API_KEY: ${{ secrets.GOOGLE_BOOKS_API_KEY }}
         run: ./gradlew --no-daemon assembleDebug
 
       - name: Upload debug APK
