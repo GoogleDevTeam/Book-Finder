@@ -5,6 +5,8 @@ plugins {
     id("org.jetbrains.kotlin.kapt")
 }
 
+val googleBooksApiKey = providers.environmentVariable("GOOGLE_BOOKS_API_KEY").orElse("").get()
+
 android {
     namespace = "com.googledevteam.bookfinder"
     compileSdk = 36
@@ -15,12 +17,14 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "0.1.0"
+        buildConfigField("String", "GOOGLE_BOOKS_API_KEY", "\"$googleBooksApiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -40,7 +44,7 @@ kotlin {
 }
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:2026.09.00")
+    val composeBom = platform("androidx.compose:compose-bom:2026.06.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 

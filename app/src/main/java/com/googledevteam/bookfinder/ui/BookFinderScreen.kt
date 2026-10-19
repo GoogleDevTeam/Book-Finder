@@ -61,6 +61,7 @@ import com.googledevteam.bookfinder.domain.BookCandidate
 import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
 import com.googledevteam.bookfinder.domain.IsbnParser
+import com.googledevteam.bookfinder.domain.SearchRequestVersion
 import com.googledevteam.bookfinder.retail.RetailerSearch
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -104,7 +105,19 @@ fun BookFinderScreen() {
     var historySavedMessage by remember { mutableStateOf<String?>(null) }
     var retailerMessage by remember { mutableStateOf<String?>(null) }
 
+    val searchRequestVersion = remember { SearchRequestVersion() }
+
+    fun clearSearchState() {
+        searchRequestVersion.invalidate()
+        loading = false
+        results = emptyList()
+        message = null
+        historySavedMessage = null
+        retailerMessage = null
+    }
+
     fun reviewRecognizedText(ocrText: String) {
+        clearSearchState()
         val isbns = IsbnParser.extractIsbns(ocrText)
         val detected = if (isbns.isNotEmpty()) {
             isbns.map { BookCandidate(it, CandidateKind.ISBN) }
@@ -135,20 +148,27 @@ fun BookFinderScreen() {
     }
 
     fun searchBooks() {
+        val requestVersion = searchRequestVersion.begin()
+        val searchQuery = query.trim()
+        val searchKind = queryKind
+        loading = true
+        message = null
+        historySavedMessage = null
+        retailerMessage = null
+        results = emptyList()
+        page = FinderPage.RESULTS
+
         scope.launch {
-            loading = true
-            message = null
-            historySavedMessage = null
-            retailerMessage = null
-            results = emptyList()
-            page = FinderPage.RESULTS
             try {
-                results = repository.search(query, queryKind)
-                if (results.isEmpty()) message = "No matches found. Try editing the search."
+                val newResults = repository.search(searchQuery, searchKind)
+                if (!searchRequestVersion.isCurrent(requestVersion)) return@launch
+                results = newResults
+                if (newResults.isEmpty()) message = "No matches found. Try editing the search."
             } catch (exception: Exception) {
+                if (!searchRequestVersion.isCurrent(requestVersion)) return@launch
                 message = exception.localizedMessage ?: "Search failed. Try again."
             } finally {
-                loading = false
+                if (searchRequestVersion.isCurrent(requestVersion)) loading = false
             }
         }
     }
@@ -209,7 +229,7 @@ fun BookFinderScreen() {
                 FinderPage.SCAN -> {
                     if (hasCameraPermission) {
                         CameraCapture(
-                            onCaptureStarted = { message = null },
+                            onCaptureStarted = { clearSearchState() },
                             onTextRecognized = ::reviewRecognizedText,
                             onCaptureError = { message = it },
                             modifier = Modifier.fillMaxWidth(),
@@ -228,6 +248,7 @@ fun BookFinderScreen() {
                     }
                     OutlinedButton(
                         onClick = {
+                            clearSearchState()
                             candidates = listOf(BookCandidate("", CandidateKind.ENGLISH_TITLE))
                             selectedIndex = 0
                             query = ""
@@ -254,6 +275,7 @@ fun BookFinderScreen() {
                         selectedIndex = selectedIndex,
                         query = query,
                         queryKind = queryKind,
+                        onQueryKindChanged = { queryKind = it },
                         message = message,
                         onSelectCandidate = ::chooseCandidate,
                         onQueryChanged = { query = it },
@@ -273,8 +295,8 @@ fun BookFinderScreen() {
                         onSaveResult = ::saveResult,
                         onEditSearch = { page = FinderPage.REVIEW },
                         onScanAgain = {
+                            clearSearchState()
                             page = FinderPage.SCAN
-                            message = null
                         },
                     )
                 }
@@ -339,6 +361,7 @@ private fun CandidateReview(
     selectedIndex: Int,
     query: String,
     queryKind: CandidateKind,
+    onQueryKindChanged: (CandidateKind) -> Unit,
     message: String?,
     onSelectCandidate: (Int) -> Unit,
     onQueryChanged: (String) -> Unit,
@@ -390,12 +413,12 @@ private fun CandidateReview(
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
                 selected = queryKind == CandidateKind.ISBN,
-                onClick = { queryKind = CandidateKind.ISBN },
+                onClick = { onQueryKindChanged(CandidateKind.ISBN) },
                 label = { Text("ISBN") },
             )
             FilterChip(
                 selected = queryKind == CandidateKind.ENGLISH_TITLE,
-                onClick = { queryKind = CandidateKind.ENGLISH_TITLE },
+                onClick = { onQueryKindChanged(CandidateKind.ENGLISH_TITLE) },
                 label = { Text("English title") },
             )
         }
