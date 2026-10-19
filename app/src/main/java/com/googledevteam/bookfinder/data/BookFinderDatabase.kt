@@ -1,6 +1,7 @@
 package com.googledevteam.bookfinder.data
 
 import android.content.Context
+import androidx.room.ColumnInfo
 import androidx.room.Database
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -55,8 +56,55 @@ data class ScanHistoryEntity(
     val scannedAt: Long,
 )
 
+@Entity(tableName = "reading_lists")
+data class ReadingListEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val grade: String? = null,
+    val subject: String? = null,
+    val createdAt: Long,
+)
+
+@Entity(
+    tableName = "reading_list_items",
+    foreignKeys = [
+        ForeignKey(
+            entity = ReadingListEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["listId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+        ForeignKey(
+            entity = BookMetadataEntity::class,
+            parentColumns = ["googleVolumeId"],
+            childColumns = ["bookId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index(value = ["listId"]), Index(value = ["bookId"])],
+)
+data class ReadingListItemEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val listId: Long,
+    val bookId: String,
+    val lookupTerm: String,
+    val lookupKind: String,
+    val position: Int,
+)
+
 data class HistoryWithBook(
     @Embedded val history: ScanHistoryEntity,
+    @Relation(parentColumn = "bookId", entityColumn = "googleVolumeId")
+    val book: BookMetadataEntity,
+)
+
+data class ReadingListSummary(
+    @Embedded val list: ReadingListEntity,
+    @ColumnInfo(name = "bookCount") val bookCount: Int,
+)
+
+data class ReadingListItemWithBook(
+    @Embedded val item: ReadingListItemEntity,
     @Relation(parentColumn = "bookId", entityColumn = "googleVolumeId")
     val book: BookMetadataEntity,
 )
@@ -69,14 +117,32 @@ interface HistoryDao {
     @Insert
     suspend fun insertHistory(entry: ScanHistoryEntity)
 
+    @Insert
+    suspend fun insertReadingList(list: ReadingListEntity): Long
+
+    @Insert
+    suspend fun insertReadingListItem(item: ReadingListItemEntity)
+
     @Transaction
     @Query("SELECT * FROM scan_history ORDER BY scannedAt DESC")
     fun observeHistory(): Flow<List<HistoryWithBook>>
+
+    @Query(
+        "SELECT reading_lists.*, COUNT(reading_list_items.id) AS bookCount " +
+            "FROM reading_lists LEFT JOIN reading_list_items " +
+            "ON reading_list_items.listId = reading_lists.id " +
+            "GROUP BY reading_lists.id ORDER BY reading_lists.createdAt DESC",
+    )
+    fun observeReadingLists(): Flow<List<ReadingListSummary>>
+
+    @Transaction
+    @Query("SELECT * FROM reading_list_items WHERE listId = :listId ORDER BY position ASC, id ASC")
+    fun observeReadingListItems(listId: Long): Flow<List<ReadingListItemWithBook>>
 }
 
 @Database(
-    entities = [BookMetadataEntity::class, ScanHistoryEntity::class],
-    version = 2,
+    entities = [BookMetadataEntity::class, ScanHistoryEntity::class, ReadingListEntity::class, ReadingListItemEntity::class],
+    version = 3,
     exportSchema = false,
 )
 abstract class BookFinderDatabase : RoomDatabase() {
@@ -92,6 +158,24 @@ abstract class BookFinderDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE reading_lists (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "name TEXT NOT NULL, grade TEXT, subject TEXT, createdAt INTEGER NOT NULL)",
+                )
+                database.execSQL(
+                    "CREATE TABLE reading_list_items (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "listId INTEGER NOT NULL, bookId TEXT NOT NULL, lookupTerm TEXT NOT NULL, " +
+                        "lookupKind TEXT NOT NULL, position INTEGER NOT NULL, " +
+                        "FOREIGN KEY(listId) REFERENCES reading_lists(id) ON UPDATE NO ACTION ON DELETE CASCADE, " +
+                        "FOREIGN KEY(bookId) REFERENCES book_metadata(googleVolumeId) ON UPDATE NO ACTION ON DELETE CASCADE)",
+                )
+                database.execSQL("CREATE INDEX index_reading_list_items_listId ON reading_list_items(listId)")
+                database.execSQL("CREATE INDEX index_reading_list_items_bookId ON reading_list_items(bookId)")
+            }
+        }
+
         @Volatile
         private var instance: BookFinderDatabase? = null
 
@@ -100,7 +184,7 @@ abstract class BookFinderDatabase : RoomDatabase() {
                 context.applicationContext,
                 BookFinderDatabase::class.java,
                 "book-finder.db",
-            ).addMigrations(MIGRATION_1_2).build().also { instance = it }
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build().also { instance = it }
         }
     }
 }

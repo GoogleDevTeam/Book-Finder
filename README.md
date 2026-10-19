@@ -1,10 +1,10 @@
 # Book Finder
 
-Book Finder is a serverless native Android app (minimum Android API 29) for turning a photo of a book list or school syllabus into book details and one-tap retailer searches. The target architecture is local-first: no custom backend, account system, scraping pipeline, or price aggregator. The initial implementation adds camera capture, on-device Latin OCR, ISBN/title review, and Google Books metadata lookup.
+Book Finder is a serverless native Android app (minimum Android API 29) for turning a photo of a book list or school syllabus into a named, locally saved reading list of books and one-tap retailer searches. The target architecture is local-first: no custom backend, account system, scraping pipeline, or price aggregator. The initial implementation adds camera capture, on-device Latin OCR, ISBN/title review, and Google Books metadata lookup.
 
 ## Current MVP status
 
-The current Android slice includes the native embedded CameraX viewfinder, on-device Latin OCR, ISBN-10/13 checksum validation (including Arabic-Indic digit normalization), an editable review step, and Google Books results. Results expose returned ISBNs, publisher, and publication date when available, and distinguish an exact ISBN match from an unverified ISBN result or title candidate. The default flow does not upload camera images. Local scan history and cached metadata are stored on-device with Room. The results screen hands off the reviewed ISBN or title to Jarir, Amazon.sa, or Noon using encoded HTTPS search URLs. Android app/browser routing and physical-device behavior still need verification.
+The current Android slice includes the native embedded CameraX viewfinder, on-device Latin OCR, ISBN-10/13 checksum validation (including Arabic-Indic digit normalization), an editable review step, and Google Books results. Results expose returned ISBNs, publisher, and publication date when available, and distinguish an exact ISBN match from an unverified ISBN result or title candidate. The default flow does not upload camera images. Local scan history, cached metadata, and named multi-book reading lists are stored on-device with Room; saved lists can be reopened offline. The results screen hands off the reviewed ISBN or title to Jarir, Amazon.sa, or Noon using encoded HTTPS search URLs. Android app/browser routing and physical-device behavior still need verification.
 
 ## What the app does
 
@@ -12,7 +12,9 @@ The current Android slice includes the native embedded CameraX viewfinder, on-de
 - Recognize Latin-script text on-device with Google ML Kit Text Recognition v2.
 - Find and validate ISBN-10/ISBN-13 candidates; if no ISBN is present, let the user review or edit an English title.
 - Query Google Books and show title, author, cover, and any returned ISBN, publisher, and publication date; label ISBN matches only when the returned identifiers confirm the lookup ISBN.
-- Save scan history and cached book metadata on the device with Room.
+- Review ISBNs and English titles from one scan independently, search each entry, and confirm a result before it joins a list.
+- Save multiple confirmed books together in a named local reading list, with optional grade and subject/course labels.
+- Reopen saved lists and book metadata offline; keep single-book history saves available.
 - Open a prefilled search at Jarir, Amazon.sa, or Noon in the retailer app when Android can resolve it, otherwise in Chrome Custom Tabs.
 
 Retailer links only hand off a search. Book Finder does not fetch retailer pages, scrape prices, or claim live price, stock, shipping, or ebook availability.
@@ -25,9 +27,9 @@ The key is included in the APK so the app can call Google Books directly; a pers
 
 ## How it works
 
-CameraXViewfinder capture → on-device OCR → ISBN/title review → Google Books metadata lookup → Room cache/history → retailer search link
+CameraXViewfinder capture → on-device OCR → per-book review and confirmation → Google Books lookup → named Room reading list/history → retailer search link
 
-The camera image is processed on the device and is not uploaded in the default configuration. The app sends only the selected ISBN or English title to Google Books for a lookup. Cached results and scan history stay in the local Room database; there is no cloud sync or custom server.
+The camera image is processed on the device and is not uploaded in the default configuration. The app sends only the selected ISBN or English title to Google Books for a lookup. Cached results, scan history, and named reading lists stay in the local Room database; there is no cloud sync or custom server.
 
 ## Arabic OCR
 

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,14 +28,12 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -55,16 +52,24 @@ import com.googledevteam.bookfinder.camera.CameraCapture
 import com.googledevteam.bookfinder.data.BookFinderDatabase
 import com.googledevteam.bookfinder.data.BookHistoryRepository
 import com.googledevteam.bookfinder.data.HistoryWithBook
+import com.googledevteam.bookfinder.data.ReadingListItemWithBook
+import com.googledevteam.bookfinder.data.ReadingListSummary
 import com.googledevteam.bookfinder.data.GoogleBooksRepository
 import com.googledevteam.bookfinder.data.toBookResult
-import com.googledevteam.bookfinder.domain.BookCandidate
+import com.googledevteam.bookfinder.domain.CandidateStatus
+import com.googledevteam.bookfinder.domain.ScannedBookDraft
+import com.googledevteam.bookfinder.domain.SearchRequestVersion
+import com.googledevteam.bookfinder.domain.candidatesFromOcrText
+import com.googledevteam.bookfinder.domain.confirmedReadingListBooks
+import com.googledevteam.bookfinder.domain.withEditedQuery
+import com.googledevteam.bookfinder.domain.withSearchResults
+import com.googledevteam.bookfinder.domain.withSelectedBook
 import com.googledevteam.bookfinder.domain.BookResult
 import com.googledevteam.bookfinder.domain.CandidateKind
-import com.googledevteam.bookfinder.domain.IsbnParser
 import com.googledevteam.bookfinder.domain.withLookupMatch
-import com.googledevteam.bookfinder.domain.SearchRequestVersion
 import com.googledevteam.bookfinder.retail.RetailerSearch
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flowOf
 import java.text.DateFormat
 import java.util.Date
 
@@ -73,6 +78,8 @@ private enum class FinderPage {
     REVIEW,
     RESULTS,
     HISTORY,
+    READING_LISTS,
+    READING_LIST_DETAIL,
 }
 
 @Composable
@@ -83,6 +90,13 @@ fun BookFinderScreen() {
     val database = remember { BookFinderDatabase.get(context) }
     val historyRepository = remember(database) { BookHistoryRepository(database) }
     val historyEntries by historyRepository.historyEntries.collectAsStateWithLifecycle(initialValue = emptyList())
+    val readingLists by historyRepository.readingLists.collectAsStateWithLifecycle(initialValue = emptyList())
+    var selectedReadingListId by remember { mutableStateOf<Long?>(null) }
+    val readingListItemsFlow = remember(historyRepository, selectedReadingListId) {
+        selectedReadingListId?.let(historyRepository::readingListItems)
+            ?: flowOf(emptyList<ReadingListItemWithBook>())
+    }
+    val readingListItems by readingListItemsFlow.collectAsStateWithLifecycle(initialValue = emptyList())
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
@@ -96,8 +110,9 @@ fun BookFinderScreen() {
     }
 
     var page by remember { mutableStateOf(FinderPage.SCAN) }
-    var candidates by remember { mutableStateOf(emptyList<BookCandidate>()) }
-    var selectedIndex by remember { mutableIntStateOf(0) }
+    var drafts by remember { mutableStateOf(emptyList<ScannedBookDraft>()) }
+    var nextDraftId by remember { mutableStateOf(1L) }
+    var activeDraftId by remember { mutableStateOf<Long?>(null) }
     var query by remember { mutableStateOf("") }
     var queryKind by remember { mutableStateOf(CandidateKind.ENGLISH_TITLE) }
     var results by remember { mutableStateOf(emptyList<BookResult>()) }
@@ -105,6 +120,10 @@ fun BookFinderScreen() {
     var message by remember { mutableStateOf<String?>(null) }
     var historySavedMessage by remember { mutableStateOf<String?>(null) }
     var retailerMessage by remember { mutableStateOf<String?>(null) }
+    var readingListName by remember { mutableStateOf("") }
+    var readingListGrade by remember { mutableStateOf("") }
+    var readingListSubject by remember { mutableStateOf("") }
+    var savingReadingList by remember { mutableStateOf(false) }
 
     val searchRequestVersion = remember { SearchRequestVersion() }
 
@@ -115,63 +134,96 @@ fun BookFinderScreen() {
         message = null
         historySavedMessage = null
         retailerMessage = null
+        activeDraftId = null
+    }
+
+    fun newDraft(value: String, kind: CandidateKind): ScannedBookDraft {
+        val draft = ScannedBookDraft(id = nextDraftId, query = value, kind = kind)
+        nextDraftId += 1
+        return draft
+    }
+
+    fun updateDraft(id: Long, transform: (ScannedBookDraft) -> ScannedBookDraft) {
+        drafts = drafts.map { draft -> if (draft.id == id) transform(draft) else draft }
+    }
+
+    fun resetListFields() {
+        readingListName = ""
+        readingListGrade = ""
+        readingListSubject = ""
+        historySavedMessage = null
+        message = null
+        activeDraftId = null
     }
 
     fun reviewRecognizedText(ocrText: String) {
         clearSearchState()
-        val isbns = IsbnParser.extractIsbns(ocrText)
-        val detected = if (isbns.isNotEmpty()) {
-            isbns.map { BookCandidate(it, CandidateKind.ISBN) }
-        } else {
-            IsbnParser.titleCandidates(ocrText)
-                .map { BookCandidate(it, CandidateKind.ENGLISH_TITLE) }
+        val detected = candidatesFromOcrText(ocrText)
+        drafts = detected.map { newDraft(it.value, it.kind) }.ifEmpty {
+            listOf(newDraft("", CandidateKind.ENGLISH_TITLE))
         }
-        candidates = detected.ifEmpty {
-            listOf(BookCandidate("", CandidateKind.ENGLISH_TITLE))
-        }
-        selectedIndex = 0
-        query = candidates.first().value
-        queryKind = candidates.first().kind
+        resetListFields()
+        query = drafts.first().query
+        queryKind = drafts.first().kind
         message = if (detected.isEmpty()) {
-            "No clear English title or ISBN was found. You can type a title below."
+            "No clear English title or ISBN was found. Add or type each book below."
         } else {
             null
         }
         page = FinderPage.REVIEW
     }
 
-    fun chooseCandidate(index: Int) {
-        selectedIndex = index
-        candidates.getOrNull(index)?.let { candidate ->
-            query = candidate.value
-            queryKind = candidate.kind
-        }
+    fun startManualEntry() {
+        clearSearchState()
+        drafts = listOf(newDraft("", CandidateKind.ENGLISH_TITLE))
+        resetListFields()
+        query = ""
+        queryKind = CandidateKind.ENGLISH_TITLE
+        page = FinderPage.REVIEW
     }
 
-    fun searchBooks() {
+    fun searchCandidate(id: Long) {
+        val draft = drafts.firstOrNull { it.id == id } ?: return
+        val term = draft.query.trim()
+        if (term.isBlank()) {
+            message = "Enter an ISBN or English title before searching."
+            return
+        }
         val requestVersion = searchRequestVersion.begin()
-        val searchQuery = query.trim()
-        val searchKind = queryKind
+        activeDraftId = id
+        query = term
+        queryKind = draft.kind
         loading = true
         message = null
         historySavedMessage = null
         retailerMessage = null
         results = emptyList()
+        updateDraft(id) { it.copy(status = CandidateStatus.SEARCHING) }
         page = FinderPage.RESULTS
-
         scope.launch {
             try {
-                val newResults = repository.search(searchQuery, searchKind)
+                val foundResults = repository.search(term, draft.kind)
                 if (!searchRequestVersion.isCurrent(requestVersion)) return@launch
-                results = newResults
-                if (newResults.isEmpty()) message = "No matches found. Try editing the search."
+                results = foundResults
+                updateDraft(id) { it.withSearchResults(foundResults) }
+                if (foundResults.isEmpty()) message = "No matches found. Edit this entry or try another search."
             } catch (exception: Exception) {
                 if (!searchRequestVersion.isCurrent(requestVersion)) return@launch
+                updateDraft(id) { it.withSearchResults(emptyList()) }
                 message = exception.localizedMessage ?: "Search failed. Try again."
             } finally {
                 if (searchRequestVersion.isCurrent(requestVersion)) loading = false
             }
         }
+    }
+
+    fun chooseBookForList(book: BookResult) {
+        val draftId = activeDraftId ?: return
+        updateDraft(draftId) { it.withSelectedBook(book) }
+        activeDraftId = null
+        results = emptyList()
+        message = null
+        page = FinderPage.REVIEW
     }
 
     fun openRetailerSearch(retailer: RetailerSearch) {
@@ -202,6 +254,35 @@ fun BookFinderScreen() {
         }
     }
 
+    fun saveReadingList() {
+        val confirmedBooks = drafts.confirmedReadingListBooks()
+        if (readingListName.isBlank()) {
+            message = "Give this reading list a name before saving."
+            return
+        }
+        if (confirmedBooks.isEmpty()) {
+            message = "Choose at least one confirmed book before saving the list."
+            return
+        }
+        savingReadingList = true
+        message = null
+        scope.launch {
+            try {
+                selectedReadingListId = historyRepository.saveReadingList(
+                    name = readingListName,
+                    grade = readingListGrade,
+                    subject = readingListSubject,
+                    books = confirmedBooks,
+                )
+                page = FinderPage.READING_LIST_DETAIL
+            } catch (exception: Exception) {
+                message = exception.localizedMessage ?: "Could not save this reading list. Try again."
+            } finally {
+                savingReadingList = false
+            }
+        }
+    }
+
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { contentPadding ->
         Column(
             modifier = Modifier
@@ -213,16 +294,20 @@ fun BookFinderScreen() {
         ) {
             AppHeader(
                 title = when (page) {
-                    FinderPage.SCAN -> "Find a book"
-                    FinderPage.REVIEW -> "Check the text"
+                    FinderPage.SCAN -> "Find books"
+                    FinderPage.REVIEW -> "Review your list"
                     FinderPage.RESULTS -> "Book matches"
                     FinderPage.HISTORY -> "Scan history"
+                    FinderPage.READING_LISTS -> "Reading lists"
+                    FinderPage.READING_LIST_DETAIL -> "Reading list"
                 },
                 subtitle = when (page) {
-                    FinderPage.SCAN -> "Scan a school list or enter a title."
-                    FinderPage.REVIEW -> "Correct the ISBN or English title before searching."
-                    FinderPage.RESULTS -> "Results come from Google Books."
+                    FinderPage.SCAN -> "Scan an English school list or enter books by hand."
+                    FinderPage.REVIEW -> "Correct each entry, choose its match, then save the confirmed books together."
+                    FinderPage.RESULTS -> "Choose the matching edition for this entry."
                     FinderPage.HISTORY -> "Saved books stay on this device and work offline."
+                    FinderPage.READING_LISTS -> "Your named school lists are stored on this device."
+                    FinderPage.READING_LIST_DETAIL -> "Saved book details remain available offline."
                 },
             )
 
@@ -249,17 +334,11 @@ fun BookFinderScreen() {
                     }
                     OutlinedButton(
                         onClick = {
-                            clearSearchState()
-                            candidates = listOf(BookCandidate("", CandidateKind.ENGLISH_TITLE))
-                            selectedIndex = 0
-                            query = ""
-                            queryKind = CandidateKind.ENGLISH_TITLE
-                            message = null
-                            page = FinderPage.REVIEW
+                            startManualEntry()
                         },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("Enter a title instead")
+                        Text("Enter books manually")
                     }
                     OutlinedButton(
                         onClick = { page = FinderPage.HISTORY },
@@ -267,20 +346,39 @@ fun BookFinderScreen() {
                     ) {
                         Text("History (${historyEntries.size})")
                     }
+                    OutlinedButton(
+                        onClick = { page = FinderPage.READING_LISTS },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Reading lists (${readingLists.size})")
+                    }
                     message?.let { InlineMessage(it) }
                 }
 
                 FinderPage.REVIEW -> {
                     CandidateReview(
-                        candidates = candidates,
-                        selectedIndex = selectedIndex,
-                        query = query,
-                        queryKind = queryKind,
-                        onQueryKindChanged = { queryKind = it },
+                        drafts = drafts,
+                        listName = readingListName,
+                        grade = readingListGrade,
+                        subject = readingListSubject,
                         message = message,
-                        onSelectCandidate = ::chooseCandidate,
-                        onQueryChanged = { query = it },
-                        onSearch = ::searchBooks,
+                        saving = savingReadingList,
+                        onListNameChanged = { readingListName = it; message = null },
+                        onGradeChanged = { readingListGrade = it },
+                        onSubjectChanged = { readingListSubject = it },
+                        onQueryChanged = { id, value ->
+                            updateDraft(id) { it.withEditedQuery(value, it.kind) }
+                            message = null
+                        },
+                        onKindChanged = { id, kind ->
+                            updateDraft(id) { it.withEditedQuery(it.query, kind) }
+                            message = null
+                        },
+                        onSearchCandidate = ::searchCandidate,
+                        onAddCandidate = { drafts = drafts + newDraft("", CandidateKind.ENGLISH_TITLE) },
+                        onRemoveCandidate = { id -> if (drafts.size > 1) drafts = drafts.filterNot { it.id == id } },
+                        onChangeMatch = { id -> updateDraft(id) { it.withEditedQuery(it.query, it.kind) } },
+                        onSaveList = ::saveReadingList,
                         onBack = { page = FinderPage.SCAN },
                     )
                 }
@@ -294,6 +392,7 @@ fun BookFinderScreen() {
                         retailerMessage = retailerMessage,
                         onOpenRetailer = ::openRetailerSearch,
                         onSaveResult = ::saveResult,
+                        onUseForList = ::chooseBookForList,
                         onEditSearch = { page = FinderPage.REVIEW },
                         onScanAgain = {
                             clearSearchState()
@@ -306,6 +405,26 @@ fun BookFinderScreen() {
                     HistoryScreen(
                         entries = historyEntries,
                         onBack = { page = FinderPage.SCAN },
+                    )
+                }
+
+                FinderPage.READING_LISTS -> {
+                    ReadingListsScreen(
+                        lists = readingLists,
+                        onOpenList = { id ->
+                            selectedReadingListId = id
+                            page = FinderPage.READING_LIST_DETAIL
+                        },
+                        onBack = { page = FinderPage.SCAN },
+                    )
+                }
+
+                FinderPage.READING_LIST_DETAIL -> {
+                    val selectedList = readingLists.firstOrNull { it.list.id == selectedReadingListId }?.list
+                    ReadingListDetailScreen(
+                        list = selectedList,
+                        items = readingListItems,
+                        onBack = { page = FinderPage.READING_LISTS },
                     )
                 }
             }
@@ -358,78 +477,147 @@ private fun PermissionCard(onRequestPermission: () -> Unit) {
 
 @Composable
 private fun CandidateReview(
-    candidates: List<BookCandidate>,
-    selectedIndex: Int,
-    query: String,
-    queryKind: CandidateKind,
-    onQueryKindChanged: (CandidateKind) -> Unit,
+    drafts: List<ScannedBookDraft>,
+    listName: String,
+    grade: String,
+    subject: String,
     message: String?,
-    onSelectCandidate: (Int) -> Unit,
-    onQueryChanged: (String) -> Unit,
-    onSearch: () -> Unit,
+    saving: Boolean,
+    onListNameChanged: (String) -> Unit,
+    onGradeChanged: (String) -> Unit,
+    onSubjectChanged: (String) -> Unit,
+    onQueryChanged: (Long, String) -> Unit,
+    onKindChanged: (Long, CandidateKind) -> Unit,
+    onSearchCandidate: (Long) -> Unit,
+    onAddCandidate: () -> Unit,
+    onRemoveCandidate: (Long) -> Unit,
+    onChangeMatch: (Long) -> Unit,
+    onSaveList: () -> Unit,
     onBack: () -> Unit,
 ) {
+    val confirmedCount = drafts.count { it.status == CandidateStatus.MATCHED && it.selectedBook != null }
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        if (candidates.size > 1 || candidates.firstOrNull()?.value?.isNotBlank() == true) {
-            Text("Choose the best match", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-            candidates.forEachIndexed { index, candidate ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .clickable { onSelectCandidate(index) }
-                        .padding(horizontal = 4.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+        Text("Name this reading list", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        OutlinedTextField(
+            value = listName,
+            onValueChange = onListNameChanged,
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("List name (required)") },
+            placeholder = { Text("e.g. Grade 7 English") },
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = grade,
+                onValueChange = onGradeChanged,
+                modifier = Modifier.weight(1f),
+                label = { Text("Grade (optional)") },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+            )
+            OutlinedTextField(
+                value = subject,
+                onValueChange = onSubjectChanged,
+                modifier = Modifier.weight(1f),
+                label = { Text("Subject/course") },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+            )
+        }
+        Text(
+            "Review each detected book separately. Only a book you select as a match is included when you save.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        drafts.forEachIndexed { index, draft ->
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 1.dp,
+            ) {
+                Column(
+                    modifier = Modifier.padding(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    RadioButton(
-                        selected = selectedIndex == index,
-                        onClick = { onSelectCandidate(index) },
-                    )
-                    Column(modifier = Modifier.padding(start = 6.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Book ${index + 1}", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                         Text(
-                            if (candidate.kind == CandidateKind.ISBN) "ISBN" else "English title",
+                            when (draft.status) {
+                                CandidateStatus.NEEDS_REVIEW -> "Needs review"
+                                CandidateStatus.SEARCHING -> "Searching…"
+                                CandidateStatus.NO_RESULT -> "No result"
+                                CandidateStatus.MATCHED -> "Matched"
+                            },
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.primary,
                         )
-                        Text(candidate.value, style = MaterialTheme.typography.bodyLarge)
+                    }
+                    if (drafts.size > 1) {
+                        TextButton(onClick = { onRemoveCandidate(draft.id) }) {
+                            Text("Remove this entry")
+                        }
+                    }
+                    OutlinedTextField(
+                        value = draft.query,
+                        onValueChange = { onQueryChanged(draft.id, it) },
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(if (draft.kind == CandidateKind.ISBN) "ISBN" else "English title") },
+                        supportingText = { Text("Correct any OCR errors before searching.") },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FilterChip(
+                            selected = draft.kind == CandidateKind.ISBN,
+                            onClick = { onKindChanged(draft.id, CandidateKind.ISBN) },
+                            label = { Text("ISBN") },
+                        )
+                        FilterChip(
+                            selected = draft.kind == CandidateKind.ENGLISH_TITLE,
+                            onClick = { onKindChanged(draft.id, CandidateKind.ENGLISH_TITLE) },
+                            label = { Text("English title") },
+                        )
+                    }
+                    val selectedBook = draft.selectedBook
+                    if (draft.status == CandidateStatus.MATCHED && selectedBook != null) {
+                        BookResultCard(selectedBook)
+                        OutlinedButton(
+                            onClick = { onChangeMatch(draft.id) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Change selected book")
+                        }
+                    } else {
+                        if (draft.status == CandidateStatus.NO_RESULT) {
+                            InlineMessage("No result for this entry. Edit it and search again, or leave it out of the list.")
+                        }
+                        Button(
+                            onClick = { onSearchCandidate(draft.id) },
+                            enabled = draft.query.isNotBlank() && draft.status != CandidateStatus.SEARCHING,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(if (draft.status == CandidateStatus.NO_RESULT) "Search again" else "Search this book")
+                        }
                     }
                 }
             }
         }
-
-        OutlinedTextField(
-            value = query,
-            onValueChange = onQueryChanged,
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text(if (queryKind == CandidateKind.ISBN) "ISBN" else "English title")
-            },
-            supportingText = {
-                Text("Edit anything the camera misread.")
-            },
-            singleLine = true,
-            shape = RoundedCornerShape(12.dp),
-        )
-        Text("Search by", style = MaterialTheme.typography.labelLarge)
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(
-                selected = queryKind == CandidateKind.ISBN,
-                onClick = { onQueryKindChanged(CandidateKind.ISBN) },
-                label = { Text("ISBN") },
-            )
-            FilterChip(
-                selected = queryKind == CandidateKind.ENGLISH_TITLE,
-                onClick = { onQueryKindChanged(CandidateKind.ENGLISH_TITLE) },
-                label = { Text("English title") },
-            )
+        OutlinedButton(onClick = onAddCandidate, modifier = Modifier.fillMaxWidth()) {
+            Text("Add another book manually")
         }
         message?.let { InlineMessage(it) }
         Button(
-            onClick = onSearch,
-            enabled = query.isNotBlank(),
+            onClick = onSaveList,
+            enabled = !saving && listName.isNotBlank() && confirmedCount > 0,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Search Google Books")
+            Text(if (saving) "Saving reading list…" else "Save reading list ($confirmedCount books)")
         }
         TextButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text("Back to scan")
@@ -446,6 +634,7 @@ private fun ResultsScreen(
     retailerMessage: String?,
     onOpenRetailer: (RetailerSearch) -> Unit,
     onSaveResult: (BookResult) -> Unit,
+    onUseForList: (BookResult) -> Unit,
     onEditSearch: () -> Unit,
     onScanAgain: () -> Unit,
 ) {
@@ -473,6 +662,12 @@ private fun ResultsScreen(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text("Save this result to history")
+                    }
+                    Button(
+                        onClick = { onUseForList(book) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Select this book for the reading list")
                     }
                 }
             }
@@ -562,6 +757,93 @@ private fun HistoryScreen(
         }
         TextButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text("Back to scan")
+        }
+    }
+}
+
+@Composable
+private fun ReadingListsScreen(
+    lists: List<ReadingListSummary>,
+    onOpenList: (Long) -> Unit,
+    onBack: () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(
+            "Reading lists are stored on this device and can be opened offline.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        if (lists.isEmpty()) {
+            InlineMessage("No reading lists yet. Scan a school list, confirm books, and save them together.")
+        } else {
+            lists.forEach { summary ->
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { onOpenList(summary.list.id) },
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 1.dp,
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Text(summary.list.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        val details = listOfNotNull(summary.list.grade, summary.list.subject).filter(String::isNotBlank)
+                        if (details.isNotEmpty()) {
+                            Text(details.joinToString(" • "), style = MaterialTheme.typography.bodySmall)
+                        }
+                        Text(
+                            "${summary.bookCount} ${if (summary.bookCount == 1) "book" else "books"}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+            }
+        }
+        TextButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text("Back to scan")
+        }
+    }
+}
+
+@Composable
+private fun ReadingListDetailScreen(
+    list: com.googledevteam.bookfinder.data.ReadingListEntity?,
+    items: List<ReadingListItemWithBook>,
+    onBack: () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        if (list == null) {
+            InlineMessage("This reading list is unavailable. Return to your saved lists.")
+        } else {
+            Text(list.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+            val details = listOfNotNull(list.grade, list.subject).filter(String::isNotBlank)
+            if (details.isNotEmpty()) {
+                Text(details.joinToString(" • "), style = MaterialTheme.typography.bodyMedium)
+            }
+            Text(
+                "Saved on this device. Book details are available offline.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (items.isEmpty()) {
+                InlineMessage("This list has no saved books.")
+            } else {
+                items.forEach { item ->
+                    val kind = runCatching { CandidateKind.valueOf(item.item.lookupKind) }
+                        .getOrDefault(CandidateKind.ENGLISH_TITLE)
+                    BookResultCard(
+                        item.book.toBookResult().withLookupMatch(item.item.lookupTerm, kind),
+                    )
+                }
+            }
+        }
+        TextButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text("Back to reading lists")
         }
     }
 }
