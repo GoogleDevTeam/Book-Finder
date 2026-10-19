@@ -4,7 +4,7 @@ Updated: 2026-10-19 (Asia/Riyadh)
 
 ## Branch and review status
 
-The Android MVP and edition-safe matching are on main. PR #16 was merged on 2026-10-19. The multi-book reading-list follow-up is in draft PR #17 on feat/multi-book-reading-lists, based on main; its GitHub Actions build and unit-test run is pending.
+The Android MVP and edition-safe matching are on main. PR #16 was merged on 2026-10-19. The multi-book reading-list follow-up is in draft PR #17 on feat/multi-book-reading-lists, based on main.
 
 The user has found work on non-main branches difficult to access. Keep the README and this handoff current, make the dependency between the two PRs explicit, and do not merge either PR without explicit confirmation.
 
@@ -17,10 +17,10 @@ The user has found work on non-main branches difficult to access. Keep the READM
 
 ## Verification status — do not overstate
 
-GitHub Actions passed the Android debug APK build and unit tests for the merged edition-safe matching change. PR #17's reading-list tests and Room migration have not yet run; its checks should run after the rebase. No emulator or physical-device verification has been completed. Physical scan flow and retailer routing remain open in issue #14.
+The GitHub Actions workflow builds the debug APK, uploads it, and runs unit tests. Verify the check on the current PR head; a pass on an earlier commit does not verify later changes. The workflow does not exercise the Room migration or physical-device behavior. No emulator or physical-device verification has been completed. Physical scan flow and retailer routing remain open in issue #14.
 
 ## Next steps
 
-1. Run and review GitHub Actions for draft PR #17 after it is rebased on main; fix any build or unit-test failures and record actual outcomes.
+1. Verify GitHub Actions passes for the latest draft PR #17 head; fix any build or unit-test failures.
 2. Smoke-test scan, per-book review, saved-list relaunch/offline display, and retailer hand-offs on an emulator and physical Android phone. Record device and Android version; leave unrun checks open.
 3. Do not merge PR #17 without explicit confirmation. Keep Arabic OCR, cloud image processing, release distribution, and motion polish out of scope unless requested.

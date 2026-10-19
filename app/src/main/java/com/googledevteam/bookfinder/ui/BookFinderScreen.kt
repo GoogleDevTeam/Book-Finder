@@ -62,6 +62,7 @@ import com.googledevteam.bookfinder.domain.SearchRequestVersion
 import com.googledevteam.bookfinder.domain.candidatesFromOcrText
 import com.googledevteam.bookfinder.domain.confirmedReadingListBooks
 import com.googledevteam.bookfinder.domain.withEditedQuery
+import com.googledevteam.bookfinder.domain.withSearchCancelled
 import com.googledevteam.bookfinder.domain.withSearchResults
 import com.googledevteam.bookfinder.domain.withSelectedBook
 import com.googledevteam.bookfinder.domain.BookResult
@@ -135,6 +136,7 @@ fun BookFinderScreen() {
         historySavedMessage = null
         retailerMessage = null
         activeDraftId = null
+        drafts = drafts.map { it.withSearchCancelled() }
     }
 
     fun newDraft(value: String, kind: CandidateKind): ScannedBookDraft {
@@ -367,10 +369,12 @@ fun BookFinderScreen() {
                         onGradeChanged = { readingListGrade = it },
                         onSubjectChanged = { readingListSubject = it },
                         onQueryChanged = { id, value ->
+                            clearSearchState()
                             updateDraft(id) { it.withEditedQuery(value, it.kind) }
                             message = null
                         },
                         onKindChanged = { id, kind ->
+                            clearSearchState()
                             updateDraft(id) { it.withEditedQuery(it.query, kind) }
                             message = null
                         },
@@ -393,7 +397,10 @@ fun BookFinderScreen() {
                         onOpenRetailer = ::openRetailerSearch,
                         onSaveResult = ::saveResult,
                         onUseForList = ::chooseBookForList,
-                        onEditSearch = { page = FinderPage.REVIEW },
+                        onEditSearch = {
+                            clearSearchState()
+                            page = FinderPage.REVIEW
+                        },
                         onScanAgain = {
                             clearSearchState()
                             page = FinderPage.SCAN

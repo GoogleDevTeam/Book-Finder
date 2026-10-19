@@ -51,6 +51,23 @@ class ScannedBookDraftTest {
     }
 
     @Test
+    fun cancellingAnInFlightSearchReturnsDraftToReviewAndClearsOldResults() {
+        val searching = ScannedBookDraft(
+            id = 1,
+            query = "New title",
+            kind = CandidateKind.ENGLISH_TITLE,
+            status = CandidateStatus.SEARCHING,
+            searchResults = listOf(selectedBook),
+        )
+
+        val cancelled = searching.withSearchCancelled()
+
+        assertEquals(CandidateStatus.NEEDS_REVIEW, cancelled.status)
+        assertTrue(cancelled.searchResults.isEmpty())
+        assertNull(cancelled.selectedBook)
+    }
+
+    @Test
     fun selectedBookIsConfirmedAndQueryEditsClearTheOldMatch() {
         val confirmed = ScannedBookDraft(1, "9780306406157", CandidateKind.ISBN)
             .withSearchResults(listOf(selectedBook))

@@ -70,6 +70,16 @@ fun ScannedBookDraft.withSearchResults(results: List<BookResult>): ScannedBookDr
     selectedBook = null,
 )
 
+fun ScannedBookDraft.withSearchCancelled(): ScannedBookDraft = if (status == CandidateStatus.SEARCHING) {
+    copy(
+        status = CandidateStatus.NEEDS_REVIEW,
+        searchResults = emptyList(),
+        selectedBook = null,
+    )
+} else {
+    this
+}
+
 fun ScannedBookDraft.withSelectedBook(book: BookResult): ScannedBookDraft = copy(
     status = CandidateStatus.MATCHED,
     selectedBook = book,
