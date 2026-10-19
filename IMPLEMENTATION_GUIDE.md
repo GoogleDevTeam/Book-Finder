@@ -56,7 +56,7 @@ The initial implementation includes a lookup repository and results view. Verify
 
 The Room database keeps normalized book metadata and scan history locally. Version 2 adds nullable ISBN, publisher, and publication-date columns; the 1-to-2 migration preserves saved books. Version 3 adds named reading lists and ordered list items with a 2-to-3 migration. Creating a list transactionally saves its name, optional grade and subject/course, and only the books the user explicitly selected from search results; each item preserves the reviewed lookup term and kind. Saved lists and book metadata are read back from Room and remain available offline. Single-result saves to History remain available. Cover URLs are stored as text rather than copying image bytes into the database. No scan image, cloud sync, or custom backend is used.
 
-Verify the Room flow before release: save a result, relaunch and load History offline, confirm newest entries appear first, and verify clearing app data removes the database. If the schema changes, increment the database version and add a migration; do not mark migration checks as passed until run.
+A Robolectric test creates a version-2 database and verifies migration preserves history and cached metadata, then saves a reading list, closes/reopens the database, and checks the list and item order offline. Before release, still verify History ordering and app-data clearing on a device. If the schema changes, increment the database version and add a migration; do not mark migration checks as passed until run.
 
 ## 7. Build retailer search links, not a price scraper
 
@@ -79,11 +79,11 @@ If Arabic title extraction is mandatory, get approval for the changed privacy/co
 - **ISBN parsing:** valid and invalid ISBN-10/13 checksums, final X, spaces/hyphens, duplicate matches, OCR noise, and normalized Arabic-Indic digits.
 - **Title parsing:** empty text, numeric-only lines, mixed Arabic/English text, and user-edited titles.
 - **Google Books:** exact ISBN result, a different-edition result, missing identifiers, title-only candidates, missing publisher/date/author/thumbnail, ambiguous titles, no items, timeout, offline, and quota/error responses.
-- **Room and reading lists:** save a named list with multiple confirmed books, reopen it offline in saved order, verify optional grade/subject metadata, and migrate an existing version-2 database without losing history or cached metadata. Unreviewed OCR entries must never be persisted as list items.
+- **Room and reading lists:** the Robolectric suite verifies v2→v3 migration preserves history and cached metadata and that saved lists reopen with their metadata and item order. Device checks should still verify app relaunch/offline access, clearing app data, and that unreviewed OCR entries are never persisted as list items.
 - **UI and device:** camera permission grant/denial, EMBEDDED viewfinder clipping/gesture behavior, OCR bounding-box alignment, review/edit flow, predictive-back navigation, shared-element/spring transitions, no-network history, and retailer handoff with and without a retailer app installed.
 - **Privacy boundary:** in the default configuration, verify that only a selected ISBN/title is sent to Google Books and that no camera image or history data is uploaded.
 
-Run the Gradle unit-test and Android test tasks configured in the project, then make a release build and install it on a physical Android phone. Record actual test outcomes; do not mark planned checks as passed until they have run.
+Run the Gradle unit-test and Android test tasks configured in the project, then make a release build and install it on a physical Android phone. Record actual test outcomes; do not mark planned device checks as passed until they have run.
 
 ## 10. Distribute the private test build with Firebase App Distribution
 

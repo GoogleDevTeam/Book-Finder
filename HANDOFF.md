@@ -17,10 +17,10 @@ The user has found work on non-main branches difficult to access. Keep the READM
 
 ## Verification status — do not overstate
 
-The GitHub Actions workflow builds the debug APK, uploads it, and runs unit tests. Verify the check on the current PR head; a pass on an earlier commit does not verify later changes. The workflow does not exercise the Room migration or physical-device behavior. No emulator or physical-device verification has been completed. Physical scan flow and retailer routing remain open in issue #14.
+The GitHub Actions workflow builds and uploads the debug APK and runs unit tests. A Robolectric test creates a version-2 Room database, checks migration preserves existing history and metadata, saves a reading list, then reopens the database and verifies list metadata, items, and order. Verify the check on the current PR head; a pass on an earlier commit does not verify later changes. No emulator or physical-device verification has been completed. Physical scan flow and retailer routing remain open in issue #14.
 
 ## Next steps
 
 1. Verify GitHub Actions passes for the latest draft PR #17 head; fix any build or unit-test failures.
-2. Smoke-test scan, per-book review, saved-list relaunch/offline display, and retailer hand-offs on an emulator and physical Android phone. Record device and Android version; leave unrun checks open.
+2. Smoke-test camera permission, scan/OCR, per-book review, saved-list relaunch/offline display, and retailer hand-offs on an emulator and physical Android phone. Record device and Android version; leave unrun checks open.
 3. Do not merge PR #17 without explicit confirmation. Keep Arabic OCR, cloud image processing, release distribution, and motion polish out of scope unless requested.
