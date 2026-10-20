@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -492,6 +493,7 @@ fun BookFinderScreen() {
 
                 FinderPage.RESULTS -> {
                     ResultsScreen(
+                        searchTerm = query,
                         results = results,
                         loading = loading,
                         message = message,
@@ -774,6 +776,7 @@ private fun CandidateReview(
 
 @Composable
 private fun ResultsScreen(
+    searchTerm: String,
     results: List<BookResult>,
     loading: Boolean,
     message: String?,
@@ -835,14 +838,18 @@ private fun ResultsScreen(
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 RetailerSearch.entries.forEach { retailer ->
+                    val titleOnly = retailer.requiresTitleOnly(searchTerm)
                     OutlinedButton(
+                        enabled = !titleOnly,
                         onClick = { onOpenRetailer(retailer) },
                         modifier = Modifier.weight(1f),
                         contentPadding = PaddingValues(horizontal = 4.dp),
                     ) {
                         Text(
-                            text = retailer.label,
-                            maxLines = 1,
+                            text = if (titleOnly) ""){retailer.label}
+Title only" else retailer.label,
+                            maxLines = 2,
+                            textAlign = TextAlign.Center,
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
@@ -1076,14 +1083,18 @@ private fun ReadingListDetailScreen(
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             RetailerSearch.entries.forEach { retailer ->
+                                val titleOnly = retailer.requiresTitleOnly(item.item.lookupTerm)
                                 OutlinedButton(
+                                    enabled = !titleOnly,
                                     onClick = { onOpenRetailerSearch(item.item.lookupTerm, retailer) },
                                     modifier = Modifier.weight(1f),
                                     contentPadding = PaddingValues(horizontal = 4.dp),
                                 ) {
                                     Text(
-                                        text = retailer.label,
-                                        maxLines = 1,
+                                        text = if (titleOnly) ""){retailer.label}
+Title only" else retailer.label,
+                                        maxLines = 2,
+                                        textAlign = TextAlign.Center,
                                         overflow = TextOverflow.Ellipsis,
                                     )
                                 }
