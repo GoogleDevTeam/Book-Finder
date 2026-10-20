@@ -6,6 +6,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.IOException
 
 class GoogleBooksRequestTest {
     @Test
@@ -53,6 +54,14 @@ class GoogleBooksRequestTest {
         assertEquals(
             "Google Books is temporarily unavailable (HTTP 503). Try again later or use a retailer search.",
             googleBooksHttpErrorMessage(503),
+        )
+    }
+
+    @Test
+    fun networkFailureOffersActionableRecovery() {
+        assertEquals(
+            "Couldn't reach Google Books. Check your internet connection and try again; retailer search links are still available.",
+            googleBooksNetworkErrorMessage(),
         )
     }
 

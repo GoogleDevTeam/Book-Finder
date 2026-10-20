@@ -23,32 +23,40 @@ class GoogleBooksRepository(
             var retryCount = 0
 
             while (true) {
-                val connection = (URL(requestUrl).openConnection() as HttpURLConnection).apply {
-                    requestMethod = "GET"
-                    connectTimeout = 10_000
-                    readTimeout = 15_000
-                    setRequestProperty("Accept", "application/json")
-                }
-
+                var connection: HttpURLConnection? = null
                 try {
-                    val status = connection.responseCode
+                    val activeConnection = (URL(requestUrl).openConnection() as HttpURLConnection).apply {
+                        requestMethod = "GET"
+                        connectTimeout = 10_000
+                        readTimeout = 15_000
+                        setRequestProperty("Accept", "application/json")
+                    }
+                    connection = activeConnection
+
+                    val status = activeConnection.responseCode
                     if (shouldRetryGoogleBooksRequest(status, retryCount)) {
                         retryCount += 1
-                        connection.disconnect()
+                        activeConnection.disconnect()
                         delay(750L)
                         continue
                     }
                     if (status !in 200..299) {
-                        val errorBody = connection.errorStream?.bufferedReader()?.use { it.readText() }
-                        throw IOException(
+                        val errorBody = runCatching {
+                            activeConnection.errorStream?.bufferedReader()?.use { it.readText() }
+                        }.getOrNull()
+                        throw GoogleBooksSearchException(
                             googleBooksHttpErrorMessage(status, extractGoogleBooksErrorReason(errorBody)),
                         )
                     }
 
-                    val payload = connection.inputStream.bufferedReader().use { it.readText() }
+                    val payload = activeConnection.inputStream.bufferedReader().use { it.readText() }
                     return@withContext parseResults(JSONObject(payload)).map { it.withLookupMatch(query.trim(), kind) }
+                } catch (exception: GoogleBooksSearchException) {
+                    throw exception
+                } catch (exception: IOException) {
+                    throw GoogleBooksSearchException(googleBooksNetworkErrorMessage(), exception)
                 } finally {
-                    connection.disconnect()
+                    connection?.disconnect()
                 }
             }
 
@@ -116,6 +124,8 @@ class GoogleBooksRepository(
     }
 }
 
+internal class GoogleBooksSearchException(message: String, cause: Throwable? = null) : Exception(message, cause)
+
 internal fun buildGoogleBooksRequestUrl(
     query: String,
     kind: CandidateKind,
@@ -154,6 +164,9 @@ internal fun googleBooksHttpErrorMessage(status: Int, reason: String? = null): S
         "Google Books is temporarily unavailable (HTTP $status). Try again later or use a retailer search."
     else -> "Book search failed (HTTP $status). Try again."
 }
+
+internal fun googleBooksNetworkErrorMessage(): String =
+    "Couldn't reach Google Books. Check your internet connection and try again; retailer search links are still available."
 
 private fun extractGoogleBooksErrorReason(errorBody: String?): String? {
     if (errorBody.isNullOrBlank()) return null
