@@ -55,6 +55,29 @@ class ScannedBookDraftTest {
     }
 
     @Test
+    fun ignoresSchoolListHeadingAndKeepsAuthorsWithTheirBookTitles() {
+        val candidates = candidatesFromOcrText(
+            "GRADE 7 READING LIST\n" +
+                "The Hunger Games - Suzanne Collins - ISBN 978-0-439-02352-8\n" +
+                "Charlotte's Web\n" +
+                "E. B. White\n" +
+                "A Wrinkle in Time\n" +
+                "Madeleine L'Engle",
+        )
+
+        assertEquals(3, candidates.size)
+        assertEquals(
+            listOf(CandidateKind.ISBN, CandidateKind.ENGLISH_TITLE, CandidateKind.ENGLISH_TITLE),
+            candidates.map { it.kind },
+        )
+        assertEquals(
+            listOf("9780439023528", "Charlotte's Web - E. B. White", "A Wrinkle in Time - Madeleine L'Engle"),
+            candidates.map { it.value },
+        )
+        assertEquals("The Hunger Games - Suzanne Collins", candidates.first().titleHint)
+    }
+
+    @Test
     fun searchResultsRemainUnconfirmedUntilUserSelectsABook() {
         val draft = ScannedBookDraft(1, "9780306406157", CandidateKind.ISBN)
             .withSearchResults(listOf(selectedBook))

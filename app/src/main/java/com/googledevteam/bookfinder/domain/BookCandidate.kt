@@ -24,56 +24,100 @@ data class BookCandidate(
     val titleHint: String? = null,
 )
 
+private data class OcrTitleGroup(
+    val startIndex: Int,
+    val endIndex: Int,
+    val value: String,
+)
+
+private val schoolListHeadingPattern = Regex(
+    """^(?:grade\s+[\p{L}\p{N}-]+\s+)?(?:[\p{L}\p{N}&'’/-]+\s+)*(?:reading\s+list|book\s+list|books|syllabus)$""",
+    RegexOption.IGNORE_CASE,
+)
+
+private val standaloneAuthorNamePattern = Regex(
+    """^[\p{Lu}][\p{L}\p{M}'’.-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’.-]*){1,3}$""",
+)
+private val authorInitialPattern = Regex("""(?:^|\s)[\p{Lu}]\.(?:\s|$)""")
+private val internalApostropheNamePattern = Regex("""[\p{Lu}][\p{L}\p{M}]*['’][\p{Lu}][\p{L}\p{M}]*""")
+private val possessiveWordPattern = Regex("""[\p{L}\p{M}]+['’]s(?:\b|$)""", RegexOption.IGNORE_CASE)
+private val hyphenatedNamePattern = Regex("""[\p{Lu}][\p{L}\p{M}]+-[\p{Lu}][\p{L}\p{M}]+""")
+
+private fun cleanTitleCandidate(value: String?): String? = value
+    ?.trim()
+    ?.trimEnd(' ', '-', '–', '—', ':', ';', '|')
+    ?.trim()
+    ?.takeIf(String::isNotBlank)
+
+private fun looksLikeStandaloneAuthor(value: String): Boolean {
+    if (!standaloneAuthorNamePattern.matches(value) || possessiveWordPattern.containsMatchIn(value)) {
+        return false
+    }
+
+    return authorInitialPattern.containsMatchIn(value) ||
+        internalApostropheNamePattern.containsMatchIn(value) ||
+        hyphenatedNamePattern.containsMatchIn(value)
+}
+
 fun candidatesFromOcrText(text: String): List<BookCandidate> {
     val lines = text.lineSequence()
         .map { it.trim().replace(Regex("""\s+"""), " ") }
         .filter(String::isNotBlank)
+        .filterNot(schoolListHeadingPattern::matches)
         .toList()
     val isbnsByLine = lines.map(IsbnParser::extractIsbns)
-    val titlesByLine = lines.map { IsbnParser.titleCandidates(it).firstOrNull() }
-    val pairedTitleByIsbnLine = mutableMapOf<Int, String>()
-    val pairedTitleLines = mutableSetOf<Int>()
-
-    // If a title and ISBN are on the same or immediately adjacent OCR lines, keep them
-    // together as one ISBN-first candidate and show the detected title for user review.
-    for (index in lines.indices) {
-        if (isbnsByLine[index].isEmpty()) continue
-        val titleLine = if (titlesByLine[index] != null) {
-            index
-        } else {
-            listOf(index - 1, index + 1).firstOrNull { neighbor ->
-                neighbor in lines.indices &&
-                    isbnsByLine[neighbor].isEmpty() &&
-                    titlesByLine[neighbor] != null &&
-                    neighbor !in pairedTitleLines
-            }
-        } ?: continue
-        pairedTitleByIsbnLine[index] = titlesByLine[titleLine].orEmpty()
-        pairedTitleLines += titleLine
+    val titlesByLine = lines.map { line ->
+        cleanTitleCandidate(IsbnParser.titleCandidates(line).firstOrNull())
     }
 
-    return buildList {
-        for (index in lines.indices) {
-            val isbns = isbnsByLine[index]
-            if (isbns.isNotEmpty()) {
-                isbns.forEachIndexed { isbnIndex, isbn ->
-                    add(
-                        BookCandidate(
-                            value = isbn,
-                            kind = CandidateKind.ISBN,
-                            titleHint = if (isbnIndex == 0) pairedTitleByIsbnLine[index] else null,
-                        ),
-                    )
-                }
-            } else if (index !in pairedTitleLines) {
-                titlesByLine[index]?.let { title ->
-                    add(BookCandidate(title, CandidateKind.ENGLISH_TITLE))
-                }
-            }
+    // Join author lines only when they have a strong name signal (initials or a
+    // punctuated surname), so adjacent title-only entries are not merged.
+    val titleGroups = mutableListOf<OcrTitleGroup>()
+    val pairedAuthorLines = mutableSetOf<Int>()
+    for (index in lines.indices) {
+        if (index in pairedAuthorLines) continue
+        val title = titlesByLine[index] ?: continue
+        val authorIndex = index + 1
+        val author = titlesByLine.getOrNull(authorIndex)
+            ?.takeIf { isbnsByLine[authorIndex].isEmpty() && looksLikeStandaloneAuthor(it) }
+        if (author != null) {
+            titleGroups += OcrTitleGroup(index, authorIndex, "$title - $author")
+            pairedAuthorLines += authorIndex
+        } else {
+            titleGroups += OcrTitleGroup(index, index, title)
         }
     }
-}
 
+    val pairedTitleGroups = mutableSetOf<Int>()
+    val candidatesByLine = List(lines.size) { mutableListOf<BookCandidate>() }
+    for (index in lines.indices) {
+        val isbns = isbnsByLine[index]
+        if (isbns.isEmpty()) continue
+
+        val matchingTitleGroup = listOfNotNull(
+            titleGroups.firstOrNull { it.startIndex == index },
+            titleGroups.firstOrNull { it.endIndex == index - 1 },
+            titleGroups.firstOrNull { it.startIndex == index + 1 },
+        ).firstOrNull { it.startIndex !in pairedTitleGroups }
+        matchingTitleGroup?.let { pairedTitleGroups += it.startIndex }
+
+        isbns.forEachIndexed { isbnIndex, isbn ->
+            candidatesByLine[index] += BookCandidate(
+                value = isbn,
+                kind = CandidateKind.ISBN,
+                titleHint = if (isbnIndex == 0) matchingTitleGroup?.value else null,
+            )
+        }
+    }
+
+    titleGroups
+        .filterNot { it.startIndex in pairedTitleGroups }
+        .forEach { group ->
+            candidatesByLine[group.startIndex] += BookCandidate(group.value, CandidateKind.ENGLISH_TITLE)
+        }
+
+    return candidatesByLine.flatten()
+}
 data class BookResult(
     val id: String,
     val title: String,
