@@ -1,6 +1,7 @@
 package com.googledevteam.bookfinder.retail
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -21,6 +22,16 @@ class RetailerSearchTest {
             "https://www.noon.com/saudi-en/search/?q=$isbn",
             RetailerSearch.NOON.searchUrl(isbn),
         )
+    }
+
+    @Test
+    fun marksJarirAsTitleOnlyForIsbnQueries() {
+        val isbn = "9780590353427"
+
+        assertTrue(RetailerSearch.JARIR.requiresTitleOnly(isbn))
+        assertFalse(RetailerSearch.JARIR.requiresTitleOnly("Harry Potter"))
+        assertFalse(RetailerSearch.AMAZON_SA.requiresTitleOnly(isbn))
+        assertFalse(RetailerSearch.NOON.requiresTitleOnly(isbn))
     }
 
     @Test
