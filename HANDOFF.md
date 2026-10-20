@@ -1,34 +1,45 @@
-# Book Finder — AI Handoff
+# Book Finder - AI Handoff
 
-Updated: 2026-10-16 (Asia/Riyadh)
+Updated: 2026-10-20 (Asia/Riyadh)
 
-## Important: access and branch state
+## Access and branch status
 
-The user says it is difficult to access work outside the main branch. Keep handoff notes and important project status discoverable from main, and do not leave the user with only a feature-branch link. Explain clearly whenever app code is still on another branch.
+- Keep this handoff current on main because the user has found work on non-main branches difficult to access.
+- Main contains the Android MVP: CameraX capture, on-device Latin-script OCR, ISBN/title review, Google Books metadata lookup, Room-backed single-book history, and retailer search links.
+- PR #16 (edition-safe matching) was merged on 2026-10-19. PR #17, the multi-book reading-list follow-up, remains open and in draft on branch feat/multi-book-reading-lists.
+- Current PR #17 head at time of this update: 5bac526be359afedfe4948114e21f53e35c63998. Do not merge PR #17 without explicit user confirmation.
 
-The Android app, Room changes, and retailer search hand-offs are on the open draft PR #11 branch `feat/android-mvp-vertical-slice`, based on `main`. Current head: `03257f6c3df0fd1ce7084f46d8e88d3387b1b142`. The PR remains unmerged; main contains the specifications and this handoff, not the Android app. Do not merge until the current head has been built and tested; ask for confirmation before merging.
+## Current behavior and scope
 
-## Work currently in PR #11 (not yet in main)
+- PR #17 implements independent review and lookup of multiple ISBN/title entries, explicit selection of each book result, and saving selected books in a named local reading list. Saved list metadata and item order should persist offline. Single-book History remains supported.
+- The app is local-first: scan images are processed on-device by the default flow; no cloud sync or custom backend. The app sends a user-selected ISBN or English title to Google Books.
+- Retailer links hand off searches to Jarir, Amazon.sa, and Noon. The app does not scrape retailer pages or report live prices/stock.
+- Default on-device ML Kit OCR supports Latin text, not Arabic text extraction. Keep cloud OCR, accounts, sync, scraping, and price aggregation out of scope unless explicitly requested.
 
-- Kotlin/Jetpack Compose Android MVP: CameraX capture, on-device Latin ML Kit OCR, editable ISBN/title review, and Google Books metadata lookup.
-- Room v1 local cache and scan history. The user explicitly saves a selected result; lookup term/type/time and book metadata are written transactionally and shown offline.
-- Camera images and history remain local; only a user-confirmed ISBN or title is sent to Google Books.
-- Retailer search actions for Jarir, Amazon.sa, and Noon. Search terms are URL-encoded and opened with Android ACTION_VIEW; results remain available even when Google Books has no match. The app does not scrape pages or display retailer prices/availability.
-- Added unit tests for ISBN parsing, cached-metadata round trips, and retailer search URL construction/encoding. Updated README and implementation guide on the PR branch.
-- Room writes are in `BookHistoryRepository`; screen state observes its Flow.
+## CI verification
 
-## Verification status — do not overstate
+- GitHub Actions run #39331341117 on the current PR #17 head completed successfully for the Android build and unit-test workflow. The workflow builds/uploads a debug APK and runs unit tests.
+- The user reports installing the app after being directed to that run's debug APK artifact. Device model and Android version have not been provided.
+- Unit tests cover Room migration and reading-list persistence; they do not replace emulator or physical-device testing.
 
-This workspace has no Java, Gradle, or Android SDK, so the tests and APK build were not run here. GitHub Actions returned no runs for the PR branch; the current head's combined status is pending with no status records. No emulator or physical-device test has been completed. A live fetch of Amazon.sa's `/s?k=` search URL returned results for a sample query. The Noon search URL did not return clear search results in this environment; verify it and app/browser routing on an Android device before release.
+## User-reported device test log
 
-## Next work, in order
+Test input supplied in chat:
 
-1. In an Android environment with JDK 17+, Android SDK Platform 36, and matching Build Tools, run `./gradlew testDebugUnitTest` and `./gradlew assembleDebug`; fix failures and record the actual results.
-2. Smoke-test camera permission/capture/OCR, Google Books lookup, and retailer hand-offs for Jarir, Amazon.sa, and Noon on an emulator and physical Android device. Confirm Noon opens the intended search results and verify app/browser routing.
-3. Verify Room save, restart, newest-first offline history, empty state, and local-data clearing. Do not mark any of these checks as passed until run.
-4. After verification, make the tested app code accessible on main. Do not merge the draft PR without user confirmation.
-5. Keep Arabic OCR, cloud image processing, release distribution, and motion polish out of scope unless the user chooses them. Arabic Cloud Vision changes privacy and cost assumptions and requires explicit approval.
+    GRADE 7 READING LIST
+    The Hunger Games - Suzanne Collins - ISBN 978-0-439-02352-8
+    Charlotte's Web - E. B. White
+    A Wrinkle in Time - Madeleine L'Engle
 
-## User-facing handoff
+Observed scan/review result: FAIL. The heading "GRADE 7 READING LIST" appeared as a book candidate. "Charlotte's Web" and its author "E. B. White" appeared as separate book candidates. The user has not reported the complete candidate list, so outcomes for the other sample entries are unknown. Expected behavior is to ignore the heading and keep each book's title and author together as one editable entry.
 
-The user asked to continue existing work without more questions. The retailer hand-off implementation is committed to PR #11, but it remains on the draft branch and is not present on main. Lead with the branch-access limitation and the concrete Android verification steps; do not claim build/device success.
+Observed Google Books result: FAIL. Search showed: "Book search failed (HTTP 503). Try again." The retry outcome has not yet been reported. The cause is not established; do not label it a key, quota, or global-service issue without further evidence.
+
+Not yet reported as tested: camera permission-denied recovery; low-light and no-text scans; title-only and no-match recovery; successful per-book lookup; saving a named reading list; force-close/reopen and offline list display; no-network lookup recovery; Jarir, Amazon.sa, and Noon routing (including app/browser behavior).
+
+## Next steps
+
+1. Address scan candidate grouping/filtering: ignore list headings and associate author lines with their book title; add regression coverage for this sample.
+2. Retry one Google Books lookup with connectivity enabled. If HTTP 503 persists, investigate the Google Books API/project configuration and quota privately; never put the API key in this file, chat, or logs.
+3. Continue physical-device validation for camera, scan/review, saving and reopening lists offline, error recovery, and all retailer hand-offs. Record device/Android version and observed results; leave unrun checks open in issue #14.
+4. Keep PR #17 in draft until review and verification are complete. Do not merge without explicit user confirmation.
