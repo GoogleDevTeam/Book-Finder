@@ -9,11 +9,15 @@ import androidx.camera.core.SurfaceRequest
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.viewfinder.core.ImplementationMode
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -32,12 +36,15 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import java.util.concurrent.atomic.AtomicLong
+
+private val captureRequestIds = AtomicLong()
 
 @Composable
 fun CameraCapture(
-    onCaptureStarted: () -> Unit,
-    onTextRecognized: (String) -> Unit,
-    onCaptureError: (String) -> Unit,
+    onCaptureStarted: (Long) -> Unit,
+    onTextRecognized: (Long, String) -> Unit,
+    onCaptureError: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -53,8 +60,11 @@ fun CameraCapture(
     var surfaceRequest by remember { mutableStateOf<SurfaceRequest?>(null) }
     var cameraReady by remember { mutableStateOf(false) }
     var isCapturing by remember { mutableStateOf(false) }
+    var cameraError by remember { mutableStateOf<String?>(null) }
+    var retryCount by remember { mutableStateOf(0) }
 
-    DisposableEffect(providerFuture, lifecycleOwner) {
+    DisposableEffect(providerFuture, lifecycleOwner, retryCount) {
+        cameraError = null
         var disposed = false
         var boundProvider: ProcessCameraProvider? = null
 
@@ -77,7 +87,7 @@ fun CameraCapture(
                         boundProvider = provider
                         cameraReady = true
                     } catch (exception: Exception) {
-                        onCaptureError(exception.localizedMessage ?: "Could not start the camera.")
+                        cameraError = exception.localizedMessage ?: "Could not start the camera."
                     }
                 }
             },
@@ -100,7 +110,18 @@ fun CameraCapture(
         contentAlignment = Alignment.Center,
     ) {
         val request = surfaceRequest
-        if (request == null) {
+        val error = cameraError
+        if (error != null) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(error, color = Color.White)
+                Button(onClick = { retryCount += 1 }) {
+                    Text("Retry camera")
+                }
+            }
+        } else if (request == null) {
             CircularProgressIndicator(color = Color.White)
         } else {
             CameraXViewfinder(
@@ -116,7 +137,8 @@ fun CameraCapture(
         enabled = cameraReady && !isCapturing,
         onClick = {
             isCapturing = true
-            onCaptureStarted()
+            val captureId = captureRequestIds.incrementAndGet()
+            onCaptureStarted(captureId)
             imageCapture.takePicture(
                 mainExecutor,
                 object : ImageCapture.OnImageCapturedCallback() {
@@ -125,31 +147,44 @@ fun CameraCapture(
                         if (mediaImage == null) {
                             imageProxy.close()
                             isCapturing = false
-                            onCaptureError("The camera returned an empty image. Try again.")
+                            onCaptureError(captureId, "The camera returned an empty image. Try again.")
                             return
                         }
 
                         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-                        recognizer.process(
-                            InputImage.fromMediaImage(
-                                mediaImage,
-                                imageProxy.imageInfo.rotationDegrees,
-                            ),
-                        )
-                            .addOnSuccessListener { result -> onTextRecognized(result.text) }
-                            .addOnFailureListener { exception ->
-                                onCaptureError(exception.localizedMessage ?: "Text recognition failed.")
-                            }
-                            .addOnCompleteListener {
-                                imageProxy.close()
-                                recognizer.close()
-                                isCapturing = false
-                            }
+                        try {
+                            recognizer.process(
+                                InputImage.fromMediaImage(
+                                    mediaImage,
+                                    imageProxy.imageInfo.rotationDegrees,
+                                ),
+                            )
+                                .addOnSuccessListener { result -> onTextRecognized(captureId, result.text) }
+                                .addOnFailureListener { exception ->
+                                    onCaptureError(
+                                        captureId,
+                                        exception.localizedMessage ?: "Text recognition failed.",
+                                    )
+                                }
+                                .addOnCompleteListener {
+                                    imageProxy.close()
+                                    recognizer.close()
+                                    isCapturing = false
+                                }
+                        } catch (exception: Exception) {
+                            imageProxy.close()
+                            recognizer.close()
+                            isCapturing = false
+                            onCaptureError(
+                                captureId,
+                                exception.localizedMessage ?: "Text recognition failed.",
+                            )
+                        }
                     }
 
                     override fun onError(exception: ImageCaptureException) {
                         isCapturing = false
-                        onCaptureError(exception.localizedMessage ?: "Could not capture the page.")
+                        onCaptureError(captureId, exception.localizedMessage ?: "Could not capture the page.")
                     }
                 },
             )
