@@ -2,6 +2,7 @@ package com.googledevteam.bookfinder.data
 
 import com.googledevteam.bookfinder.domain.CandidateKind
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -38,6 +39,21 @@ class GoogleBooksRequestTest {
         }
 
         assertTrue(error.message.orEmpty().contains("Retailer searches are still available"))
+    }
+
+    @Test
+    fun retriesTransientServerErrorsOnlyOnceAndNotForQuotaResponses() {
+        assertTrue(shouldRetryGoogleBooksRequest(503, retryCount = 0))
+        assertFalse(shouldRetryGoogleBooksRequest(503, retryCount = 1))
+        assertFalse(shouldRetryGoogleBooksRequest(429, retryCount = 0))
+    }
+
+    @Test
+    fun serverErrorOffersRetailerFallback() {
+        assertEquals(
+            "Google Books is temporarily unavailable (HTTP 503). Try again later or use a retailer search.",
+            googleBooksHttpErrorMessage(503),
+        )
     }
 
     @Test

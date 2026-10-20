@@ -6,6 +6,7 @@ import com.googledevteam.bookfinder.domain.CandidateKind
 import com.googledevteam.bookfinder.domain.IsbnParser
 import com.googledevteam.bookfinder.domain.withLookupMatch
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.IOException
@@ -18,28 +19,41 @@ class GoogleBooksRepository(
 ) {
     suspend fun search(query: String, kind: CandidateKind): List<BookResult> =
         withContext(Dispatchers.IO) {
-            val url = URL(buildGoogleBooksRequestUrl(query, kind, apiKey))
-            val connection = (url.openConnection() as HttpURLConnection).apply {
-                requestMethod = "GET"
-                connectTimeout = 10_000
-                readTimeout = 15_000
-                setRequestProperty("Accept", "application/json")
-            }
+            val requestUrl = buildGoogleBooksRequestUrl(query, kind, apiKey)
+            var retryCount = 0
 
-            try {
-                val status = connection.responseCode
-                if (status !in 200..299) {
-                    val errorBody = connection.errorStream?.bufferedReader()?.use { it.readText() }
-                    throw IOException(
-                        googleBooksHttpErrorMessage(status, extractGoogleBooksErrorReason(errorBody)),
-                    )
+            while (true) {
+                val connection = (URL(requestUrl).openConnection() as HttpURLConnection).apply {
+                    requestMethod = "GET"
+                    connectTimeout = 10_000
+                    readTimeout = 15_000
+                    setRequestProperty("Accept", "application/json")
                 }
 
-                val payload = connection.inputStream.bufferedReader().use { it.readText() }
-                parseResults(JSONObject(payload)).map { it.withLookupMatch(query.trim(), kind) }
-            } finally {
-                connection.disconnect()
+                try {
+                    val status = connection.responseCode
+                    if (shouldRetryGoogleBooksRequest(status, retryCount)) {
+                        retryCount += 1
+                        connection.disconnect()
+                        delay(750L)
+                        continue
+                    }
+                    if (status !in 200..299) {
+                        val errorBody = connection.errorStream?.bufferedReader()?.use { it.readText() }
+                        throw IOException(
+                            googleBooksHttpErrorMessage(status, extractGoogleBooksErrorReason(errorBody)),
+                        )
+                    }
+
+                    val payload = connection.inputStream.bufferedReader().use { it.readText() }
+                    return@withContext parseResults(JSONObject(payload)).map { it.withLookupMatch(query.trim(), kind) }
+                } finally {
+                    connection.disconnect()
+                }
             }
+
+            @Suppress("UNREACHABLE_CODE")
+            emptyList()
         }
 
     private fun parseResults(payload: JSONObject): List<BookResult> {
@@ -128,11 +142,16 @@ internal fun buildGoogleBooksRequestUrl(
     return "https://www.googleapis.com/books/v1/volumes?q=$encodedQuery&maxResults=10&printType=books&key=$encodedApiKey"
 }
 
+internal fun shouldRetryGoogleBooksRequest(status: Int, retryCount: Int): Boolean =
+    status in setOf(500, 502, 503, 504) && retryCount < 1
+
 internal fun googleBooksHttpErrorMessage(status: Int, reason: String? = null): String = when {
     status == 429 || reason in setOf("dailyLimitExceeded", "quotaExceeded", "rateLimitExceeded") ->
         "Google Books has reached its request quota. Try again later or use a retailer search."
     status == 400 || status == 403 ->
         "Google Books rejected the request or API key. Check the key setup and restrictions, then try again."
+    status in 500..599 ->
+        "Google Books is temporarily unavailable (HTTP $status). Try again later or use a retailer search."
     else -> "Book search failed (HTTP $status). Try again."
 }
 

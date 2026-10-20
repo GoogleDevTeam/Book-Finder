@@ -284,9 +284,6 @@ fun BookFinderScreen() {
         }
     }
 
-    fun openRetailerSearch(retailer: RetailerSearch) {
-        openRetailerSearchFor(query, retailer)
-    }
     fun saveResult(book: BookResult) {
         val selectedTerm = query.trim()
         val selectedKind = queryKind
@@ -499,7 +496,8 @@ fun BookFinderScreen() {
                         message = message,
                         saveMessage = historySavedMessage,
                         retailerMessage = retailerMessage,
-                        onOpenRetailer = ::openRetailerSearch,
+                        retailerTitleFallback = drafts.firstOrNull { it.id == activeDraftId }?.titleHint,
+                        onOpenRetailer = ::openRetailerSearchFor,
                         onSaveResult = ::saveResult,
                         onUseForList = ::chooseBookForList,
                         onEditSearch = {
@@ -782,7 +780,8 @@ private fun ResultsScreen(
     message: String?,
     saveMessage: String?,
     retailerMessage: String?,
-    onOpenRetailer: (RetailerSearch) -> Unit,
+    retailerTitleFallback: String?,
+    onOpenRetailer: (String, RetailerSearch) -> Unit,
     onSaveResult: (BookResult) -> Unit,
     onUseForList: (BookResult) -> Unit,
     onEditSearch: () -> Unit,
@@ -839,9 +838,13 @@ private fun ResultsScreen(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 RetailerSearch.entries.forEach { retailer ->
                     val titleOnly = retailer.requiresTitleOnly(searchTerm)
+                    val retailerQuery = retailer.searchTermFor(
+                        searchTerm,
+                        retailerTitleFallback ?: results.firstOrNull()?.title,
+                    )
                     OutlinedButton(
-                        enabled = !titleOnly,
-                        onClick = { onOpenRetailer(retailer) },
+                        enabled = retailerQuery != null,
+                        onClick = { retailerQuery?.let { onOpenRetailer(it, retailer) } },
                         modifier = Modifier.weight(1f),
                         contentPadding = PaddingValues(horizontal = 4.dp),
                     ) {
@@ -1083,9 +1086,10 @@ private fun ReadingListDetailScreen(
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             RetailerSearch.entries.forEach { retailer ->
                                 val titleOnly = retailer.requiresTitleOnly(item.item.lookupTerm)
+                                val retailerQuery = retailer.searchTermFor(item.item.lookupTerm, item.book.title)
                                 OutlinedButton(
-                                    enabled = !titleOnly,
-                                    onClick = { onOpenRetailerSearch(item.item.lookupTerm, retailer) },
+                                    enabled = retailerQuery != null,
+                                    onClick = { retailerQuery?.let { onOpenRetailerSearch(it, retailer) } },
                                     modifier = Modifier.weight(1f),
                                     contentPadding = PaddingValues(horizontal = 4.dp),
                                 ) {

@@ -14,6 +14,16 @@ enum class RetailerSearch(
     AMAZON_SA("Amazon.sa", "https://www.amazon.sa/s", "k"),
     NOON("Noon", "https://www.noon.com/saudi-en/search/", "q");
 
+    fun searchTermFor(query: String, titleFallback: String? = null): String? {
+        val reviewedQuery = query.trim()
+        if (reviewedQuery.isEmpty()) return null
+        if (!requiresTitleOnly(reviewedQuery)) return reviewedQuery
+
+        return titleFallback
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() && IsbnParser.extractIsbns(it).isEmpty() }
+    }
+
     fun searchUrl(query: String): String {
         val reviewedQuery = query.trim()
         require(reviewedQuery.isNotEmpty()) { "A reviewed ISBN or title is required." }

@@ -2,6 +2,7 @@ package com.googledevteam.bookfinder.retail
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -32,6 +33,22 @@ class RetailerSearchTest {
         assertFalse(RetailerSearch.JARIR.requiresTitleOnly("Harry Potter"))
         assertFalse(RetailerSearch.AMAZON_SA.requiresTitleOnly(isbn))
         assertFalse(RetailerSearch.NOON.requiresTitleOnly(isbn))
+    }
+
+    @Test
+    fun usesBookTitleForJarirWhenTheReviewedQueryIsAnIsbn() {
+        val isbn = "9780590353427"
+        val title = "Harry Potter and the Sorcerer's Stone"
+
+        assertEquals(title, RetailerSearch.JARIR.searchTermFor(isbn, title))
+        assertEquals(isbn, RetailerSearch.AMAZON_SA.searchTermFor(isbn, title))
+        assertEquals(isbn, RetailerSearch.NOON.searchTermFor(isbn, title))
+        assertEquals(title, RetailerSearch.JARIR.searchTermFor(title, title))
+    }
+
+    @Test
+    fun jarirNeedsATitleFallbackForAnIsbnQuery() {
+        assertNull(RetailerSearch.JARIR.searchTermFor("9780590353427"))
     }
 
     @Test
