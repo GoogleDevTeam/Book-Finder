@@ -35,11 +35,13 @@ Observed scan/review result: FAIL. The heading "GRADE 7 READING LIST" appeared a
 
 Observed Google Books result: FAIL on two attempts: first from the scanned candidate, then after the user manually entered ISBN 978-0-439-02352-8. Both displayed: "Book search failed (HTTP 503). Try again." Repeating with manual entry shows the failure is independent of OCR. Root cause is not established; do not label it a key, quota, or global-service issue without further evidence. No Google Cloud project/API settings were accessible through a connected integration in this conversation; never request or record the API key.
 
-Not yet reported as tested: camera permission-denied recovery; low-light and no-text scans; title-only and no-match recovery; successful per-book lookup; saving a named reading list; force-close/reopen and offline list display; no-network lookup recovery; Jarir, Amazon.sa, and Noon routing (including app/browser behavior).
+Observed retailer hand-off result: PARTIAL. For ISBN 9780590353427 (Harry Potter and the Sorcerer's Stone), the user reports Amazon.sa and Noon showed results; Jarir showed no result. The app constructs Jarir searches at https://www.jarir.com/sa-en/catalogsearch/result?q=<encoded query>. A title-based Jarir search and whether each result opened in an app or browser have not been reported.
+
+Not yet reported as tested: camera permission-denied recovery; low-light and no-text scans; title-only and no-match recovery; successful per-book lookup; saving a named reading list; force-close/reopen and offline list display; no-network lookup recovery; Jarir title search; retailer app/browser routing.
 
 ## Next steps
 
 1. Address scan candidate grouping/filtering: ignore list headings and associate author lines with their book title; add regression coverage for this sample.
 2. Retry one Google Books lookup with connectivity enabled. If HTTP 503 persists, investigate the Google Books API/project configuration and quota privately; never put the API key in this file, chat, or logs.
-3. Continue physical-device validation for camera, scan/review, saving and reopening lists offline, error recovery, and all retailer hand-offs. Record device/Android version and observed results; leave unrun checks open in issue #14.
+3. Test Jarir with the book title (not only the ISBN) to distinguish a Jarir ISBN-search/catalog limitation from a URL issue. Then verify app/browser routing for each retailer. Continue the remaining physical-device checks, record device/Android version and outcomes, and leave unrun checks open in issue #14.
 4. Keep PR #17 in draft until review and verification are complete. Do not merge without explicit user confirmation.
