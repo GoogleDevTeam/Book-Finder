@@ -1,5 +1,6 @@
 package com.googledevteam.bookfinder.retail
 
+import com.googledevteam.bookfinder.domain.IsbnParser
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -19,4 +20,7 @@ enum class RetailerSearch(
         val encodedQuery = URLEncoder.encode(reviewedQuery, StandardCharsets.UTF_8.name())
         return "$searchEndpoint?$queryParameter=$encodedQuery"
     }
+
+    fun requiresTitleOnly(query: String): Boolean =
+        this == JARIR && IsbnParser.extractIsbns(query).isNotEmpty()
 }
