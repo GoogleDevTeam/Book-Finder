@@ -846,8 +846,7 @@ private fun ResultsScreen(
                         contentPadding = PaddingValues(horizontal = 4.dp),
                     ) {
                         Text(
-                            text = if (titleOnly) ""){retailer.label}
-Title only" else retailer.label,
+                            text = if (titleOnly) retailer.label + "\nTitle only" else retailer.label,
                             maxLines = 2,
                             textAlign = TextAlign.Center,
                             overflow = TextOverflow.Ellipsis,
@@ -1091,8 +1090,7 @@ private fun ReadingListDetailScreen(
                                     contentPadding = PaddingValues(horizontal = 4.dp),
                                 ) {
                                     Text(
-                                        text = if (titleOnly) ""){retailer.label}
-Title only" else retailer.label,
+                                        text = if (titleOnly) retailer.label + "\nTitle only" else retailer.label,
                                         maxLines = 2,
                                         textAlign = TextAlign.Center,
                                         overflow = TextOverflow.Ellipsis,
