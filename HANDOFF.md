@@ -7,7 +7,7 @@ Updated: 2026-10-20 (Asia/Riyadh)
 - Keep this handoff current on main because the user has found work on non-main branches difficult to access.
 - Main contains the Android MVP: CameraX capture, on-device Latin-script OCR, ISBN/title review, Google Books metadata lookup, Room-backed single-book history, and retailer search links.
 - PR #16 (edition-safe matching) was merged on 2026-10-19. PR #17, the multi-book reading-list follow-up, remains open and in draft on branch feat/multi-book-reading-lists.
-- Current PR #17 head at time of this update: 5bac526be359afedfe4948114e21f53e35c63998. Do not merge PR #17 without explicit user confirmation.
+- The debug APK the user is testing was built from PR #17 source-code commit 5bac526be359afedfe4948114e21f53e35c63998 by successful workflow run #39331341117. Later handoff-only commits do not alter that APK. Do not merge PR #17 without explicit user confirmation.
 
 ## Current behavior and scope
 
