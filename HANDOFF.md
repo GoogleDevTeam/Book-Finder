@@ -33,7 +33,7 @@ Test input supplied in chat:
 
 Observed scan/review result: FAIL. The heading "GRADE 7 READING LIST" appeared as a book candidate. "Charlotte's Web" and its author "E. B. White" appeared as separate book candidates. The user has not reported the complete candidate list, so outcomes for the other sample entries are unknown. Expected behavior is to ignore the heading and keep each book's title and author together as one editable entry.
 
-Observed Google Books result: FAIL. Search showed: "Book search failed (HTTP 503). Try again." The retry outcome has not yet been reported. The cause is not established; do not label it a key, quota, or global-service issue without further evidence.
+Observed Google Books result: FAIL on two attempts: first from the scanned candidate, then after the user manually entered ISBN 978-0-439-02352-8. Both displayed: "Book search failed (HTTP 503). Try again." Repeating with manual entry shows the failure is independent of OCR. Root cause is not established; do not label it a key, quota, or global-service issue without further evidence. No Google Cloud project/API settings were accessible through a connected integration in this conversation; never request or record the API key.
 
 Not yet reported as tested: camera permission-denied recovery; low-light and no-text scans; title-only and no-match recovery; successful per-book lookup; saving a named reading list; force-close/reopen and offline list display; no-network lookup recovery; Jarir, Amazon.sa, and Noon routing (including app/browser behavior).
 
